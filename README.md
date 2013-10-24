@@ -1,6 +1,8 @@
 marvin
 ======
 
+[![Build Status](https://travis-ci.org/streamr/marvin.png?branch=master)](https://travis-ci.org/streamr/marvin)
+
 API endpoints for streamr.
 
 Local development
