@@ -1,7 +1,7 @@
 marvin
 ======
 
-[![Build Status](https://travis-ci.org/streamr/marvin.png?branch=master)](https://travis-ci.org/streamr/marvin)
+[![Build Status](https://travis-ci.org/streamr/marvin.png?branch=master)](https://travis-ci.org/streamr/marvin) [![Coverage Status](https://coveralls.io/repos/streamr/marvin/badge.png)](https://coveralls.io/r/streamr/marvin)
 
 API endpoints for streamr.
 
