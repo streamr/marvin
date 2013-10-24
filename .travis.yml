@@ -9,7 +9,8 @@ python:
 install:
 
   # Python stuff
-  - pip install -r requirements.txt --use-mirrors
+  - pip install -r dev-requirements.txt --use-mirrors
+  - pip install coveralls --use-mirrors
 
   # Install grunt-cli and grunt
   - npm install -g grunt-cli bower
@@ -17,4 +18,7 @@ install:
 
 script:
   - grunt lint --force
-  - grunt test
+  - grunt test --virtualenv $VIRTUAL_ENV
+
+after_success:
+  - coveralls

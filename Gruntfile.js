@@ -73,7 +73,10 @@ module.exports = function (grunt) {
     nose: {
       marvin: {
         options: {
-          virtualenv: 'venv',
+          virtualenv: '<%= grunt.option("virtualenv") || "venv" %>',
+          with_coverage: true,
+          cover_branches: true,
+          cover_package: 'marvin',
         },
         src: 'marvin',
       }
