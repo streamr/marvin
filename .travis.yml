@@ -1,0 +1,19 @@
+language:
+  - python
+  - node_js
+
+python:
+  - "2.7"
+  - "3.3"
+
+install:
+
+  # Python stuff
+  - pip install -r requirements.txt --use-mirrors
+
+  # Install grunt-cli and grunt
+  - npm install -g grunt-cli bower
+  - npm install
+
+script:
+  - grunt lint --force
