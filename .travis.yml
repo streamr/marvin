@@ -17,7 +17,7 @@ install:
   - npm install
 
 script:
-  - grunt lint --force
+  - grunt lint --force --virtualenv $VIRTUAL_ENV
   - grunt test --virtualenv $VIRTUAL_ENV
 
 after_success:

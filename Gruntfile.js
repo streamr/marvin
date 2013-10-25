@@ -1,4 +1,4 @@
-/* jshint indent:2 */
+/* jshint indent:2,camelcase:false */
 /* global module,require */
 module.exports = function (grunt) {
   "use strict";
@@ -34,11 +34,24 @@ module.exports = function (grunt) {
     },
 
     pylint: {
+      options: {
+        virtualenv: '<%= grunt.option("virtualenv") || "venv" %>',
+        rcfile: '.pylintrc',
+      },
       marvin: {
         options: {
-          rcfile: '.pylintrc',
+          ignore: 'tests',
         },
         src: ['marvin', '*.py'],
+      },
+      marvinTests: {
+        options: {
+          disable: [
+            'missing-docstring',
+            'too-many-public-methods',
+          ]
+        },
+        src: ['marvin/tests'],
       }
     },
 
