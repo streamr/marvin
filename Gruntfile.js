@@ -90,6 +90,8 @@ module.exports = function (grunt) {
           with_coverage: true,
           cover_branches: true,
           cover_package: 'marvin',
+          cover_html: true,
+          cover_html_dir: 'cover',
         },
         src: 'marvin',
       }
