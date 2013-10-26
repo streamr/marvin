@@ -67,6 +67,10 @@ module.exports = function (grunt) {
         command: 'python run_devserver.py'
       },
       sphinx: {
+        options: {
+          stdout: true,
+          stderr: true,
+        },
         command: 'sphinx-build -b html docs ghdist'
       },
     },
