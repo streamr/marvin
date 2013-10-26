@@ -8,7 +8,6 @@ python:
 
 before_install:
   - ./travis/before_script.sh
-  - cp ./travis/ssh_config ~/.ssh/config
 
 install:
 
@@ -22,6 +21,7 @@ install:
 script:
   - grunt lint --force --virtualenv $VIRTUAL_ENV
   - grunt test --virtualenv $VIRTUAL_ENV
+  - grunt build
 
 after_success:
   - ./travis/deploy.sh --verbose

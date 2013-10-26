@@ -66,6 +66,9 @@ module.exports = function (grunt) {
         },
         command: 'python run_devserver.py'
       },
+      sphinx: {
+        command: 'sphinx-build -b html docs ghdist'
+      },
     },
 
     clean: {
@@ -91,12 +94,11 @@ module.exports = function (grunt) {
           cover_branches: true,
           cover_package: 'marvin',
           cover_html: true,
-          cover_html_dir: 'cover',
+          cover_html_dir: 'ghdist/coverage',
         },
         src: 'marvin',
       }
-    }
-
+    },
   });
 
 
@@ -113,5 +115,8 @@ module.exports = function (grunt) {
   ]);
   grunt.registerTask('server', [
     'concurrent:server',
+  ]);
+  grunt.registerTask('build', [
+    'shell:sphinx',
   ]);
 };

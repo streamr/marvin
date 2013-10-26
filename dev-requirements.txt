@@ -3,3 +3,6 @@
 
 # test tools
 coverage
+
+# build tools
+sphinx
