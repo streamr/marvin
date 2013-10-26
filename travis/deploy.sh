@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+# Creds to https://github.com/X1011/git-directory-deploy
+
 set -o errexit #abort if any command fails
 
 deploy_directory=cover
@@ -72,7 +75,7 @@ case $diff in
         1)
                 set_user_id
                 git --work-tree "$deploy_directory" commit -m \
-                        "publish: $commit_title"$'\n\n'"generated from commit $commit_hash"
+                        "[Travis CI]: Deploy $commit_title"$'\n\n'"generated from commit $commit_hash"
 
                 disable_expanded_output
                 #--quiet is important here to avoid outputting the repo URL, which may contain a secret token
