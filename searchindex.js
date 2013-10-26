@@ -1,0 +1,1 @@
+Search.setIndex({envversion:42,terms:{index:0,search:0,code:0,like:0,modul:0,some:0,here:0,find:0,project:0,sourc:0,coverag:0,stuff:0,you:0,page:0,metadata:0},objtypes:{},objnames:{},filenames:["index"],titles:["Welcome to Marvin&#8217;s documentation!"],objects:{},titleterms:{marvin:0,document:0,welcom:0,indic:0,tabl:0}})
