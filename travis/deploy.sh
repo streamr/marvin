@@ -4,6 +4,9 @@
 
 set -o errexit #abort if any command fails
 
+# Make sure there's a .nojekyll file in the dist dir, so that Jekyll won't try to process the result
+touch ghdist/.nojekyll
+
 deploy_directory=ghdist
 deploy_branch=gh-pages
 
