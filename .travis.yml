@@ -6,11 +6,14 @@ python:
   - "2.7"
   - "3.3"
 
+before_install:
+  - ./travis/before_script.sh
+  - cp ./travis/ssh_config ~/.ssh/config
+
 install:
 
   # Python stuff
   - pip install -r dev-requirements.txt --use-mirrors
-  - pip install coveralls --use-mirrors
 
   # Install grunt-cli and grunt
   - npm install -g grunt-cli
@@ -21,4 +24,10 @@ script:
   - grunt test --virtualenv $VIRTUAL_ENV
 
 after_success:
-  - coveralls
+  - ./travis/deploy.sh --verbose
+
+env:
+  global:
+
+    # GitHub access token that grants access to thusoys GitHub account
+    - secure: "Ib2+++wIFcoBgEcocd4C+U7NJIWzTyJtwnxtgF4X7md17i4j4JpBXGMt2i9RNaw05uFAQ9q4cjAZZa5ASQlIhEL5QQwK/nfsUz3HdaEnV5IthXCWYDi3YrMRuqUiKwLcoraoP7cNwgT2eOt8M2EOw6LbqZ74LztzjQEW93G5bHM="
