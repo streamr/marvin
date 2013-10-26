@@ -1,9 +1,11 @@
 marvin
 ======
 
-[![Build Status](https://travis-ci.org/streamr/marvin.png?branch=master)](https://travis-ci.org/streamr/marvin) [![Coverage Status](https://coveralls.io/repos/streamr/marvin/badge.png)](https://coveralls.io/r/streamr/marvin)
+[![Build Status](https://travis-ci.org/streamr/marvin.png?branch=master)](https://travis-ci.org/streamr/marvin)
 
 API endpoints for streamr.
+
+You can browse the [code coverage report] online!
 
 Local development
 -----------------
@@ -26,3 +28,4 @@ You can now start the devserver and get hacking:
 
 [virtualenv]: https://pypi.python.org/pypi/virtualenv
 [node]: http://nodejs.org/
+[code coverage report]: http://streamr.github.io/marvin/coverage
