@@ -21,10 +21,13 @@ install:
 script:
   - grunt lint --force --virtualenv $VIRTUAL_ENV
   - grunt test --virtualenv $VIRTUAL_ENV
-  - grunt build
+
+  # Only build in the build that will be deployed
+  - if [[ $TRAVIS_PYTHON_VERSION == "2.7" ]]; then grunt build; fi
 
 after_success:
-  - ./travis/deploy.sh --verbose
+  # Only deploy from one of the builds
+  - if [[ $TRAVIS_PYTHON_VERSION == "2.7" ]]; then ./travis/deploy.sh --verbose; fi
 
 env:
   global:
