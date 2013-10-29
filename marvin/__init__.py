@@ -5,13 +5,15 @@
     This is the main entry point to marvin, the API endpoints for streamr.
 """
 
-# pylint: disable=import-error,no-name-in-module
+# pylint: disable=invalid-name
 
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.restful import Api
 from os import path
 
 db = SQLAlchemy()
+api = Api()
 
 def create_app(config_file=None, **extra_config):
     """ Creates a WSGI app.
@@ -28,7 +30,16 @@ def create_app(config_file=None, **extra_config):
         app.config.from_pyfile(config_file)
     app.config.update(extra_config)
 
+    # Connect extensions
     db.init_app(app)
+    api.init_app(app)
+
+    # Import views (must be done down here to avoid circular imports)
+    from .views import movies
+
+    # Register resources
+    api.add_resource(movies.MovieView, '/movies/<int:movie_id>')
+    api.add_resource(movies.AllMoviesView, '/movies')
 
     return app
 

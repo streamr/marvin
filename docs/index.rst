@@ -13,12 +13,9 @@ Here you will find documentation for stuff in the source code, and some useful p
 .. toctree::
    :maxdepth: 2
 
+   api
 
-
-Indices and tables
-==================
+Some other useful links:
 
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
-

@@ -1,2 +1,5 @@
 flask
 flask-sqlalchemy
+flask-restful
+flask-wtf
+wtforms-alchemy

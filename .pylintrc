@@ -24,13 +24,20 @@ load-plugins=
 
 # Disable the message, report, category or checker with the given id(s).
 
-# no-member: Because of django dynamic assignments to classes
-# unused-argument: Triggers for almost all views because of the requests argument
 # old-style-class: Reacts to model Meta classes
-# no-value-for-parameter: Triggers on most urls.py modules for some reasjon
-# abstract-method: abstract property queryset of cachedquery supposedly not overridden
-# super-on-old-class: pylint error
+# star-args: this is powerful python feature, of course we want to use it
+# import-error: triggers for all extensions. If we actually have an error, this will
+#               be caught in the tests
+# no-name-in-module: same as above
+# no-member: same as above
+# maybe-no-member: same as above
+# no-init: not needed
+# I: reduce verbosity
 disable=star-args,
+    import-error,
+    no-name-in-module,
+    no-member,
+    maybe-no-member,
     no-init,
     I,
 
@@ -79,7 +86,7 @@ bad-functions=map,filter,apply,input,eval
 module-rgx=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
 
 # Regular expression which should only match correct module level names
-const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__)|_.*|_logger|db)$
+const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__)|_.*|_logger)$
 
 # Regular expression which should only match correct class names
 class-rgx=[A-Z_][a-zA-Z0-9]+$
@@ -115,7 +122,7 @@ bad-names=foo,bar,baz,toto,tutu,tata
 
 # Regular expression which should only match functions or classes name which do
 # not require a docstring
-no-docstring-rgx=(__.*__|_.*)
+no-docstring-rgx=(__.*__|_.*|Meta)
 
 
 [FORMAT]
