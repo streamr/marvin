@@ -41,6 +41,9 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="index.html" title="Welcome to Marvin’s documentation!"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">Marvin 0.1.0 documentation</a> &raquo;</li> 
@@ -55,6 +58,104 @@
   <div class="section" id="api-documentation">
 <h1>API documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h1>
 <p>This is the documentatoin for all classes, modules and functions/methods you find in marvin.</p>
+<span class="target" id="module-marvin"></span><div class="section" id="marvin">
+<h2>marvin<a class="headerlink" href="#marvin" title="Permalink to this headline">¶</a></h2>
+<p>This is the main entry point to marvin, the API endpoints for streamr.</p>
+<dl class="function">
+<dt id="marvin.create_app">
+<tt class="descclassname">marvin.</tt><tt class="descname">create_app</tt><big>(</big><em>config_file=None</em>, <em>**extra_config</em><big>)</big><a class="headerlink" href="#marvin.create_app" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a WSGI app.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>config_file</strong> &#8211; Load config from this file.</li>
+<li><strong>extra_config</strong> &#8211; Extra configuration values to pass to the WSGI object.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="marvin.init_db">
+<tt class="descclassname">marvin.</tt><tt class="descname">init_db</tt><big>(</big><em>app</em><big>)</big><a class="headerlink" href="#marvin.init_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the database with all tables for the given app.</p>
+</dd></dl>
+
+</div>
+<span class="target" id="module-marvin.models"></span><div class="section" id="marvin-models">
+<h2>marvin.models<a class="headerlink" href="#marvin-models" title="Permalink to this headline">¶</a></h2>
+<p>Here we define the models we use in marvin. If this module grows too large,
+make it a package and split it up into smaller pieces.</p>
+<dl class="class">
+<dt id="marvin.models.Movie">
+<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">Movie</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.Movie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Movies are the first thing the user will search for.</p>
+<p>Through a movie the user can find streams related to this movie.
+Most metadata should be fetched automatically from IMDb/TMDB.</p>
+<dl class="method">
+<dt id="marvin.models.Movie.to_json">
+<tt class="descname">to_json</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.models.Movie.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dict representation of the movie that can be used for serialization.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marvin.models.MovieForm">
+<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">MovieForm</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.MovieForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>The form used to validate new movie objects.</p>
+</dd></dl>
+
+</div>
+<span class="target" id="module-marvin.views"></span><div class="section" id="marvin-views">
+<h2>marvin.views<a class="headerlink" href="#marvin-views" title="Permalink to this headline">¶</a></h2>
+<p>All views registered on marvin. All views registered must also be
+registered to the app object in <tt class="xref py py-func docutils literal"><span class="pre">create_app()</span></tt>.</p>
+</div>
+<span class="target" id="module-marvin.views.movies"></span><div class="section" id="marvin-views-movies">
+<h2>marvin.views.movies<a class="headerlink" href="#marvin-views-movies" title="Permalink to this headline">¶</a></h2>
+<p>Endpoints related to movies.</p>
+<dl class="class">
+<dt id="marvin.views.movies.AllMoviesView">
+<em class="property">class </em><tt class="descclassname">marvin.views.movies.</tt><tt class="descname">AllMoviesView</tt><a class="headerlink" href="#marvin.views.movies.AllMoviesView" title="Permalink to this definition">¶</a></dt>
+<dd><p>CR interface to all movies.</p>
+<dl class="method">
+<dt id="marvin.views.movies.AllMoviesView.get">
+<tt class="descname">get</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.views.movies.AllMoviesView.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of id -&gt; movie title pairs of all movies registered.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="marvin.views.movies.AllMoviesView.post">
+<tt class="descname">post</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.views.movies.AllMoviesView.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new movie.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marvin.views.movies.MovieView">
+<em class="property">class </em><tt class="descclassname">marvin.views.movies.</tt><tt class="descname">MovieView</tt><a class="headerlink" href="#marvin.views.movies.MovieView" title="Permalink to this definition">¶</a></dt>
+<dd><p>RD interface to movies.</p>
+<dl class="method">
+<dt id="marvin.views.movies.MovieView.delete">
+<tt class="descname">delete</tt><big>(</big><em>movie_id</em><big>)</big><a class="headerlink" href="#marvin.views.movies.MovieView.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the movie with the given ID.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="marvin.views.movies.MovieView.get">
+<tt class="descname">get</tt><big>(</big><em>movie_id</em><big>)</big><a class="headerlink" href="#marvin.views.movies.MovieView.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the movie with the given ID.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -62,7 +163,18 @@
         </div>
       </div>
       <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">API documentation</a><ul>
+<li><a class="reference internal" href="#marvin">marvin</a></li>
+<li><a class="reference internal" href="#marvin-models">marvin.models</a></li>
+<li><a class="reference internal" href="#marvin-views">marvin.views</a></li>
+<li><a class="reference internal" href="#marvin-views-movies">marvin.views.movies</a></li>
+</ul>
+</li>
+</ul>
+<h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="index.html" title="previous chapter">Welcome to Marvin&#8217;s documentation!</a></li>
