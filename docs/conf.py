@@ -21,6 +21,9 @@ import os
 
 # -- General configuration -----------------------------------------------------
 
+# Add project dir to path (eg make marvin importable)
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 # If your documentation needs a minimal Sphinx version, state it here.
 #needs_sphinx = '1.0'
 
