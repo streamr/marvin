@@ -7,13 +7,21 @@
 
 # pylint: disable=invalid-name
 
-from flask import Flask
+from flask import Flask, make_response
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.restful import Api
 from os import path
 
+import ujson
+
 db = SQLAlchemy()
 api = Api()
+
+@api.representation('application/json')
+def _fastjson(data, code, headers=None):
+    response = make_response(ujson.dumps(data), code)
+    response.headers.extend(headers or {})
+    return response
 
 def create_app(config_file=None, **extra_config):
     """ Creates a WSGI app.
