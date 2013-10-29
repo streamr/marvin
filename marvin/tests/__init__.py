@@ -1,4 +1,4 @@
-from marvin import create_app
+from marvin import create_app, init_db
 
 import os
 import tempfile
@@ -30,3 +30,10 @@ class AppCreationTest(unittest.TestCase):
         app = create_app(self.config_file.name, EXTRA_PARAM='baz')
         self.assertEqual(app.config['OTHER_CONFIG'], 'bar')
         self.assertEqual(app.config['EXTRA_PARAM'], 'baz')
+
+
+    def test_init_db(self):
+        app = create_app(SQLALCHEMY_DATABASE_URI='sqlite:///../nonexistent.db')
+        init_db(app)
+        self.assertTrue(os.path.exists('../nonexistent.db'))
+        os.remove('../nonexistent.db')

@@ -39,3 +39,6 @@ nosetests.xml
 # packages
 venv
 node_modules
+
+# dev stuff
+db.sqlite
