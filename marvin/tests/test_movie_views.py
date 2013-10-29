@@ -2,7 +2,7 @@ from marvin import db
 from marvin.models import Movie
 from marvin.tests import TestCaseWithTempDB
 
-import json
+import ujson as json
 
 class AllMovieViewTest(TestCaseWithTempDB):
 
