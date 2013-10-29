@@ -34,3 +34,6 @@ env:
 
     # GitHub access token that grants access to thusoys GitHub account
     - secure: "Ib2+++wIFcoBgEcocd4C+U7NJIWzTyJtwnxtgF4X7md17i4j4JpBXGMt2i9RNaw05uFAQ9q4cjAZZa5ASQlIhEL5QQwK/nfsUz3HdaEnV5IthXCWYDi3YrMRuqUiKwLcoraoP7cNwgT2eOt8M2EOw6LbqZ74LztzjQEW93G5bHM="
+
+notifications:
+  email: false
