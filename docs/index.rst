@@ -14,6 +14,7 @@ Here you will find documentation for stuff in the source code, and some useful p
    :maxdepth: 2
 
    api
+   internal_api
 
 Some other useful links:
 
