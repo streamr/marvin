@@ -17,7 +17,7 @@ class MovieView(Resource):
 
     def get(self, movie_id):
         """ Get the movie with the given ID. """
-        movie = Movie.query.get(movie_id)
+        movie = Movie.query.get_or_404(movie_id)
         return {
             'movie': movie.to_json(),
         }
@@ -25,7 +25,7 @@ class MovieView(Resource):
 
     def delete(self, movie_id):
         """ Delete the movie with the given ID. """
-        movie = Movie.query.get(movie_id)
+        movie = Movie.query.get_or_404(movie_id)
         db.session.delete(movie)
         return {'msg': 'Movie deleted.'}
 

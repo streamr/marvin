@@ -62,6 +62,15 @@ class MovieDetailView(TestCaseWithTempDB):
         self.assertEqual(len(frontpage_json['movies']), 0)
 
 
+    def test_get_nonexistent(self):
+        response = self.client.get('/movies/65432')
+        self.assertEqual(response.status_code, 404)
+
+
+    def test_delete_nonexistent(self):
+        response = self.client.delete('/movies/543')
+        self.assertEqual(response.status_code, 404)
+
 class MovieDetailWithStreams(TestCaseWithTempDB):
 
     def setUp(self):
