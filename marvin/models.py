@@ -41,6 +41,10 @@ class Movie(db.Model):
         return {
             'id': self.id,
             'title': self.title,
+            'streams': [{
+                'id': stream.id,
+                'name': stream.name,
+                } for stream in self.streams],
         }
 
 
@@ -49,3 +53,50 @@ class MovieForm(ModelForm):
 
     class Meta(object):
         model = Movie
+
+
+class Stream(db.Model):
+    """ A collection of related, timecoded entries that accompanies a movie.
+
+    Entries in a stream will usually have some common theme, like annoucing new
+    actors that enter the screen, or providing references for topics mentioned
+    in a movie.
+    """
+    #: Unique identifier for this stream. Do not make assumptions about it's format, subject to change.
+    id = db.Column(db.Integer, primary_key=True)
+    #: A user chosen name for the stream. Users can change this at their own discretion, do not assume to
+    #: be constant.
+    name = db.Column(db.String(30), nullable=False)
+    #: Foreign key to a movie
+    movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'))
+    #: The movie this stream is associated to.
+    movie = db.relationship('Movie', backref=db.backref('streams', lazy='dynamic'))
+
+
+    def __init__(self, movie=None, **kwargs):
+        """ Create new stream.
+
+        :param movie: The movie this stream should be associated to.
+        :param kwargs: Set object properties from constructor.
+        """
+        self.movie = movie
+        self.__dict__.update(kwargs)
+
+
+    def to_json(self):
+        """ Get a dict representation of the stream suitable for serialization. """
+        return {
+            'id': self.id,
+            'name': self.name,
+            'movie': {
+                'id': self.movie_id,
+                'title': self.movie.title,
+            }
+        }
+
+
+class StreamForm(ModelForm):
+    """ A form used to validate new streams. """
+
+    class Meta(object):
+        model = Stream

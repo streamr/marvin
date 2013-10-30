@@ -1,5 +1,5 @@
 from marvin import db
-from marvin.models import Movie
+from marvin.models import Movie, Stream
 from marvin.tests import TestCaseWithTempDB
 
 import ujson as json
@@ -60,3 +60,33 @@ class MovieDetailView(TestCaseWithTempDB):
             self.assertEqual(len(movies), 0)
         frontpage_json = json.loads(self.client.get('/movies').data)
         self.assertEqual(len(frontpage_json['movies']), 0)
+
+
+class MovieDetailWithStreams(TestCaseWithTempDB):
+
+    def setUp(self):
+        super(MovieDetailWithStreams, self).setUp()
+        movie = Movie(title='Red')
+        sins_stream = Stream(name='CinemaSins', movie=movie)
+        actors_stream = Stream(name="Who's that actor?", movie=movie)
+        with self.app.test_request_context():
+            db.session.add(movie)
+            db.session.add(sins_stream)
+            db.session.add(actors_stream)
+            db.session.commit()
+            self.movie_id = movie.id
+            self.sins_stream_id = sins_stream.id
+            self.actors_stream_id = actors_stream.id
+
+
+    def test_stream_in_details(self):
+        response = self.client.get('/movies/%d' % self.movie_id)
+        json_response = json.loads(response.data)
+        self.assertTrue('streams' in json_response['movie'])
+        self.assertTrue(len(json_response['movie']['streams']), 2)
+        self.assertTrue({
+            'id': self.sins_stream_id,
+            'name': 'CinemaSins'} in json_response['movie']['streams'])
+        self.assertTrue({
+            'id': self.actors_stream_id,
+            'name': "Who's that actor?"} in json_response['movie']['streams'])

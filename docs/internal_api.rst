@@ -14,3 +14,6 @@ This is the documentation for all classes, modules and functions/methods you fin
 
 .. automodule:: marvin.views.movies
    :members:
+
+.. automodule:: marvin.views.streams
+   :members:

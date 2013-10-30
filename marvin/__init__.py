@@ -44,10 +44,12 @@ def create_app(config_file=None, **extra_config):
 
     # Import views (must be done down here to avoid circular imports)
     from .views import movies
+    from .views import streams
 
     # Register resources
     api.add_resource(movies.MovieView, '/movies/<int:movie_id>')
     api.add_resource(movies.AllMoviesView, '/movies')
+    api.add_resource(streams.StreamDetailView, '/streams/<int:stream_id>')
 
     return app
 
