@@ -17,7 +17,7 @@ class StreamDetailView(Resource):
 
     def get(self, stream_id):
         """ Get the stream with the given ID. """
-        stream = Stream.query.get(stream_id)
+        stream = Stream.query.get_or_404(stream_id)
         return {
             'stream': stream.to_json(),
         }
@@ -25,7 +25,7 @@ class StreamDetailView(Resource):
 
     def put(self, stream_id):
         """ Update the stream with the given ID. """
-        stream = Stream.query.get(stream_id)
+        stream = Stream.query.get_or_404(stream_id)
         form = StreamForm(obj=stream)
         form.populate_obj(stream)
         if form.validate_on_submit():
@@ -40,7 +40,7 @@ class StreamDetailView(Resource):
         }, 400
 
     def delete(self, stream_id):
-        """ Delete the movie with the given ID. """
-        stream = Stream.query.get(stream_id)
+        """ Delete the stream with the given ID. """
+        stream = Stream.query.get_or_404(stream_id)
         db.session.delete(stream)
         return {'msg': 'Stream deleted.'}

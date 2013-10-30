@@ -50,6 +50,24 @@ class StreamDetailViewTest(TestCaseWithTempDB):
             self.assertEqual(new_stream.name, 'Curiosa')
 
 
+    def test_get_nonexistent(self):
+        response = self.client.get('/streams/7654')
+        self.assertEqual(response.status_code, 404)
+
+
+    def test_delete_nonexistent(self):
+        response = self.client.delete('/streams/654')
+        self.assertEqual(response.status_code, 404)
+
+
+    def test_put_nonexistent(self):
+        stream = {
+            'name': "Who's that?",
+        }
+        response = self.client.put('/streams/6543', data=stream)
+        self.assertEqual(response.status_code, 404)
+
+
     def test_invalid_put(self):
         stream = {
             'id': self.stream_id,
