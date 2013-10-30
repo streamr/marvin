@@ -30,6 +30,12 @@ module.exports = function (grunt) {
           'marvin/**/*.py',
           'run_devserver.py',
         ]
+      },
+      docs: {
+        files: [
+          'docs/*.rst'
+        ],
+        tasks: ['shell:sphinx']
       }
     },
 
