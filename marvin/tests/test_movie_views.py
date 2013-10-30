@@ -52,10 +52,11 @@ class MovieDetailView(TestCaseWithTempDB):
 
     def test_delete(self):
         response = self.client.delete('/movies/%d' % self.movie_id)
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, 200)
+        json_response = json.loads(response.data)
+        self.assertEqual(json_response['msg'], 'Movie deleted.')
         with self.app.test_request_context():
             movies = Movie.query.all()
             self.assertEqual(len(movies), 0)
         frontpage_json = json.loads(self.client.get('/movies').data)
         self.assertEqual(len(frontpage_json['movies']), 0)
-

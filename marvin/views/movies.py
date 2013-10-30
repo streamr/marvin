@@ -27,7 +27,7 @@ class MovieView(Resource):
         """ Delete the movie with the given ID. """
         movie = Movie.query.get(movie_id)
         db.session.delete(movie)
-        return "Movie deleted", 204
+        return {'msg': 'Movie deleted.'}
 
 
 class AllMoviesView(Resource):
