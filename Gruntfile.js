@@ -84,6 +84,11 @@ module.exports = function (grunt) {
     clean: {
       python: [
         'marvin/**/*.pyc',
+        'marvin.egg-info',
+      ],
+      dist: [
+        'dist',
+        'ghdist',
       ],
     },
 
