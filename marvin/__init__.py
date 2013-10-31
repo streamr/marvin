@@ -10,7 +10,7 @@
 from flask import Flask, make_response
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.restful import Api
-from os import path
+from os import path, environ
 
 import ujson
 
@@ -36,6 +36,8 @@ def create_app(config_file=None, **extra_config):
     app.config.from_pyfile(core_settings)
     if config_file is not None:
         app.config.from_pyfile(config_file)
+    if 'MARVIN_CONFIG_FILE' in environ:
+        app.config.from_envvar('MARVIN_CONFIG_FILE')
     app.config.update(extra_config)
 
     # Connect extensions
