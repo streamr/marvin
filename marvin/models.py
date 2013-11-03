@@ -7,6 +7,7 @@
 
 """
 from . import db
+from .validators import fk_exists
 
 from flask.ext.wtf import Form
 from wtforms_alchemy import model_form_factory
@@ -109,4 +110,62 @@ class StreamForm(ModelForm):
         only = (
             'name',
             'movie_id',
+        )
+
+
+class Entry(db.Model):
+    """ User-created content that appears at a given time in the movie. """
+    __lazy_options__ = {}
+
+    #: Unique identifier
+    id = Column(db.Integer, primary_key=True)
+    #: The time this entry should appear, in ms since the beginning of the stream
+    entry_point_in_ms = Column(db.Integer, min=1)
+    #: The content of the entry
+    content = Column(db.Text)
+    #: Foreign key to a stream
+    stream_id = Column(db.Integer,
+        db.ForeignKey('stream.id'),
+        nullable=False,
+        info={
+            'validators': fk_exists(Stream),
+        }
+    )
+    #: The stream this entry belongs to
+    stream = db.relationship('Stream', backref=db.backref('entries', lazy='dynamic'))
+
+
+    def __init__(self, stream=None, **kwargs):
+        """ Create new entry.
+
+        :param stream: The stream this entry should be associated to.
+        :param kwargs: Properties of the stream that can be set from the constructor.
+        """
+        self.stream = stream
+        self.__dict__.update(kwargs)
+
+
+    def to_json(self):
+        """ Get a dict representation of the entry suitable for serialization. """
+        return {
+            'id': self.id,
+            'entry_point_in_ms': self.entry_point_in_ms,
+            'content': self.content,
+            'stream': {
+                'id': self.stream_id,
+                'name': self.stream.name,
+            },
+        }
+
+
+class EntryForm(ModelForm):
+    """ Form used to validate new entries. """
+
+    class Meta(object):
+        model = Entry
+        # explicitly declare which fields to consider in the form
+        only = (
+            'entry_point_in_ms',
+            'content',
+            'stream_id',
         )
