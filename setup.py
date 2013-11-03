@@ -1,8 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
+"""
+    setup.py
+    ~~~~~~~~
+
+    Installs marvin as a package.
+
+"""
 
 from setuptools import setup, find_packages
-from os import path
 
 setup(
     name='marvin',
