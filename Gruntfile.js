@@ -77,8 +77,9 @@ module.exports = function (grunt) {
         options: {
           stdout: true,
           stderr: true,
+          failOnError: true,
         },
-        command: 'sphinx-build -a -E -b html docs ghdist'
+        command: 'sphinx-build -a -E -W -b html docs ghdist'
       },
     },
 
