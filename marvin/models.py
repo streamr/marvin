@@ -73,7 +73,7 @@ class Stream(db.Model):
     #: be constant.
     name = Column(db.String(30), nullable=False)
     #: Foreign key to a movie
-    movie_id = Column(db.Integer, db.ForeignKey('movie.id'))
+    movie_id = Column(db.Integer, db.ForeignKey('movie.id'), nullable=False)
     #: The movie this stream is associated to.
     movie = db.relationship('Movie', backref=db.backref('streams', lazy='dynamic'))
 
@@ -105,3 +105,8 @@ class StreamForm(ModelForm):
 
     class Meta(object):
         model = Stream
+        # explicitly define which fields should be considered
+        only = (
+            'name',
+            'movie_id',
+        )

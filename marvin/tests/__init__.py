@@ -20,4 +20,5 @@ class TestCaseWithTempDB(unittest.TestCase):
 
 
     def tearDown(self):
+        db.session.remove()
         os.remove(self.temp_db.name)

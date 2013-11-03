@@ -39,8 +39,23 @@ class StreamDetailView(Resource):
             'errors': form.errors,
         }, 400
 
+
     def delete(self, stream_id):
         """ Delete the stream with the given ID. """
         stream = Stream.query.get_or_404(stream_id)
         db.session.delete(stream)
         return {'msg': 'Stream deleted.'}
+
+
+class AllStreamView(Resource):
+    """ C interface for streams. """
+
+    def post(self):
+        """ Create new stream. """
+        form = StreamForm()
+        if form.validate_on_submit():
+            stream = Stream()
+            form.populate_obj(stream)
+            db.session.add(stream)
+            return {'msg': 'Stream created'}, 201
+        return {'msg': 'Data did not validate.', 'errors': form.errors}, 400

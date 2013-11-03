@@ -56,6 +56,7 @@ def create_app(config_file=None, **extra_config):
     # Register resources
     api.add_resource(movies.AllMoviesView, '/movies')
     api.add_resource(movies.MovieView, '/movies/<int:movie_id>')
+    api.add_resource(streams.AllStreamView, '/streams')
     api.add_resource(streams.StreamDetailView, '/streams/<int:stream_id>')
 
     return app

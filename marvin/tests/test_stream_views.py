@@ -78,3 +78,26 @@ class StreamDetailViewTest(TestCaseWithTempDB):
         json_response = json.loads(response.data)
         self.assertEqual(json_response['msg'], 'Validation failed.')
         self.assertTrue('errors' in json_response)
+
+
+    def test_create_stream(self):
+        stream = {
+            'movie_id': self.movie_id,
+            'name': 'FactChecker',
+        }
+        response = self.client.post('/streams', data=stream)
+        self.assertEqual(response.status_code, 201)
+        with self.app.test_request_context():
+            streams = Stream.query.all()
+            self.assertEqual(len(streams), 2)
+
+
+    def test_create_invalid(self):
+        stream = {
+            # missing movie_id
+            'name': 'FactChecker',
+        }
+        response = self.client.post('/streams', data=stream)
+        self.assertEqual(response.status_code, 400)
+        json_response = json.loads(response.data)
+        self.assertTrue('errors' in json_response)
