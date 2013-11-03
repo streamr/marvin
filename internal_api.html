@@ -91,6 +91,54 @@
 <p>Here we define the models we use in marvin. If this module grows too large,
 make it a package and split it up into smaller pieces.</p>
 <dl class="class">
+<dt id="marvin.models.Entry">
+<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">Entry</tt><big>(</big><em>stream=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.Entry" title="Permalink to this definition">¶</a></dt>
+<dd><p>User-created content that appears at a given time in the movie.</p>
+<dl class="attribute">
+<dt id="marvin.models.Entry.content">
+<tt class="descname">content</tt><em class="property"> None</em><a class="headerlink" href="#marvin.models.Entry.content" title="Permalink to this definition">¶</a></dt>
+<dd><p>The content of the entry</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="marvin.models.Entry.entry_point_in_ms">
+<tt class="descname">entry_point_in_ms</tt><em class="property"> None</em><a class="headerlink" href="#marvin.models.Entry.entry_point_in_ms" title="Permalink to this definition">¶</a></dt>
+<dd><p>The time this entry should appear, in ms since the beginning of the stream</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="marvin.models.Entry.id">
+<tt class="descname">id</tt><em class="property"> None</em><a class="headerlink" href="#marvin.models.Entry.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unique identifier</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="marvin.models.Entry.stream">
+<tt class="descname">stream</tt><em class="property"> None</em><a class="headerlink" href="#marvin.models.Entry.stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>The stream this entry belongs to</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="marvin.models.Entry.stream_id">
+<tt class="descname">stream_id</tt><em class="property"> None</em><a class="headerlink" href="#marvin.models.Entry.stream_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Foreign key to a stream</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="marvin.models.Entry.to_json">
+<tt class="descname">to_json</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.models.Entry.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a dict representation of the entry suitable for serialization.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marvin.models.EntryForm">
+<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">EntryForm</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.EntryForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Form used to validate new entries.</p>
+</dd></dl>
+
+<dl class="class">
 <dt id="marvin.models.Movie">
 <em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">Movie</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.Movie" title="Permalink to this definition">¶</a></dt>
 <dd><p>Movies are the first thing the user will search for.</p>
@@ -257,6 +305,37 @@ registered to the app object in <tt class="xref py py-func docutils literal"><sp
 </dd></dl>
 
 </div>
+<span class="target" id="module-marvin.validators"></span><div class="section" id="marvin-validators">
+<h2>marvin.validators<a class="headerlink" href="#marvin-validators" title="Permalink to this headline">¶</a></h2>
+<p>Some extra validators that can be used in model definitions.</p>
+<dl class="function">
+<dt id="marvin.validators.fk_exists">
+<tt class="descclassname">marvin.validators.</tt><tt class="descname">fk_exists</tt><big>(</big><em>model</em><big>)</big><a class="headerlink" href="#marvin.validators.fk_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate that the object pointed to by the foreign key exists.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span>
+    <span class="p">)</span>
+    <span class="n">group_id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;group.id&#39;</span><span class="p">),</span>
+        <span class="n">info</span><span class="o">=</span><span class="p">{</span>
+            <span class="s">&#39;validators&#39;</span><span class="p">:</span> <span class="n">fk_exists</span><span class="p">(</span><span class="n">Group</span><span class="p">),</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> &#8211; The model the foreign key should be checked against.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -273,6 +352,7 @@ registered to the app object in <tt class="xref py py-func docutils literal"><sp
 <li><a class="reference internal" href="#marvin-views">marvin.views</a></li>
 <li><a class="reference internal" href="#marvin-views-movies">marvin.views.movies</a></li>
 <li><a class="reference internal" href="#marvin-views-streams">marvin.views.streams</a></li>
+<li><a class="reference internal" href="#marvin-validators">marvin.validators</a></li>
 </ul>
 </li>
 </ul>

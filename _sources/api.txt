@@ -44,3 +44,17 @@ following endpoints:
 
     * :attr:`name <marvin.models.Stream.name>`
     * :attr:`movie_id <marvin.models.Stream.movie_id>`
+
+
+Entries
+-------
+
+An :class:`Entry <marvin.models.Entry>` is an event that occurs at some time during playback of a stream.
+
+* ``GET /entries/<id>``: Get the details of a single entry.
+
+* ``PUT /entries/<id>``: Edit the given entry.
+
+* ``DELETE /entries/<id>``: Delete the given entry.
+
+* ``POST /entries``: Create a new entry.
