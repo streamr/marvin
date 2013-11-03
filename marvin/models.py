@@ -10,6 +10,7 @@ from . import db
 
 from flask.ext.wtf import Form
 from wtforms_alchemy import model_form_factory
+from sqlalchemy_defaults import Column
 
 ModelForm = model_form_factory(Form)
 
@@ -19,13 +20,15 @@ class Movie(db.Model):
     Through a movie the user can find streams related to this movie.
     Most metadata should be fetched automatically from IMDb/TMDB.
     """
+    __lazy_options__ = {}
+
     #: Identifies the movie uniquely. Do not make assumptions about the nature of this field
     #: as it might change without notice. Is completely unrelated to other IDs found elsewhere
     #: for the same movie, like on IMDb or similar sites.
-    id = db.Column(db.Integer, primary_key=True)
+    id = Column(db.Integer, primary_key=True)
     #: The title of the movie. Note that this field is *not sufficient* to uniquely identify a
     #: movie. Always use IDs if you need to do that.
-    title = db.Column(db.String(100), index=True, nullable=False)
+    title = Column(db.String(100), index=True)
 
 
     def __init__(self, **kwargs):
@@ -62,13 +65,15 @@ class Stream(db.Model):
     actors that enter the screen, or providing references for topics mentioned
     in a movie.
     """
+    __lazy_options__ = {}
+
     #: Unique identifier for this stream. Do not make assumptions about it's format, subject to change.
-    id = db.Column(db.Integer, primary_key=True)
+    id = Column(db.Integer, primary_key=True)
     #: A user chosen name for the stream. Users can change this at their own discretion, do not assume to
     #: be constant.
-    name = db.Column(db.String(30), nullable=False)
+    name = Column(db.String(30), nullable=False)
     #: Foreign key to a movie
-    movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'))
+    movie_id = Column(db.Integer, db.ForeignKey('movie.id'))
     #: The movie this stream is associated to.
     movie = db.relationship('Movie', backref=db.backref('streams', lazy='dynamic'))
 

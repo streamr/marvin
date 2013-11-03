@@ -10,8 +10,10 @@
 from flask import Flask, make_response
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.restful import Api
+from sqlalchemy_defaults import make_lazy_configured
 from os import path, environ
 
+import sqlalchemy
 import ujson
 
 db = SQLAlchemy()
@@ -29,7 +31,7 @@ def create_app(config_file=None, **extra_config):
     :param config_file: Load config from this file.
     :param extra_config: Extra configuration values to pass to the WSGI object.
     """
-    core_settings = path.join(path.dirname(__file__), 'settings.py')
+    core_settings = path.abspath(path.join(path.dirname(__file__), 'settings.py'))
 
     # Setup app configuration
     app = Flask(__name__)
@@ -44,13 +46,16 @@ def create_app(config_file=None, **extra_config):
     db.init_app(app)
     api.init_app(app)
 
+    # Configure lazy models
+    make_lazy_configured(sqlalchemy.orm.mapper)
+
     # Import views (must be done down here to avoid circular imports)
     from .views import movies
     from .views import streams
 
     # Register resources
-    api.add_resource(movies.MovieView, '/movies/<int:movie_id>')
     api.add_resource(movies.AllMoviesView, '/movies')
+    api.add_resource(movies.MovieView, '/movies/<int:movie_id>')
     api.add_resource(streams.StreamDetailView, '/streams/<int:stream_id>')
 
     return app
