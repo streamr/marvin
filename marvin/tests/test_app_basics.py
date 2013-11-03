@@ -1,18 +1,20 @@
 from marvin import create_app, init_db
+from marvin.tests import MarvinBaseTestCase
 
 import os
 import tempfile
-import unittest
 
-class AppCreationTest(unittest.TestCase):
+class AppCreationTest(MarvinBaseTestCase):
 
     def setUp(self):
+        super(AppCreationTest, self).setUp()
         self.config_file = tempfile.NamedTemporaryFile(delete=False)
         self.config_file.write('OTHER_CONFIG = "bar"'.encode('utf-8'))
         self.config_file.close()
 
 
     def tearDown(self):
+        super(AppCreationTest, self).tearDown()
         os.remove(self.config_file.name)
 
 
@@ -37,3 +39,13 @@ class AppCreationTest(unittest.TestCase):
         init_db(app)
         self.assertTrue(os.path.exists('../nonexistent.db'))
         os.remove('../nonexistent.db')
+
+
+    def test_config_from_envvar(self):
+        config_file = tempfile.NamedTemporaryFile(delete=False)
+        os.environ['MARVIN_CONFIG_FILE'] = config_file.name
+        config_file.write('FOO_KEY = "baz"'.encode('utf-8'))
+        config_file.close()
+        app = create_app()
+        self.assertEqual(app.config['FOO_KEY'], 'baz')
+        os.remove(config_file.name)

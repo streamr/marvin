@@ -54,6 +54,7 @@ module.exports = function (grunt) {
         options: {
           disable: [
             'missing-docstring',
+            'invalid-name',
             'too-many-public-methods',
           ]
         },
