@@ -304,6 +304,23 @@ registered to the app object in <tt class="xref py py-func docutils literal"><sp
 
 </dd></dl>
 
+<dl class="class">
+<dt id="marvin.views.streams.StreamEntrySearch">
+<em class="property">class </em><tt class="descclassname">marvin.views.streams.</tt><tt class="descname">StreamEntrySearch</tt><a class="headerlink" href="#marvin.views.streams.StreamEntrySearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read endpoint for entries in a stream.</p>
+<dl class="method">
+<dt id="marvin.views.streams.StreamEntrySearch.get">
+<tt class="descname">get</tt><big>(</big><em>stream_id</em><big>)</big><a class="headerlink" href="#marvin.views.streams.StreamEntrySearch.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get entries for the given stream.</p>
+<p>Respect the following request parameters:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">limit</span></tt>: Restrict number of entries returned to this amount.</li>
+<li><tt class="docutils literal"><span class="pre">starttime_gt</span></tt>: Only return entries that enter after this time, in ms.</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <span class="target" id="module-marvin.validators"></span><div class="section" id="marvin-validators">
 <h2>marvin.validators<a class="headerlink" href="#marvin-validators" title="Permalink to this headline">¶</a></h2>
