@@ -75,7 +75,7 @@ I1
 sg19
 I4
 sg20
-I32
+I36
 sg21
 I0
 sg22
@@ -85,7 +85,7 @@ I1
 sg24
 I1
 sbssg25
-S'r\rQ\xf31{K\x84lw\xe1Z=\x8d\xf3c'
+S'\x94_\x18\xa3\xbc\xcbwn\xaf\xb5<\xe9\xe2\xa2\xb3y'
 p33
 ssS'marvin_views_movies'
 p34
@@ -143,7 +143,7 @@ I1
 sg19
 I0
 sg20
-I27
+I31
 sg21
 I0
 sg22
@@ -153,7 +153,7 @@ I0
 sg24
 I0
 sbssg25
-S'N\xc1\xe9\x01qB\xe6_\x0f&\xb2\x9e#\xa7)2'
+S'g\xcf\x91\xfd\\\x18\xb1\xa5\x10\t\x90\xdb\x1d/O\xb7'
 p49
 ssS'marvin_views_streams'
 p50
@@ -175,9 +175,9 @@ NtRp55
 g18
 I1
 sg19
-I2
+I4
 sg20
-I19
+I28
 sg21
 I0
 sg22
@@ -187,7 +187,7 @@ I0
 sg24
 I0
 sbssg25
-S'\x10UW\xed\xa0\xaa\xf8\x06\xc4"1\xca\xec\x9d\xbd\xd8'
+S'C9\x19\x1c\r\xfbR\xad\x19\xaa\x90\xeb?\x0c\xe2\x15'
 p57
 sssS'version'
 p58

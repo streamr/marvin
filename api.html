@@ -104,6 +104,10 @@ following endpoints:</p>
 <li><p class="first"><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/streams/&lt;id&gt;</span></tt>: Details about the stream with the given ID. Properties include at least
 <a class="reference internal" href="internal_api.html#marvin.models.Stream.id" title="marvin.models.Stream.id"><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt></a> and <a class="reference internal" href="internal_api.html#marvin.models.Stream.name" title="marvin.models.Stream.name"><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt></a>.</p>
 </li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">PUT</span> <span class="pre">/streams/&lt;id&gt;</span></tt>: Update the given stream. All properties of the object must be present, anything missing will be deleted.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">DELETE</span> <span class="pre">/streams/&lt;id&gt;</span></tt>: Delete the given stream.</p>
+</li>
 <li><p class="first"><tt class="docutils literal"><span class="pre">POST</span> <span class="pre">/streams</span></tt>: Create a new stream. Required attributes:</p>
 <blockquote>
 <div><ul class="simple">

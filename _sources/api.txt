@@ -36,6 +36,10 @@ following endpoints:
 * ``GET /streams/<id>``: Details about the stream with the given ID. Properties include at least
   :attr:`id <marvin.models.Stream.id>` and :attr:`name <marvin.models.Stream.name>`.
 
+* ``PUT /streams/<id>``: Update the given stream. All properties of the object must be present, anything missing will be deleted.
+
+* ``DELETE /streams/<id>``: Delete the given stream.
+
 * ``POST /streams``: Create a new stream. Required attributes:
 
     * :attr:`name <marvin.models.Stream.name>`
