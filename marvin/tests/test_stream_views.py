@@ -1,5 +1,5 @@
 from marvin import db
-from marvin.models import Stream, Movie
+from marvin.models import Stream, Movie, Entry
 from marvin.tests import TestCaseWithTempDB
 
 import ujson as json
@@ -101,3 +101,54 @@ class StreamDetailViewTest(TestCaseWithTempDB):
         self.assertEqual(response.status_code, 400)
         json_response = json.loads(response.data)
         self.assertTrue('errors' in json_response)
+
+
+class StreamEntryFetchTest(TestCaseWithTempDB):
+
+    def setUp(self):
+        super(StreamEntryFetchTest, self).setUp()
+        with self.app.test_request_context():
+            movie = Movie(title='Avatar')
+            stream = Stream(name='DurationNotifier', movie=movie)
+            db.session.add(movie)
+            db.session.add(stream)
+            for i in range(20):
+                entry = Entry(entry_point_in_ms=i*60*1000,
+                    content="We're now at %d minutes into the movie." % i, stream=stream)
+                db.session.add(entry)
+            db.session.commit()
+            self.stream_id = stream.id
+
+
+    def test_get_all_entries_for_stream(self):
+        response = self.client.get('/streams/%d/entries' % self.stream_id)
+        self.assertEqual(response.status_code, 200)
+        json_response = json.loads(response.data)
+        self.assertEqual(len(json_response['entries']), 20)
+
+        # should be returned in order of appearance
+        previous_entrypoint = -1
+        for entry in json_response['entries']:
+            self.assertTrue(entry['entry_point_in_ms'] > previous_entrypoint)
+            previous_entrypoint = entry['entry_point_in_ms']
+
+
+    def test_get_limited_amount_of_entries(self):
+        response = self.client.get('/streams/%d/entries?limit=5' % self.stream_id)
+        self.assertEqual(response.status_code, 200)
+        json_response = json.loads(response.data)
+        self.assertEqual(len(json_response['entries']), 5)
+
+        # get 5 next ones
+        last_starttime = json_response['entries'][-1]['entry_point_in_ms']
+        response = self.client.get('/streams/%d/entries?limit=5&starttime_gt=%d' % (self.stream_id, last_starttime))
+        self.assertEqual(response.status_code, 200)
+        json_response = json.loads(response.data)
+        # Should respect both params
+        self.assertEqual(len(json_response['entries']), 5)
+        self.assertTrue(json_response['entries'][0], last_starttime + 60*1000)
+
+
+    def test_get_entries_for_nonexistent_stream(self):
+        response = self.client.get('/streams/76543/entries')
+        self.assertEqual(response.status_code, 404)

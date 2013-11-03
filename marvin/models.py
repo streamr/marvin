@@ -120,7 +120,7 @@ class Entry(db.Model):
     #: Unique identifier
     id = Column(db.Integer, primary_key=True)
     #: The time this entry should appear, in ms since the beginning of the stream
-    entry_point_in_ms = Column(db.Integer, min=1)
+    entry_point_in_ms = Column(db.Integer, min=0)
     #: The content of the entry
     content = Column(db.Text)
     #: Foreign key to a stream

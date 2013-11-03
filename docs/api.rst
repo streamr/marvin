@@ -58,3 +58,11 @@ An :class:`Entry <marvin.models.Entry>` is an event that occurs at some time dur
 * ``DELETE /entries/<id>``: Delete the given entry.
 
 * ``POST /entries``: Create a new entry.
+
+* ``GET /streams/<id>/entries``: Get the Entries associated with this stream, sorted by time of appearance. This
+  endpoint accepts the following parameter:
+
+  * ``limit``: Limit the number of entries returned to this number. It's recommended to use this parameter to
+    avoid eating up all the memory of a device, and rather ask for more later.
+  * ``starttime_gt``: Only fetch entries starting later than this time, in `ms`. Since this is a strict greater then,
+    you can pass in the starttime of the last entry you have, to fetch the next ones after that.
