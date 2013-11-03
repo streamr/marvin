@@ -3,6 +3,7 @@
 
 # test tools
 coverage
+mock
 
 # build tools
 sphinx
