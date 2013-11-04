@@ -7,7 +7,6 @@ import ujson as json
 class EntryDetailViewTest(TestCaseWithTempDB):
 
     def setUp(self):
-        super(EntryDetailViewTest, self).setUp()
         movie = Movie(title='Avatar')
         stream = Stream(name='CinemaSins', movie=movie)
         too_big_tv = Entry(entry_point_in_ms=3*60*1000, stream=stream,
@@ -27,7 +26,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
 
     def test_entry_detail_view(self):
         response = self.client.get('/entries/%d' % self.tv_id)
-        self.assertEqual(response.status_code, 200)
+        self.assert200(response)
         json_response = json.loads(response.data)
         self.assertEqual(json_response['entry']['id'], self.tv_id)
         self.assertEqual(json_response['entry']['entry_point_in_ms'], 180000)
@@ -40,7 +39,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
             'content': '<p>This is weird</p>',
         }
         response = self.client.put('/entries/65432', data=entry)
-        self.assertEqual(response.status_code, 404)
+        self.assert404(response)
 
 
     def test_update_entry(self):
@@ -50,7 +49,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
             'content': "<p>Do you really need a wall-sized TV when you're sitting three inches from it?</p>",
         }
         response = self.client.put('/entries/%d' % self.tv_id, data=entry)
-        self.assertEqual(response.status_code, 200)
+        self.assert200(response)
         json_response = json.loads(response.data)
         self.assertEqual(json_response['msg'], 'Entry updated.')
         self.assertFalse('errors' in json_response)
@@ -62,7 +61,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
 
     def test_delete_entry(self):
         response = self.client.delete('/entries/%d' % self.tv_id)
-        self.assertEqual(response.status_code, 200)
+        self.assert200(response)
         json_response = json.loads(response.data)
         self.assertEqual(json_response['msg'], 'Entry deleted.')
         with self.app.test_request_context():
@@ -76,7 +75,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
             'stream_id': self.stream_id,
         }
         response = self.client.post('/entries', data=entry)
-        self.assertEqual(response.status_code, 201)
+        self.assert201(response)
         json_response = json.loads(response.data)
         self.assertEqual(json_response['msg'], 'Entry created.')
 
@@ -88,7 +87,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
             # does not include stream_id
         }
         response = self.client.post('/entries', data=entry)
-        self.assertEqual(response.status_code, 400)
+        self.assert400(response)
         json_response = json.loads(response.data)
         self.assertEqual(json_response['msg'], 'Validation failed.')
         self.assertEqual(len(json_response['errors']), 2)
@@ -101,7 +100,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
             'stream_id': -1,
         }
         response = self.client.post('/entries', data=entry)
-        self.assertEqual(response.status_code, 400)
+        self.assert400(response)
         json_response = json.loads(response.data)
         self.assertTrue('errors' in json_response)
         self.assertEqual(json_response['errors']['stream_id'][0], 'No stream with id -1 found.')
@@ -116,7 +115,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
         }
         response = self.client.post('/entries', data=entry)
         # should ignore non-accepted fields
-        self.assertEqual(response.status_code, 201)
+        self.assert201(response)
         with self.app.test_request_context():
             saved_entry = Entry.query.filter_by(entry_point_in_ms=9*60*1000).first()
             self.assertNotEqual(saved_entry.id, entry['id'])

@@ -11,7 +11,7 @@ class AllMovieViewTest(TestCaseWithTempDB):
             'title': 'Avatar',
         }
         response = self.client.post('/movies', data=movie)
-        self.assertEqual(response.status_code, 201)
+        self.assert201(response)
         self.assertEqual(response.headers['content-type'], 'application/json')
 
         movie_list = json.loads(self.client.get('/movies').data)
@@ -24,7 +24,7 @@ class AllMovieViewTest(TestCaseWithTempDB):
             'title': '',
         }
         response = self.client.post('/movies', data=movie)
-        self.assertEqual(response.status_code, 400)
+        self.assert400(response)
         json_response = json.loads(response.data)
         self.assertTrue('Data did not validate' in json_response['msg'])
         self.assertTrue('errors' in json_response)
@@ -35,7 +35,6 @@ class MovieDetailView(TestCaseWithTempDB):
 
     def setUp(self):
         """ Add a single movie 'Red' to the db. """
-        super(MovieDetailView, self).setUp()
         movie = Movie(title='Red')
         with self.app.test_request_context():
             db.session.add(movie)
@@ -45,14 +44,14 @@ class MovieDetailView(TestCaseWithTempDB):
 
     def test_details_view(self):
         response = self.client.get('/movies/%d' % self.movie_id)
-        self.assertEqual(response.status_code, 200)
+        self.assert200(response)
         json_response = json.loads(response.data)
         self.assertEqual(json_response['movie']['title'], 'Red')
 
 
     def test_delete(self):
         response = self.client.delete('/movies/%d' % self.movie_id)
-        self.assertEqual(response.status_code, 200)
+        self.assert200(response)
         json_response = json.loads(response.data)
         self.assertEqual(json_response['msg'], 'Movie deleted.')
         with self.app.test_request_context():
@@ -64,17 +63,16 @@ class MovieDetailView(TestCaseWithTempDB):
 
     def test_get_nonexistent(self):
         response = self.client.get('/movies/65432')
-        self.assertEqual(response.status_code, 404)
+        self.assert404(response)
 
 
     def test_delete_nonexistent(self):
         response = self.client.delete('/movies/543')
-        self.assertEqual(response.status_code, 404)
+        self.assert404(response)
 
 class MovieDetailWithStreams(TestCaseWithTempDB):
 
     def setUp(self):
-        super(MovieDetailWithStreams, self).setUp()
         movie = Movie(title='Red')
         sins_stream = Stream(name='CinemaSins', movie=movie)
         actors_stream = Stream(name="Who's that actor?", movie=movie)

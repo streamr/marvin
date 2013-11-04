@@ -7,14 +7,12 @@ import tempfile
 class AppCreationTest(MarvinBaseTestCase):
 
     def setUp(self):
-        super(AppCreationTest, self).setUp()
         self.config_file = tempfile.NamedTemporaryFile(delete=False)
         self.config_file.write('OTHER_CONFIG = "bar"'.encode('utf-8'))
         self.config_file.close()
 
 
     def tearDown(self):
-        super(AppCreationTest, self).tearDown()
         os.remove(self.config_file.name)
 
 

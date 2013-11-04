@@ -7,7 +7,6 @@ import ujson as json
 class StreamDetailViewTest(TestCaseWithTempDB):
 
     def setUp(self):
-        super(StreamDetailViewTest, self).setUp()
         movie = Movie(title='Titanic')
         stream = Stream(name='CinemaSins', movie=movie)
         with self.app.test_request_context():
@@ -20,7 +19,7 @@ class StreamDetailViewTest(TestCaseWithTempDB):
 
     def test_detail_view(self):
         response = self.client.get('/streams/%d' % self.stream_id)
-        self.assertEqual(response.status_code, 200)
+        self.assert200(response)
         json_response = json.loads(response.data)
         self.assertEqual(json_response['stream']['name'], 'CinemaSins')
         self.assertEqual(json_response['stream']['movie']['title'], 'Titanic')
@@ -28,7 +27,7 @@ class StreamDetailViewTest(TestCaseWithTempDB):
 
     def test_delete(self):
         response = self.client.delete('/streams/%d' % self.stream_id)
-        self.assertEqual(response.status_code, 200)
+        self.assert200(response)
         json_response = json.loads(response.data)
         self.assertEqual(json_response['msg'], 'Stream deleted.')
         with self.app.test_request_context():
@@ -41,7 +40,7 @@ class StreamDetailViewTest(TestCaseWithTempDB):
             'name': 'Curiosa', # We change the name of the stream
         }
         response = self.client.put('/streams/%d' % self.stream_id, data=stream)
-        self.assertEqual(response.status_code, 200)
+        self.assert200(response)
         json_response = json.loads(response.data)
         self.assertEqual(json_response['msg'], 'Stream updated.')
         self.assertEqual(json_response['stream']['id'], self.stream_id)
@@ -52,12 +51,12 @@ class StreamDetailViewTest(TestCaseWithTempDB):
 
     def test_get_nonexistent(self):
         response = self.client.get('/streams/7654')
-        self.assertEqual(response.status_code, 404)
+        self.assert404(response)
 
 
     def test_delete_nonexistent(self):
         response = self.client.delete('/streams/654')
-        self.assertEqual(response.status_code, 404)
+        self.assert404(response)
 
 
     def test_put_nonexistent(self):
@@ -65,7 +64,7 @@ class StreamDetailViewTest(TestCaseWithTempDB):
             'name': "Who's that?",
         }
         response = self.client.put('/streams/6543', data=stream)
-        self.assertEqual(response.status_code, 404)
+        self.assert404(response)
 
 
     def test_invalid_put(self):
@@ -74,7 +73,7 @@ class StreamDetailViewTest(TestCaseWithTempDB):
             'name': '',
         }
         response = self.client.put('/streams/%d' % self.stream_id, data=stream)
-        self.assertEqual(response.status_code, 400)
+        self.assert400(response)
         json_response = json.loads(response.data)
         self.assertEqual(json_response['msg'], 'Validation failed.')
         self.assertTrue('errors' in json_response)
@@ -86,7 +85,7 @@ class StreamDetailViewTest(TestCaseWithTempDB):
             'name': 'FactChecker',
         }
         response = self.client.post('/streams', data=stream)
-        self.assertEqual(response.status_code, 201)
+        self.assert201(response)
         with self.app.test_request_context():
             streams = Stream.query.all()
             self.assertEqual(len(streams), 2)
@@ -98,7 +97,7 @@ class StreamDetailViewTest(TestCaseWithTempDB):
             'name': 'FactChecker',
         }
         response = self.client.post('/streams', data=stream)
-        self.assertEqual(response.status_code, 400)
+        self.assert400(response)
         json_response = json.loads(response.data)
         self.assertTrue('errors' in json_response)
 
@@ -106,7 +105,6 @@ class StreamDetailViewTest(TestCaseWithTempDB):
 class StreamEntryFetchTest(TestCaseWithTempDB):
 
     def setUp(self):
-        super(StreamEntryFetchTest, self).setUp()
         with self.app.test_request_context():
             movie = Movie(title='Avatar')
             stream = Stream(name='DurationNotifier', movie=movie)
@@ -122,7 +120,7 @@ class StreamEntryFetchTest(TestCaseWithTempDB):
 
     def test_get_all_entries_for_stream(self):
         response = self.client.get('/streams/%d/entries' % self.stream_id)
-        self.assertEqual(response.status_code, 200)
+        self.assert200(response)
         json_response = json.loads(response.data)
         self.assertEqual(len(json_response['entries']), 20)
 
@@ -135,14 +133,14 @@ class StreamEntryFetchTest(TestCaseWithTempDB):
 
     def test_get_limited_amount_of_entries(self):
         response = self.client.get('/streams/%d/entries?limit=5' % self.stream_id)
-        self.assertEqual(response.status_code, 200)
+        self.assert200(response)
         json_response = json.loads(response.data)
         self.assertEqual(len(json_response['entries']), 5)
 
         # get 5 next ones
         last_starttime = json_response['entries'][-1]['entry_point_in_ms']
         response = self.client.get('/streams/%d/entries?limit=5&starttime_gt=%d' % (self.stream_id, last_starttime))
-        self.assertEqual(response.status_code, 200)
+        self.assert200(response)
         json_response = json.loads(response.data)
         # Should respect both params
         self.assertEqual(len(json_response['entries']), 5)
@@ -151,4 +149,4 @@ class StreamEntryFetchTest(TestCaseWithTempDB):
 
     def test_get_entries_for_nonexistent_stream(self):
         response = self.client.get('/streams/76543/entries')
-        self.assertEqual(response.status_code, 404)
+        self.assert404(response)
