@@ -21,6 +21,7 @@ setup(
     package_data={
         '': [
             'log_conf.yaml',
+            'templates/*.html',
         ],
     },
     zip_safe=False,
