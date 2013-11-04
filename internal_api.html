@@ -225,6 +225,46 @@ be constant.</p>
 <p>All views registered on marvin. All views registered must also be
 registered to the app object in <tt class="xref py py-func docutils literal"><span class="pre">create_app()</span></tt>.</p>
 </div>
+<span class="target" id="module-marvin.views.entries"></span><div class="section" id="marvin-views-entries">
+<h2>marvin.views.entries<a class="headerlink" href="#marvin-views-entries" title="Permalink to this headline">¶</a></h2>
+<p>CRUD endpoints for stream entries.</p>
+<dl class="class">
+<dt id="marvin.views.entries.CreateEntryView">
+<em class="property">class </em><tt class="descclassname">marvin.views.entries.</tt><tt class="descname">CreateEntryView</tt><a class="headerlink" href="#marvin.views.entries.CreateEntryView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create interface to entries.</p>
+<dl class="method">
+<dt id="marvin.views.entries.CreateEntryView.post">
+<tt class="descname">post</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.views.entries.CreateEntryView.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new entry.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marvin.views.entries.EntryDetailView">
+<em class="property">class </em><tt class="descclassname">marvin.views.entries.</tt><tt class="descname">EntryDetailView</tt><a class="headerlink" href="#marvin.views.entries.EntryDetailView" title="Permalink to this definition">¶</a></dt>
+<dd><p>RUD interface to entries.</p>
+<dl class="method">
+<dt id="marvin.views.entries.EntryDetailView.delete">
+<tt class="descname">delete</tt><big>(</big><em>entry_id</em><big>)</big><a class="headerlink" href="#marvin.views.entries.EntryDetailView.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the entry with the given ID.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="marvin.views.entries.EntryDetailView.get">
+<tt class="descname">get</tt><big>(</big><em>entry_id</em><big>)</big><a class="headerlink" href="#marvin.views.entries.EntryDetailView.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the entry with the given ID.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="marvin.views.entries.EntryDetailView.put">
+<tt class="descname">put</tt><big>(</big><em>entry_id</em><big>)</big><a class="headerlink" href="#marvin.views.entries.EntryDetailView.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the entry with the given ID.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <span class="target" id="module-marvin.views.movies"></span><div class="section" id="marvin-views-movies">
 <h2>marvin.views.movies<a class="headerlink" href="#marvin-views-movies" title="Permalink to this headline">¶</a></h2>
 <p>Endpoints related to movies.</p>
@@ -262,6 +302,16 @@ registered to the app object in <tt class="xref py py-func docutils literal"><sp
 <dd><p>Get the movie with the given ID.</p>
 </dd></dl>
 
+</dd></dl>
+
+</div>
+<span class="target" id="module-marvin.views.stats"></span><div class="section" id="marvin-views-stats">
+<h2>marvin.views.stats<a class="headerlink" href="#marvin-views-stats" title="Permalink to this headline">¶</a></h2>
+<p>Show some key numbers about the current marvin database.</p>
+<dl class="function">
+<dt id="marvin.views.stats.stats_main">
+<tt class="descclassname">marvin.views.stats.</tt><tt class="descname">stats_main</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.views.stats.stats_main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show some key numbers.</p>
 </dd></dl>
 
 </div>
@@ -367,7 +417,9 @@ registered to the app object in <tt class="xref py py-func docutils literal"><sp
 <li><a class="reference internal" href="#marvin">marvin</a></li>
 <li><a class="reference internal" href="#marvin-models">marvin.models</a></li>
 <li><a class="reference internal" href="#marvin-views">marvin.views</a></li>
+<li><a class="reference internal" href="#marvin-views-entries">marvin.views.entries</a></li>
 <li><a class="reference internal" href="#marvin-views-movies">marvin.views.movies</a></li>
+<li><a class="reference internal" href="#marvin-views-stats">marvin.views.stats</a></li>
 <li><a class="reference internal" href="#marvin-views-streams">marvin.views.streams</a></li>
 <li><a class="reference internal" href="#marvin-validators">marvin.validators</a></li>
 </ul>
