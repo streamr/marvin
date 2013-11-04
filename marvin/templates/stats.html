@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Marvin stats</h1>
+
+    <p>
+        This is some numbers describing the current status of marvin. The actual API is located under some different
+        urls, try /streams and /movies f. ex. Full documentation of the public API is available
+        <a href="http://streamr.github.io/marvin/api.html">here</a>.
+    </p>
+
+    <table>
+        <tr><th>Metric</th><th>Number</th></tr>
+        {% for key, val in stats.items() %}
+            <tr><td>{{ key }}</td><td>{{ val }}</td>
+        {% endfor %}
+    </table>
+{% endblock %}

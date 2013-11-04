@@ -53,6 +53,10 @@ def create_app(config_file=None, **extra_config):
     from .views import movies
     from .views import streams
     from .views import entries
+    from .views import stats
+
+    # Register blueprints
+    app.register_blueprint(stats.mod)
 
     # Register resources
     api.add_resource(movies.AllMoviesView, '/movies')
