@@ -13,7 +13,8 @@ class AllMovieViewTest(TestCaseWithTempDB):
         response = self.client.post('/movies', data=movie)
         self.assert201(response)
         self.assertEqual(response.headers['content-type'], 'application/json')
-
+        json_response = json.loads(response.data)
+        self.assertTrue('id' in json_response['movie'])
         movie_list = json.loads(self.client.get('/movies').data)
         self.assertEqual(len(movie_list['movies']), 1)
         self.assertTrue('Avatar' in movie_list['movies'][0].values())

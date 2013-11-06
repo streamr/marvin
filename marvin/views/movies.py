@@ -40,7 +40,11 @@ class AllMoviesView(Resource):
             movie = Movie()
             form.populate_obj(movie)
             db.session.add(movie)
-            return {'msg': 'Movie created'}, 201
+            db.session.commit()
+            return {
+                'msg': 'Movie created',
+                'movie': movie.to_json(),
+                }, 201
         return {'msg': 'Data did not validate.', 'errors': form.errors}, 400
 
 
