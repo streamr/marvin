@@ -60,6 +60,7 @@ class TestCaseWithTempDB(MarvinBaseTestCase):
         super(TestCaseWithTempDB, self)._pre_setup()
         self.app = create_app(
             SQLALCHEMY_DATABASE_URI='sqlite://',
+            TESTING=True,
         )
         self.client = self.app.test_client()
         with self.app.test_request_context():

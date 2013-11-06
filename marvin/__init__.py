@@ -13,8 +13,10 @@ from flask.ext.restful import Api
 from sqlalchemy_defaults import make_lazy_configured
 from os import path, environ
 
+import logging.config
 import sqlalchemy
 import ujson
+import yaml
 
 db = SQLAlchemy()
 api = Api()
@@ -41,6 +43,18 @@ def create_app(config_file=None, **extra_config):
     if 'MARVIN_CONFIG_FILE' in environ:
         app.config.from_envvar('MARVIN_CONFIG_FILE')
     app.config.update(extra_config)
+
+    # Init logging
+    # We allow logging to be left unconfigured as long as DEBUG=True
+    log_conf_path = app.config.get('LOG_CONF_PATH')
+    if log_conf_path:
+        init_logging(log_conf_path)
+    else:
+        ignore_absent_logging = app.config.get('DEBUG') or app.config.get('TESTING')
+        if not ignore_absent_logging:
+            print app.config
+            print 'ERROR: LOG_CONF_PATH not found in config, terminating.'
+            return
 
     # Connect extensions
     db.init_app(app)
@@ -74,3 +88,10 @@ def init_db(app):
     """ Create the database with all tables for the given app. """
     with app.test_request_context():
         db.create_all()
+
+
+def init_logging(log_conf_path):
+    """ Initialize log config. """
+    with open(log_conf_path) as log_conf_file:
+        log_conf = yaml.load(log_conf_file)
+    logging.config.dictConfig(log_conf)

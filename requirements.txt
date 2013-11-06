@@ -6,3 +6,4 @@ flask-wtf
 wtforms-alchemy
 sqlalchemy-defaults
 ujson
+pyyaml
