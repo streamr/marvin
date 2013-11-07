@@ -10,7 +10,9 @@
 from .. import db
 from ..models import Movie, MovieForm
 
+from flask import request
 from flask.ext.restful import Resource
+
 
 class MovieView(Resource):
     """ RD interface to movies. """
@@ -44,11 +46,20 @@ class AllMoviesView(Resource):
             return {
                 'msg': 'Movie created',
                 'movie': movie.to_json(),
-                }, 201
-        return {'msg': 'Data did not validate.', 'errors': form.errors}, 400
+            }, 201
+        return {
+            'msg': 'Data did not validate.',
+            'errors': form.errors,
+        }, 400
 
 
     def get(self):
         """ Get a list of id -> movie title pairs of all movies registered. """
-        movies = Movie.query.all()
-        return {'movies': [{movie.id: movie.title} for movie in movies]}
+        search_query = request.args.get('q')
+        if search_query:
+            movies = Movie.query.filter(Movie.title.like('%' + search_query + '%'))
+        else:
+            movies = Movie.query.all()
+        return {
+            'movies': [movie.to_json(include_streams=False) for movie in movies],
+        }

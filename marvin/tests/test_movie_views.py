@@ -6,6 +6,27 @@ import ujson as json
 
 class AllMovieViewTest(TestCaseWithTempDB):
 
+    def setUp(self):
+        avatar = Movie(
+            title='Avatar',
+        )
+        titanic = Movie(
+            title='Titanic',
+        )
+        with self.app.test_request_context():
+            db.session.add(avatar)
+            db.session.add(titanic)
+            db.session.commit()
+
+
+    def test_search(self):
+        response = self.client.get('/movies?q=ava')
+        self.assert200(response)
+        json_response = json.loads(response.data)
+        self.assertEqual(len(json_response['movies']), 1)
+        self.assertEqual(json_response['movies'][0]['title'], 'Avatar')
+
+
     def test_post_movie(self):
         movie = {
             'title': 'Avatar',
@@ -36,7 +57,9 @@ class MovieDetailView(TestCaseWithTempDB):
 
     def setUp(self):
         """ Add a single movie 'Red' to the db. """
-        movie = Movie(title='Red')
+        movie = Movie(
+            title='Red',
+        )
         with self.app.test_request_context():
             db.session.add(movie)
             db.session.commit()
@@ -71,10 +94,13 @@ class MovieDetailView(TestCaseWithTempDB):
         response = self.client.delete('/movies/543')
         self.assert404(response)
 
+
 class MovieDetailWithStreams(TestCaseWithTempDB):
 
     def setUp(self):
-        movie = Movie(title='Red')
+        movie = Movie(
+            title='Red',
+        )
         sins_stream = Stream(name='CinemaSins', movie=movie)
         actors_stream = Stream(name="Who's that actor?", movie=movie)
         with self.app.test_request_context():
