@@ -3,6 +3,7 @@ from marvin.models import Movie, Stream
 from marvin.tests import TestCaseWithTempDB
 
 import ujson as json
+import unittest
 
 class AllMovieViewTest(TestCaseWithTempDB):
 
@@ -27,6 +28,7 @@ class AllMovieViewTest(TestCaseWithTempDB):
         self.assertEqual(json_response['movies'][0]['title'], 'Avatar')
 
 
+    @unittest.skip("Should be reactivated when we want to support POST creation of movies")
     def test_post_movie(self):
         movie = {
             'title': 'Avatar',
@@ -41,6 +43,7 @@ class AllMovieViewTest(TestCaseWithTempDB):
         self.assertTrue('Avatar' in movie_list['movies'][0].values())
 
 
+    @unittest.skip("Should be reactivated when we want to support POST creation of movies")
     def test_add_invalid_movie(self):
         movie = {
             'title': '',
