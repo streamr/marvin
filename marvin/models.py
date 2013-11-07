@@ -27,9 +27,19 @@ class Movie(db.Model):
     #: as it might change without notice. Is completely unrelated to other IDs found elsewhere
     #: for the same movie, like on IMDb or similar sites.
     id = Column(db.Integer, primary_key=True)
+    #: Namespaced identification of some resource, like a movies ID om IMDb, or it's ID on
+    #: YouTube/Vimeo, or just a URI if we don't know the site already. Format like "imdb:tt01"
+    #: or "youtube:Fq00mCqBMY8".
+    external_id = Column(db.String(200), unique=True, index=True)
     #: The title of the movie. Note that this field is *not sufficient* to uniquely identify a
     #: movie. Always use IDs if you need to do that.
     title = Column(db.String(100), index=True)
+    #: What kind of movie is this? E.g. actual movie, episode, clip found on internet?
+    category = Column(db.String(20), default='movie')
+    #: Time added to database
+    datetime_added = Column(db.DateTime, auto_now=True)
+    #: Year the movies was first shown
+    year = Column(db.Integer, min=1880, max=2050)
 
 
     def __init__(self, **kwargs):
@@ -40,16 +50,19 @@ class Movie(db.Model):
         self.__dict__.update(kwargs)
 
 
-    def to_json(self):
+    def to_json(self, include_streams=True):
         """ A dict representation of the movie that can be used for serialization. """
-        return {
+        movie = {
             'id': self.id,
+            'external_id': self.external_id,
             'title': self.title,
-            'streams': [{
-                'id': stream.id,
-                'name': stream.name,
-                } for stream in self.streams],
+            'category': self.category,
+            'datetime_added': self.datetime_added,
+            'year': self.year,
         }
+        if include_streams:
+            movie['streams'] = [stream.to_json(include_movie=False) for stream in self.streams]
+        return movie
 
 
 class MovieForm(ModelForm):
@@ -89,16 +102,18 @@ class Stream(db.Model):
         self.__dict__.update(kwargs)
 
 
-    def to_json(self):
+    def to_json(self, include_movie=True):
         """ Get a dict representation of the stream suitable for serialization. """
-        return {
+        stream = {
             'id': self.id,
             'name': self.name,
-            'movie': {
+        }
+        if include_movie:
+            stream['movie'] = {
                 'id': self.movie_id,
                 'title': self.movie.title,
             }
-        }
+        return stream
 
 
 class StreamForm(ModelForm):

@@ -25,8 +25,14 @@ def rendered_context(app):
 class StatsViewTest(TestCaseWithTempDB):
 
     def setUp(self):
-        avatar = Movie(title='Avatar')
-        battleship = Movie(title='Battleship')
+        avatar = Movie(
+            title='Avatar',
+            external_id='imdb:tt0499549',
+        )
+        battleship = Movie(
+            title='Battleship',
+            external_id='imdb:tt1440129',
+        )
 
         avatar_sins = Stream(name='CinemaSins', movie=avatar)
         avatar_actors = Stream(name='Actors Introduced', movie=avatar)

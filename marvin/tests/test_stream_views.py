@@ -7,7 +7,10 @@ import ujson as json
 class StreamDetailViewTest(TestCaseWithTempDB):
 
     def setUp(self):
-        movie = Movie(title='Titanic')
+        movie = Movie(
+            title='Titanic',
+            external_id='imdb:tt1245526',
+        )
         stream = Stream(name='CinemaSins', movie=movie)
         with self.app.test_request_context():
             db.session.add(movie)
@@ -106,7 +109,10 @@ class StreamEntryFetchTest(TestCaseWithTempDB):
 
     def setUp(self):
         with self.app.test_request_context():
-            movie = Movie(title='Avatar')
+            movie = Movie(
+                title='Avatar',
+                external_id='imdb:tt0499549',
+            )
             stream = Stream(name='DurationNotifier', movie=movie)
             db.session.add(movie)
             db.session.add(stream)

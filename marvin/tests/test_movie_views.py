@@ -10,9 +10,11 @@ class AllMovieViewTest(TestCaseWithTempDB):
     def setUp(self):
         avatar = Movie(
             title='Avatar',
+            external_id='imdb:tt0499549',
         )
         titanic = Movie(
             title='Titanic',
+            external_id='imdb:tt0120338',
         )
         with self.app.test_request_context():
             db.session.add(avatar)
@@ -62,6 +64,7 @@ class MovieDetailView(TestCaseWithTempDB):
         """ Add a single movie 'Red' to the db. """
         movie = Movie(
             title='Red',
+            external_id='imdb:tt1245526',
         )
         with self.app.test_request_context():
             db.session.add(movie)
@@ -103,6 +106,7 @@ class MovieDetailWithStreams(TestCaseWithTempDB):
     def setUp(self):
         movie = Movie(
             title='Red',
+            external_id='imdb:tt1245526'
         )
         sins_stream = Stream(name='CinemaSins', movie=movie)
         actors_stream = Stream(name="Who's that actor?", movie=movie)

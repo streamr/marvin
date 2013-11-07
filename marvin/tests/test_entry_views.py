@@ -7,7 +7,10 @@ import ujson as json
 class EntryDetailViewTest(TestCaseWithTempDB):
 
     def setUp(self):
-        movie = Movie(title='Avatar')
+        movie = Movie(
+            title='Avatar',
+            external_id='imdb:tt0499549',
+        )
         stream = Stream(name='CinemaSins', movie=movie)
         too_big_tv = Entry(entry_point_in_ms=3*60*1000, stream=stream,
             content="<p>Do you really need a wall-sized TV when you're sitting three inches from it?</p>")
