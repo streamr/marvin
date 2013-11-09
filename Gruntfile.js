@@ -107,6 +107,7 @@ module.exports = function (grunt) {
       marvin: {
         options: {
           virtualenv: '<%= grunt.option("virtualenv") || "venv" %>',
+          stop: true,
           with_coverage: true,
           cover_branches: true,
           cover_package: 'marvin',

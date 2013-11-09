@@ -8,7 +8,11 @@ class AppCreationTest(MarvinBaseTestCase):
 
     def setUp(self):
         self.config_file = tempfile.NamedTemporaryFile(delete=False)
-        self.config_file.write('OTHER_CONFIG = "bar"\nTESTING = True'.encode('utf-8'))
+        self.config_file.write('\n'.join([
+            'OTHER_CONFIG = "bar"',
+            'TESTING = True',
+            'CELERY_BROKER_URL = "amqp://"',
+        ]).encode('utf-8'))
         self.config_file.close()
         os.environ['MARVIN_CONFIG_FILE'] = self.config_file.name
 

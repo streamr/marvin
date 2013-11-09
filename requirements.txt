@@ -1,8 +1,10 @@
 blinker==1.2
+celery
 flask
 flask-sqlalchemy
 flask-restful
 flask-wtf
+requests
 wtforms-alchemy
 sqlalchemy-defaults
 ujson
