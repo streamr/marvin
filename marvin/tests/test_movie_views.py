@@ -2,6 +2,8 @@ from marvin import db
 from marvin.models import Movie, Stream
 from marvin.tests import TestCaseWithTempDB
 
+from mock import Mock, patch
+
 import ujson as json
 import unittest
 
@@ -23,7 +25,8 @@ class AllMovieViewTest(TestCaseWithTempDB):
 
 
     def test_search(self):
-        response = self.client.get('/movies?q=ava')
+        with patch('marvin.tasks.external_search', Mock()):
+            response = self.client.get('/movies?q=ava')
         self.assert200(response)
         json_response = json.loads(response.data)
         self.assertEqual(len(json_response['movies']), 1)
@@ -87,7 +90,8 @@ class MovieDetailView(TestCaseWithTempDB):
         with self.app.test_request_context():
             movies = Movie.query.all()
             self.assertEqual(len(movies), 0)
-        frontpage_json = json.loads(self.client.get('/movies').data)
+        with patch('marvin.tasks.external_search', Mock()):
+            frontpage_json = json.loads(self.client.get('/movies').data)
         self.assertEqual(len(frontpage_json['movies']), 0)
 
 

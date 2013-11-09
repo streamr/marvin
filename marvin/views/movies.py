@@ -62,7 +62,15 @@ class AllMoviesView(Resource):
 
     def get(self):
         """ Get a list of id -> movie title pairs of all movies registered. """
+        # Import the task here since it will cause circular imports if it's done on the top
+        from marvin.tasks import external_search
+
         search_query = request.args.get('q')
+
+        # Trigger an external search for movies
+        external_search.delay(search_query)
+
+        # Return results from our own db
         if search_query:
             movies = Movie.query.filter(Movie.title.like('%' + search_query + '%'))
         else:

@@ -3,6 +3,7 @@
 from marvin import create_app, db
 
 from flask import template_rendered
+from os import path
 
 import os
 import tempfile
@@ -58,15 +59,23 @@ class TestCaseWithTempDB(MarvinBaseTestCase):
 
     def _pre_setup(self):
         super(TestCaseWithTempDB, self)._pre_setup()
-        self.app = create_app(
-            SQLALCHEMY_DATABASE_URI='sqlite://',
-            TESTING=True,
+        self.tmp_config = tempfile.NamedTemporaryFile(delete=False)
+        self.tmp_config.write('\n'.join([
+            "SQLALCHEMY_DATABASE_URI = 'sqlite:///../tmptestdb.sqlite'",
+            "CELERY_BROKER_URL = 'amqp://'",
+            "TESTING = True",
+            ]).encode('utf-8')
         )
+        self.tmp_config.close()
+        os.environ['MARVIN_CONFIG_FILE'] = self.tmp_config.name
+        self.app = create_app()
         self.client = self.app.test_client()
         with self.app.test_request_context():
             db.create_all()
 
 
     def _post_teardown(self):
+        os.remove(self.tmp_config.name)
         db.session.remove()
+        os.remove('../tmptestdb.sqlite')
         super(TestCaseWithTempDB, self)._post_teardown()
