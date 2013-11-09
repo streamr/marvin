@@ -85,6 +85,12 @@
 <dd><p>Create the database with all tables for the given app.</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="marvin.init_logging">
+<tt class="descclassname">marvin.</tt><tt class="descname">init_logging</tt><big>(</big><em>log_conf_path</em><big>)</big><a class="headerlink" href="#marvin.init_logging" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize log config.</p>
+</dd></dl>
+
 </div>
 <span class="target" id="module-marvin.models"></span><div class="section" id="marvin-models">
 <h2>marvin.models<a class="headerlink" href="#marvin-models" title="Permalink to this headline">¶</a></h2>
@@ -145,6 +151,26 @@ make it a package and split it up into smaller pieces.</p>
 <p>Through a movie the user can find streams related to this movie.
 Most metadata should be fetched automatically from IMDb/TMDB.</p>
 <dl class="attribute">
+<dt id="marvin.models.Movie.category">
+<tt class="descname">category</tt><em class="property"> None</em><a class="headerlink" href="#marvin.models.Movie.category" title="Permalink to this definition">¶</a></dt>
+<dd><p>What kind of movie is this? E.g. actual movie, episode, clip found on internet?</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="marvin.models.Movie.datetime_added">
+<tt class="descname">datetime_added</tt><em class="property"> None</em><a class="headerlink" href="#marvin.models.Movie.datetime_added" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time added to database</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="marvin.models.Movie.external_id">
+<tt class="descname">external_id</tt><em class="property"> None</em><a class="headerlink" href="#marvin.models.Movie.external_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Namespaced identification of some resource, like a movies ID om IMDb, or it&#8217;s ID on
+YouTube/Vimeo, or just a URI if we don&#8217;t know the site already. Format like &#8220;imdb:tt01&#8221;
+or &#8220;youtube:Fq00mCqBMY8&#8221;.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="marvin.models.Movie.id">
 <tt class="descname">id</tt><em class="property"> None</em><a class="headerlink" href="#marvin.models.Movie.id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Identifies the movie uniquely. Do not make assumptions about the nature of this field
@@ -161,8 +187,14 @@ movie. Always use IDs if you need to do that.</p>
 
 <dl class="method">
 <dt id="marvin.models.Movie.to_json">
-<tt class="descname">to_json</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.models.Movie.to_json" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">to_json</tt><big>(</big><em>include_streams=True</em><big>)</big><a class="headerlink" href="#marvin.models.Movie.to_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dict representation of the movie that can be used for serialization.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="marvin.models.Movie.year">
+<tt class="descname">year</tt><em class="property"> None</em><a class="headerlink" href="#marvin.models.Movie.year" title="Permalink to this definition">¶</a></dt>
+<dd><p>Year the movies was first shown</p>
 </dd></dl>
 
 </dd></dl>
@@ -207,7 +239,7 @@ be constant.</p>
 
 <dl class="method">
 <dt id="marvin.models.Stream.to_json">
-<tt class="descname">to_json</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.models.Stream.to_json" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">to_json</tt><big>(</big><em>include_movie=True</em><big>)</big><a class="headerlink" href="#marvin.models.Stream.to_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a dict representation of the stream suitable for serialization.</p>
 </dd></dl>
 
@@ -271,17 +303,14 @@ registered to the app object in <tt class="xref py py-func docutils literal"><sp
 <dl class="class">
 <dt id="marvin.views.movies.AllMoviesView">
 <em class="property">class </em><tt class="descclassname">marvin.views.movies.</tt><tt class="descname">AllMoviesView</tt><a class="headerlink" href="#marvin.views.movies.AllMoviesView" title="Permalink to this definition">¶</a></dt>
-<dd><p>CR interface to all movies.</p>
+<dd><p>R interface to all movies.</p>
+<p>Creation is in general not done manually by users, but rather automatically through search
+results and the likes. Only case where you can explicitly create a movie is by entering a url,
+so that we can look up the necessary parameters ourselves. This will be implemented later.</p>
 <dl class="method">
 <dt id="marvin.views.movies.AllMoviesView.get">
 <tt class="descname">get</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.views.movies.AllMoviesView.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a list of id -&gt; movie title pairs of all movies registered.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="marvin.views.movies.AllMoviesView.post">
-<tt class="descname">post</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.views.movies.AllMoviesView.post" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create new movie.</p>
 </dd></dl>
 
 </dd></dl>
