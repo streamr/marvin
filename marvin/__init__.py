@@ -43,7 +43,7 @@ def create_app(config_file=None, **extra_config):
     if config_file is not None:
         app.config.from_pyfile(config_file)
     if 'MARVIN_CONFIG_FILE' in environ:
-        print "Loading config from %s..." % environ['MARVIN_CONFIG_FILE']
+        print("Loading config from %s..." % environ['MARVIN_CONFIG_FILE'])
         app.config.from_envvar('MARVIN_CONFIG_FILE')
     app.config.update(extra_config)
 
@@ -55,7 +55,7 @@ def create_app(config_file=None, **extra_config):
     else:
         ignore_absent_logging = app.config.get('DEBUG') or app.config.get('TESTING')
         if not ignore_absent_logging:
-            print 'ERROR: LOG_CONF_PATH not found in config, terminating.'
+            print('ERROR: LOG_CONF_PATH not found in config, terminating.')
             return
 
     # Connect extensions
