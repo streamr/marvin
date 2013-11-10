@@ -13,8 +13,7 @@ from ..models import Movie
 from flask import request
 from flask.ext.restful import Resource
 
-
-class MovieView(Resource):
+class MovieDetailView(Resource):
     """ RD interface to movies. """
 
     def get(self, movie_id):
@@ -74,6 +73,7 @@ class AllMoviesView(Resource):
             movies = Movie.query.filter(Movie.title.like('%' + search_query + '%'))
         else:
             movies = Movie.query.all()
+
         return {
             'movies': [movie.to_json(include_streams=False) for movie in movies],
         }

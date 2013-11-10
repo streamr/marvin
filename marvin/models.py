@@ -9,6 +9,7 @@
 from . import db
 from .validators import fk_exists
 
+from flask import url_for
 from flask.ext.wtf import Form
 from wtforms_alchemy import model_form_factory
 from sqlalchemy_defaults import Column
@@ -53,7 +54,7 @@ class Movie(db.Model):
     def to_json(self, include_streams=True):
         """ A dict representation of the movie that can be used for serialization. """
         movie = {
-            'id': self.id,
+            'href': url_for('moviedetailview', movie_id=self.id, _external=True),
             'external_id': self.external_id,
             'title': self.title,
             'category': self.category,
@@ -105,12 +106,12 @@ class Stream(db.Model):
     def to_json(self, include_movie=True):
         """ Get a dict representation of the stream suitable for serialization. """
         stream = {
-            'id': self.id,
+            'href': url_for('streamdetailview', stream_id=self.id, _external=True),
             'name': self.name,
         }
         if include_movie:
             stream['movie'] = {
-                'id': self.movie_id,
+                'href': url_for('moviedetailview', movie_id=self.movie_id, _external=True),
                 'title': self.movie.title,
             }
         return stream
@@ -163,11 +164,11 @@ class Entry(db.Model):
     def to_json(self):
         """ Get a dict representation of the entry suitable for serialization. """
         return {
-            'id': self.id,
+            'href': url_for('entrydetailview', entry_id=self.id, _external=True),
             'entry_point_in_ms': self.entry_point_in_ms,
             'content': self.content,
             'stream': {
-                'id': self.stream_id,
+                'href': url_for('streamdetailview', stream_id=self.stream_id, _external=True),
                 'name': self.stream.name,
             },
         }

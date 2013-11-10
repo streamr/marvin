@@ -47,7 +47,7 @@ class MarvinBaseTestCase(unittest.TestCase):
 
 
     def _assert_status_factory(self, code):
-        """ Create the assertXXX helpers. They will all check for a status code,
+        """ Create the assertXX helpers. They will all check for a status code,
         and some other properties to verify that it's a good response, like that
         it can be decoded to json and contains the correct Content-Type header
         and stuff like that.
@@ -111,7 +111,7 @@ class MarvinBaseTestCase(unittest.TestCase):
         More specifically, will verify that the request:
         * Has status code 201
         * Contains both a `msg` and the resulting object (under the key passed by ``object_name``)
-        * That the resulting object has an ID field that can be used for subsequent requests
+        * That the resulting object has an href field that can be used for subsequent requests
 
         :returns: The JSON data from the reponse.
         """
@@ -122,8 +122,8 @@ class MarvinBaseTestCase(unittest.TestCase):
         self.assertTrue(len(json_response['msg']) > 10)
         self.assertTrue(object_name in json_response, "Responses to object creation requests should contain the " +
             "created object (keyed '%s')" % object_name)
-        self.assertTrue('id' in json_response[object_name], "Reponses to object creation requests must contain " +
-            "the ID of the new object")
+        self.assertTrue('href' in json_response[object_name], "Reponses to object creation requests must contain " +
+            "the href of the new object")
         return json_response
 
 

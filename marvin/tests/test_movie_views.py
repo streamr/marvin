@@ -103,9 +103,3 @@ class MovieDetailWithStreams(TestCaseWithTempDB):
         json_response = self.assert200(response)
         self.assertTrue('streams' in json_response['movie'])
         self.assertTrue(len(json_response['movie']['streams']), 2)
-        self.assertTrue({
-            'id': self.sins_stream_id,
-            'name': 'CinemaSins'} in json_response['movie']['streams'])
-        self.assertTrue({
-            'id': self.actors_stream_id,
-            'name': "Who's that actor?"} in json_response['movie']['streams'])

@@ -1,8 +1,6 @@
 from marvin.models import Movie, Stream, Entry
 from marvin.tests import TestCaseWithTempDB
 
-import ujson as json
-
 class EntryDetailViewTest(TestCaseWithTempDB):
 
     def setUp(self):
@@ -21,7 +19,6 @@ class EntryDetailViewTest(TestCaseWithTempDB):
     def test_entry_detail_view(self):
         response = self.client.get('/entries/%d' % self.tv_id)
         json_response = self.assert200(response)
-        self.assertEqual(json_response['entry']['id'], self.tv_id)
         self.assertEqual(json_response['entry']['entry_point_in_ms'], 180000)
         self.assertTrue('wall-sized TV' in json_response['entry']['content'])
 

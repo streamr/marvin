@@ -1,8 +1,6 @@
 from marvin.models import Stream, Movie, Entry
 from marvin.tests import TestCaseWithTempDB
 
-import ujson as json
-
 class StreamDetailViewTest(TestCaseWithTempDB):
 
     def setUp(self):
@@ -37,7 +35,7 @@ class StreamDetailViewTest(TestCaseWithTempDB):
         response = self.client.put('/streams/%d' % self.stream_id, data=stream)
         json_response = self.assert200(response)
         self.assertEqual(json_response['msg'], 'Stream updated.')
-        self.assertEqual(json_response['stream']['id'], self.stream_id)
+        self.assertTrue(json_response['stream']['href'].endswith(str(self.stream_id)))
         with self.app.test_request_context():
             new_stream = Stream.query.get(self.stream_id)
             self.assertEqual(new_stream.name, 'Curiosa')
