@@ -8,19 +8,34 @@
 # pylint: disable=invalid-name
 
 from celery import Celery
-from flask import Flask, make_response
+from flask import Flask, make_response, request
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.restful import Api
+from logging import getLogger
 from sqlalchemy_defaults import make_lazy_configured
 from os import path, environ
 
 import logging.config
 import sqlalchemy
+import textwrap
 import ujson
 import yaml
 
+
 db = SQLAlchemy()
-api = Api()
+
+class ApiBase(Api):
+    """ Base API class used to add some extra functionality to Flask-RESTful. """
+    # pylint: disable=super-on-old-class
+
+    def handle_error(self, exception):
+        """ Override handle_error to make sure the exception is handled by the correct logger. """
+        generic_error_handler(exception)
+        return super(ApiBase, self).handle_error(exception)
+
+api = ApiBase()
+
+_logger = getLogger('marvin')
 
 @api.representation('application/json')
 def _fastjson(data, code, headers=None):
@@ -51,6 +66,7 @@ def create_app(config_file=None, **extra_config):
     # We allow logging to be left unconfigured as long as DEBUG=True
     log_conf_path = app.config.get('LOG_CONF_PATH')
     if log_conf_path:
+        print("Loading log config from %s" % log_conf_path)
         init_logging(log_conf_path)
     else:
         ignore_absent_logging = app.config.get('DEBUG') or app.config.get('TESTING')
@@ -83,7 +99,42 @@ def create_app(config_file=None, **extra_config):
     api.add_resource(entries.CreateEntryView, '/entries')
     api.add_resource(entries.EntryDetailView, '/entries/<int:entry_id>')
 
+    # Error handlers
+    @app.errorhandler(500)
+    def _server_error(error):
+        """ Handles errors outside the API, ie in blueprints. """
+        generic_error_handler(error)
+        response_data = {
+            'msg': "Oops, server fault! We'll try to fix it ASAP, hang tight!",
+        }
+        response = _fastjson(response_data, 500, {'Content-Type': 'application/json'})
+        return response
+
     return app
+
+
+def generic_error_handler(exception):
+    """ Log exception to the standard marvin logger. """
+    _logger.exception(textwrap.dedent("""Error occured!
+        Path:                 %s
+        HTTP Method:          %s
+        Client IP Address:    %s
+        User Agent:           %s
+        User Platform:        %s
+        User Browser:         %s
+        User Browser Version: %s
+        Exception:            %s
+        """ % (
+            request.path,
+            request.method,
+            request.remote_addr,
+            request.user_agent.string,
+            request.user_agent.platform,
+            request.user_agent.browser,
+            request.user_agent.version,
+            exception
+        )
+    ))
 
 
 def init_db(app):

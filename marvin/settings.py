@@ -18,3 +18,6 @@
 SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 
 WTF_CSRF_ENABLED = False
+
+# prevent flask from messing with log handlers
+LOGGER_NAME = 'nonexistent'

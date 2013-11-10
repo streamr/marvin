@@ -47,6 +47,8 @@ class OMDBFetchTest(TestCaseWithTempDB):
         }
         response = Mock(**attrs)
         requests = Mock(**{'get.return_value': response})
+
+        # pylint: disable=multiple-statements
         with patch('marvin.tasks.requests', requests), self.app.test_request_context():
             self.external_search('ava')
         with self.app.test_request_context():
@@ -82,6 +84,8 @@ class OMDBFetchTest(TestCaseWithTempDB):
         }
         response = Mock(**attrs)
         requests = Mock(**{'get.return_value': response})
+
+        # pylint: disable=multiple-statements
         with patch('marvin.tasks.requests', requests), self.app.test_request_context():
             self.external_search('the hobbit')
             self.assertEqual(len(Movie.query.all()), 2)

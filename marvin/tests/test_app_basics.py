@@ -1,6 +1,8 @@
 from marvin import create_app, init_db
 from marvin.tests import MarvinBaseTestCase
 
+from mock import MagicMock, patch
+
 import os
 import tempfile
 
@@ -57,6 +59,27 @@ class AppCreationTest(MarvinBaseTestCase):
     def test_app_missing_log_config_in_debug(self):
         app = create_app(DEBUG=True)
         self.assertTrue(app is not None)
+
+    def test_error_handler_500(self):
+        log_conf = tempfile.NamedTemporaryFile(delete=False)
+        log_conf.write('version: 1'.encode('utf-8'))
+        log_conf.close()
+
+        # test both API and blueprint error handlers
+        for url, patchpoint in [('/', 'marvin.views.stats.stats_main'),
+                                ('/movies', 'marvin.views.movies.AllMoviesView.get')]:
+            logger = MagicMock()
+
+            # pylint: disable=multiple-statements
+            with patch('marvin._logger', logger), patch(patchpoint, lambda s: 1/0):
+                app = create_app(
+                    TESTING=False,
+                    LOG_CONF_PATH=log_conf.name,
+                )
+                response = app.test_client().get(url)
+                self.assert_status(response, 500)
+                self.assertEqual(len(logger.mock_calls), 1)
+        os.remove(log_conf.name)
 
 
 class AppCreationWithoutTestMode(MarvinBaseTestCase):
