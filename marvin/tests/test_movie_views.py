@@ -1,4 +1,3 @@
-from marvin import db
 from marvin.models import Movie, Stream
 from marvin.tests import TestCaseWithTempDB
 
@@ -18,10 +17,7 @@ class AllMovieViewTest(TestCaseWithTempDB):
             title='Titanic',
             external_id='imdb:tt0120338',
         )
-        with self.app.test_request_context():
-            db.session.add(avatar)
-            db.session.add(titanic)
-            db.session.commit()
+        self.addItems(avatar, titanic)
 
 
     def test_search(self):
@@ -69,10 +65,7 @@ class MovieDetailView(TestCaseWithTempDB):
             title='Red',
             external_id='imdb:tt1245526',
         )
-        with self.app.test_request_context():
-            db.session.add(movie)
-            db.session.commit()
-            self.movie_id = movie.id
+        (self.movie_id,) = self.addItems(movie)
 
 
     def test_details_view(self):
@@ -114,14 +107,7 @@ class MovieDetailWithStreams(TestCaseWithTempDB):
         )
         sins_stream = Stream(name='CinemaSins', movie=movie)
         actors_stream = Stream(name="Who's that actor?", movie=movie)
-        with self.app.test_request_context():
-            db.session.add(movie)
-            db.session.add(sins_stream)
-            db.session.add(actors_stream)
-            db.session.commit()
-            self.movie_id = movie.id
-            self.sins_stream_id = sins_stream.id
-            self.actors_stream_id = actors_stream.id
+        self.movie_id, self.sins_stream_id, self.actors_stream_id = self.addItems(movie, sins_stream, actors_stream)
 
 
     def test_stream_in_details(self):

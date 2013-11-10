@@ -1,4 +1,3 @@
-from marvin import db
 from marvin.models import Movie
 from marvin.tests import TestCaseWithTempDB
 
@@ -61,9 +60,7 @@ class OMDBFetchTest(TestCaseWithTempDB):
             title='The Hobbit: The Desolation of Smaug',
             external_id='imdb:tt1170358',
         )
-        with self.app.test_request_context():
-            db.session.add(movie)
-            db.session.commit()
+        self.addItems(movie)
         attrs = {
             'json.return_value': {
                 "Search": [

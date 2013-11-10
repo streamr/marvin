@@ -1,4 +1,3 @@
-from marvin import db
 from marvin.models import Movie, Stream, Entry
 from marvin.tests import TestCaseWithTempDB
 
@@ -55,22 +54,22 @@ class StatsViewTest(TestCaseWithTempDB):
         battleship_sin_outro = Entry(entry_point_in_ms=90*60*1000, content='No one says "You sunk my battleship"',
             stream=battleship_sins)
 
-        with self.app.test_request_context():
-            db.session.add(avatar)
-            db.session.add(battleship)
-            db.session.add(avatar_sins)
-            db.session.add(avatar_actors)
-            db.session.add(battleship_sins)
-            db.session.add(avatar_fail_intro)
-            db.session.add(avatar_fail_middle)
-            db.session.add(avatar_fail_end)
-            db.session.add(avatar_actor_sam)
-            db.session.add(avatar_actor_sigourney)
-            db.session.add(battleship_sin_intro)
-            db.session.add(battleship_sin_early_intro)
-            db.session.add(battleship_sin_middle)
-            db.session.add(battleship_sin_outro)
-            db.session.commit()
+        self.addItems(
+            avatar,
+            battleship,
+            avatar_sins,
+            avatar_actors,
+            battleship_sins,
+            avatar_fail_intro,
+            avatar_fail_middle,
+            avatar_fail_end,
+            avatar_actor_sam,
+            avatar_actor_sigourney,
+            battleship_sin_intro,
+            battleship_sin_early_intro,
+            battleship_sin_middle,
+            battleship_sin_outro,
+        )
 
 
     def test_correct_stats(self):

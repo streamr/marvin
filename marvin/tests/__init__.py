@@ -2,9 +2,6 @@
 
 from marvin import create_app, db
 
-from flask import template_rendered
-from os import path
-
 import os
 import tempfile
 import unittest
@@ -79,3 +76,15 @@ class TestCaseWithTempDB(MarvinBaseTestCase):
         db.session.remove()
         os.remove('../tmptestdb.sqlite')
         super(TestCaseWithTempDB, self)._post_teardown()
+
+
+    def addItems(self, *args):
+        """ Adds all items passed to the database. """
+        result_ids = []
+        with self.app.test_request_context():
+            for item in args:
+                db.session.add(item)
+            db.session.commit()
+            for item in args:
+                result_ids.append(item.id)
+        return result_ids

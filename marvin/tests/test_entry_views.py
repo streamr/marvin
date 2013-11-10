@@ -1,4 +1,3 @@
-from marvin import db
 from marvin.models import Movie, Stream, Entry
 from marvin.tests import TestCaseWithTempDB
 
@@ -16,15 +15,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
             content="<p>Do you really need a wall-sized TV when you're sitting three inches from it?</p>")
         cardboard_coffin = Entry(entry_point_in_ms=5*60*1000, stream=stream,
             content="<p>Why are the coffins of the future made out of cardboard?</p>")
-        with self.app.test_request_context():
-            db.session.add(movie)
-            db.session.add(stream)
-            db.session.add(too_big_tv)
-            db.session.add(cardboard_coffin)
-            db.session.commit()
-            self.stream_id = stream.id
-            self.tv_id = too_big_tv.id
-            self.cardboard_id = cardboard_coffin.id
+        self.stream_id, self.tv_id, self.cardboard_id, _ = self.addItems(stream, too_big_tv, cardboard_coffin, movie)
 
 
     def test_entry_detail_view(self):

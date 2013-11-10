@@ -1,4 +1,3 @@
-from marvin import db
 from marvin.models import Stream, Movie, Entry
 from marvin.tests import TestCaseWithTempDB
 
@@ -12,12 +11,7 @@ class StreamDetailViewTest(TestCaseWithTempDB):
             external_id='imdb:tt1245526',
         )
         stream = Stream(name='CinemaSins', movie=movie)
-        with self.app.test_request_context():
-            db.session.add(movie)
-            db.session.add(stream)
-            db.session.commit()
-            self.stream_id = stream.id
-            self.movie_id = movie.id
+        self.stream_id, self.movie_id = self.addItems(stream, movie)
 
 
     def test_detail_view(self):
@@ -108,20 +102,16 @@ class StreamDetailViewTest(TestCaseWithTempDB):
 class StreamEntryFetchTest(TestCaseWithTempDB):
 
     def setUp(self):
-        with self.app.test_request_context():
-            movie = Movie(
-                title='Avatar',
-                external_id='imdb:tt0499549',
-            )
-            stream = Stream(name='DurationNotifier', movie=movie)
-            db.session.add(movie)
-            db.session.add(stream)
-            for i in range(20):
-                entry = Entry(entry_point_in_ms=i*60*1000,
-                    content="We're now at %d minutes into the movie." % i, stream=stream)
-                db.session.add(entry)
-            db.session.commit()
-            self.stream_id = stream.id
+        movie = Movie(
+            title='Avatar',
+            external_id='imdb:tt0499549',
+        )
+        stream = Stream(name='DurationNotifier', movie=movie)
+        self.stream_id, _ = self.addItems(stream, movie)
+        for i in range(20):
+            entry = Entry(entry_point_in_ms=i*60*1000,
+                content="We're now at %d minutes into the movie." % i, stream=stream)
+            self.addItems(entry)
 
 
     def test_get_all_entries_for_stream(self):
