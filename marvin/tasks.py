@@ -15,6 +15,7 @@ from .models import Movie
 from logging import getLogger
 
 import requests
+import textwrap
 
 _logger = getLogger('marvin.tasks')
 
@@ -47,8 +48,16 @@ class OMDBFetcher(object):
         _logger.info("Querying OMDB for '%s'", query)
         payload = {'s': query}
         results = requests.get(self.OMDB_URL, params=payload)
-        json_results = results.json()
-        return json_results
+        try:
+            json_results = results.json()
+            return json_results
+        except requests.exceptions.RequestException as ex: # pragma: no cover
+            _logger.warning(textwrap.dedent("""JSON decoding of OMDB response failed. Details:
+                Status code: %d
+                URL:         %s
+                Payload:     %s
+                Exception:   %s
+            """), results.status_code, results.url, results.text, ex)
 
 
     def _parse_omdb_results(self, results):

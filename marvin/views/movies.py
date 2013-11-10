@@ -67,11 +67,10 @@ class AllMoviesView(Resource):
 
         search_query = request.args.get('q')
 
-        # Trigger an external search for movies
-        external_search.delay(search_query)
-
         # Return results from our own db
         if search_query:
+            # Trigger an external search for movies
+            external_search.delay(search_query)
             movies = Movie.query.filter(Movie.title.like('%' + search_query + '%'))
         else:
             movies = Movie.query.all()
