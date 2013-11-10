@@ -57,7 +57,11 @@ class CreateEntryView(Resource):
             entry = Entry()
             form.populate_obj(entry)
             db.session.add(entry)
-            return {'msg': 'Entry created.'}, 201
+            db.session.commit()
+            return {
+                'msg': 'Entry created.',
+                'entry': entry.to_json(),
+            }, 201
         return {
             'msg': 'Some attributes did not pass validation.',
             'errors': form.errors,

@@ -58,8 +58,15 @@ class AllStreamView(Resource):
             stream = Stream()
             form.populate_obj(stream)
             db.session.add(stream)
-            return {'msg': 'Stream created'}, 201
-        return {'msg': 'Data did not validate.', 'errors': form.errors}, 400
+            db.session.commit()
+            return {
+                'msg': 'Stream created',
+                'stream': stream.to_json(),
+            }, 201
+        return {
+            'msg': 'Data did not validate.',
+            'errors': form.errors,
+        }, 400
 
 
 class StreamEntrySearch(Resource):

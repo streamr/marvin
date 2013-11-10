@@ -35,24 +35,17 @@ class AllMovieViewTest(TestCaseWithTempDB):
             'title': 'Avatar',
         }
         response = self.client.post('/movies', data=movie)
-        self.assert201(response)
         self.assertEqual(response.headers['content-type'], 'application/json')
-        json_response = json.loads(response.data)
-        self.assertTrue('id' in json_response['movie'])
-        movie_list = json.loads(self.client.get('/movies').data)
-        self.assertEqual(len(movie_list['movies']), 1)
-        self.assertTrue('Avatar' in movie_list['movies'][0].values())
+        self.assertValidCreate(response, object_name='movie')
 
 
     @unittest.skip("Should be reactivated when we want to support POST creation of movies")
     def test_add_invalid_movie(self):
         movie = {
-            'title': '',
+            'title': '', # title field should be required
         }
         response = self.client.post('/movies', data=movie)
-        json_response = self.assertValidClientError(response)
-        self.assertTrue('Data did not validate' in json_response['msg'])
-        self.assertTrue('This field is required.' in json_response['errors']['title'])
+        self.assertValidClientError(response)
 
 
 class MovieDetailView(TestCaseWithTempDB):

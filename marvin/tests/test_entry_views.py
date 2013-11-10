@@ -69,9 +69,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
             'stream_id': self.stream_id,
         }
         response = self.client.post('/entries', data=entry)
-        self.assert201(response)
-        json_response = json.loads(response.data)
-        self.assertEqual(json_response['msg'], 'Entry created.')
+        self.assertValidCreate(response, object_name='entry')
 
 
     def test_create_invalid_entry(self):
@@ -81,7 +79,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
             # does not include stream_id
         }
         response = self.client.post('/entries', data=entry)
-        self.assertValidClientError(response, expected_errors=1)
+        self.assertValidClientError(response, expected_errors=2)
 
 
     def test_create_entry_to_invalid_stream(self):
@@ -104,7 +102,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
         }
         response = self.client.post('/entries', data=entry)
         # should ignore non-accepted fields
-        self.assert201(response)
+        self.assertValidCreate(response, object_name='entry')
         with self.app.test_request_context():
             saved_entry = Entry.query.filter_by(entry_point_in_ms=9*60*1000).first()
             self.assertNotEqual(saved_entry.id, entry['id'])

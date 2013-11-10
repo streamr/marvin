@@ -79,7 +79,7 @@ class StreamDetailViewTest(TestCaseWithTempDB):
             'name': 'FactChecker',
         }
         response = self.client.post('/streams', data=stream)
-        self.assert201(response)
+        self.assertValidCreate(response, object_name='stream')
         with self.app.test_request_context():
             streams = Stream.query.all()
             self.assertEqual(len(streams), 2)

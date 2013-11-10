@@ -2,6 +2,8 @@
 
 from marvin import create_app, db
 
+from os import path
+
 import os
 import tempfile
 import ujson as json
@@ -72,6 +74,28 @@ class MarvinBaseTestCase(unittest.TestCase):
         self.assertEqual(len(json_response['errors']), expected_errors, "The number of errors in the response " +
             "did not equal what you expected. The errors were: \n%s" %
             '\n'.join('%s: %s' % (key, val) for key, val in json_response['errors'].items()))
+        return json_response
+
+
+    def assertValidCreate(self, response, object_name):
+        """ Check that the response is a good reply for creating new objects.
+
+        More specifically, will verify that the request:
+        * Has status code 201
+        * Contains both a `msg` and the resulting object (under the key passed by ``object_name``)
+        * That the resulting object has an ID field that can be used for subsequent requests
+
+        :returns: The JSON data from the reponse.
+        """
+        self.assert201(response)
+        json_response = json.loads(response.data)
+        self.assertTrue('msg' in json_response, "Responses to create requests should contain a short confimation " +
+            "message to the user.")
+        self.assertTrue(len(json_response['msg']) > 10)
+        self.assertTrue(object_name in json_response, "Responses to object creation requests should contain the " +
+            "created object (keyed '%s')" % object_name)
+        self.assertTrue('id' in json_response[object_name], "Reponses to object creation requests must contain " +
+            "the ID of the new object")
         return json_response
 
 
