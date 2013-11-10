@@ -47,10 +47,38 @@ class MarvinBaseTestCase(unittest.TestCase):
 
 
     def _assert_status_factory(self, code):
-        def _assert_status(response):
-            return self.assert_status(response, code)
+        """ Create the assertXXX helpers. They will all check for a status code,
+        and some other properties to verify that it's a good response, like that
+        it can be decoded to json and contains the correct Content-Type header
+        and stuff like that.
+
+        Any keyword arguments passed will be passed along to assertValidResponse.
+
+        :returns: The JSON data of the response.
+        """
+        def _assert_status(response, **kwargs):
+            self.assert_status(response, code)
+            json_response = self.assertValidResponse(response, **kwargs)
+            return json_response
+
         return _assert_status
 
+
+    def assertValidResponse(self, response, mimetype='application/json'):
+        """ Checks that the response is generelly good.
+
+        More specifically, will check that the response:
+        * Has a Content-Type header of 'application/json' (or anything overridden by the mimetype parameter)
+        * Can be decoded to json
+        """
+        self.assertEqual(response.headers['content-type'], mimetype, "The response should have a " +
+            "Content-Type header '%s' (was '%s')" % (mimetype, response.headers['content-type']))
+        if mimetype == 'application/json':
+            json_response = json.loads(response.data)
+            self.assertTrue(len(json_response.keys()) >= 1, "The response should carry some data")
+            return json_response
+        else:
+            return response.data
 
     def assertValidClientError(self, response, expected_errors=1):
         """ Check that the response is a good reply to a invalid request.
@@ -64,7 +92,7 @@ class MarvinBaseTestCase(unittest.TestCase):
         :returns: The JSON data from the response.
         """
         self.assert400(response)
-        json_response = json.loads(response.data)
+        json_response = self.assertValidResponse(response)
         self.assertTrue('msg' in json_response, "Responses to client errors should always contain a message " +
             "describing the problem")
         self.assertTrue(len(json_response['msg']) > 20, "Responses to client errors should have a decent " +
@@ -88,7 +116,7 @@ class MarvinBaseTestCase(unittest.TestCase):
         :returns: The JSON data from the reponse.
         """
         self.assert201(response)
-        json_response = json.loads(response.data)
+        json_response = self.assertValidResponse(response)
         self.assertTrue('msg' in json_response, "Responses to create requests should contain a short confimation " +
             "message to the user.")
         self.assertTrue(len(json_response['msg']) > 10)
@@ -110,6 +138,7 @@ class TestCaseWithTempDB(MarvinBaseTestCase):
         self.tmp_config.write('\n'.join([
             "SQLALCHEMY_DATABASE_URI = 'sqlite:///../tmptestdb.sqlite'",
             "CELERY_BROKER_URL = 'amqp://'",
+            "TESTING = True",
             "LOG_CONF_PATH = r'%s'" % path.abspath(path.join(path.dirname(__file__), 'test_log_conf.yaml')),
             ]).encode('utf-8')
         )

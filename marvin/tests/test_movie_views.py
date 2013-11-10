@@ -23,8 +23,7 @@ class AllMovieViewTest(TestCaseWithTempDB):
     def test_search(self):
         with patch('marvin.tasks.external_search', Mock()):
             response = self.client.get('/movies?q=ava')
-        self.assert200(response)
-        json_response = json.loads(response.data)
+        json_response = self.assert200(response)
         self.assertEqual(len(json_response['movies']), 1)
         self.assertEqual(json_response['movies'][0]['title'], 'Avatar')
 
@@ -61,15 +60,13 @@ class MovieDetailView(TestCaseWithTempDB):
 
     def test_details_view(self):
         response = self.client.get('/movies/%d' % self.movie_id)
-        self.assert200(response)
-        json_response = json.loads(response.data)
+        json_response = self.assert200(response)
         self.assertEqual(json_response['movie']['title'], 'Red')
 
 
     def test_delete(self):
         response = self.client.delete('/movies/%d' % self.movie_id)
-        self.assert200(response)
-        json_response = json.loads(response.data)
+        json_response = self.assert200(response)
         self.assertEqual(json_response['msg'], 'Movie deleted.')
         with self.app.test_request_context():
             movies = Movie.query.all()
@@ -103,7 +100,7 @@ class MovieDetailWithStreams(TestCaseWithTempDB):
 
     def test_stream_in_details(self):
         response = self.client.get('/movies/%d' % self.movie_id)
-        json_response = json.loads(response.data)
+        json_response = self.assert200(response)
         self.assertTrue('streams' in json_response['movie'])
         self.assertTrue(len(json_response['movie']['streams']), 2)
         self.assertTrue({

@@ -16,16 +16,14 @@ class StreamDetailViewTest(TestCaseWithTempDB):
 
     def test_detail_view(self):
         response = self.client.get('/streams/%d' % self.stream_id)
-        self.assert200(response)
-        json_response = json.loads(response.data)
+        json_response = self.assert200(response)
         self.assertEqual(json_response['stream']['name'], 'CinemaSins')
         self.assertEqual(json_response['stream']['movie']['title'], 'Titanic')
 
 
     def test_delete(self):
         response = self.client.delete('/streams/%d' % self.stream_id)
-        self.assert200(response)
-        json_response = json.loads(response.data)
+        json_response = self.assert200(response)
         self.assertEqual(json_response['msg'], 'Stream deleted.')
         with self.app.test_request_context():
             self.assertEqual(len(Stream.query.all()), 0)
@@ -37,8 +35,7 @@ class StreamDetailViewTest(TestCaseWithTempDB):
             'name': 'Curiosa', # We change the name of the stream
         }
         response = self.client.put('/streams/%d' % self.stream_id, data=stream)
-        self.assert200(response)
-        json_response = json.loads(response.data)
+        json_response = self.assert200(response)
         self.assertEqual(json_response['msg'], 'Stream updated.')
         self.assertEqual(json_response['stream']['id'], self.stream_id)
         with self.app.test_request_context():
@@ -111,8 +108,7 @@ class StreamEntryFetchTest(TestCaseWithTempDB):
 
     def test_get_all_entries_for_stream(self):
         response = self.client.get('/streams/%d/entries' % self.stream_id)
-        self.assert200(response)
-        json_response = json.loads(response.data)
+        json_response = self.assert200(response)
         self.assertEqual(len(json_response['entries']), 20)
 
         # should be returned in order of appearance
@@ -124,15 +120,14 @@ class StreamEntryFetchTest(TestCaseWithTempDB):
 
     def test_get_limited_amount_of_entries(self):
         response = self.client.get('/streams/%d/entries?limit=5' % self.stream_id)
-        self.assert200(response)
-        json_response = json.loads(response.data)
+        json_response = self.assert200(response)
         self.assertEqual(len(json_response['entries']), 5)
 
         # get 5 next ones
         last_starttime = json_response['entries'][-1]['entry_point_in_ms']
         response = self.client.get('/streams/%d/entries?limit=5&starttime_gt=%d' % (self.stream_id, last_starttime))
-        self.assert200(response)
-        json_response = json.loads(response.data)
+        json_response = self.assert200(response)
+
         # Should respect both params
         self.assertEqual(len(json_response['entries']), 5)
         self.assertTrue(json_response['entries'][0], last_starttime + 60*1000)

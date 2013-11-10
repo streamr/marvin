@@ -77,7 +77,7 @@ class StatsViewTest(TestCaseWithTempDB):
             response = self.client.get('/')
             stats = context['stats']
 
-        self.assert200(response)
+        self.assert200(response, mimetype='text/html; charset=utf-8')
         self.assertEqual(stats['Number of movies'], 2)
         self.assertEqual(stats['Number of streams'], 3)
         self.assertEqual(stats['Number of entries'], 9)

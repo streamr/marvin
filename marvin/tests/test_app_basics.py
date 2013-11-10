@@ -78,7 +78,7 @@ class AppCreationTest(MarvinBaseTestCase):
                 )
                 response = app.test_client().get(url)
                 self.assert_status(response, 500)
-                self.assertEqual(len(logger.mock_calls), 1)
+                self.assertEqual(len(logger.exception.mock_calls), 1)
         os.remove(log_conf.name)
 
 
