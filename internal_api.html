@@ -61,6 +61,18 @@
 <span class="target" id="module-marvin"></span><div class="section" id="marvin">
 <h2>marvin<a class="headerlink" href="#marvin" title="Permalink to this headline">¶</a></h2>
 <p>This is the main entry point to marvin, the API endpoints for streamr.</p>
+<dl class="class">
+<dt id="marvin.ApiBase">
+<em class="property">class </em><tt class="descclassname">marvin.</tt><tt class="descname">ApiBase</tt><big>(</big><em>app=None</em>, <em>prefix=''</em>, <em>default_mediatype='application/json'</em>, <em>decorators=None</em>, <em>catch_all_404s=False</em><big>)</big><a class="headerlink" href="#marvin.ApiBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base API class used to add some extra functionality to Flask-RESTful.</p>
+<dl class="method">
+<dt id="marvin.ApiBase.handle_error">
+<tt class="descname">handle_error</tt><big>(</big><em>exception</em><big>)</big><a class="headerlink" href="#marvin.ApiBase.handle_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override handle_error to make sure the exception is handled by the correct logger.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="function">
 <dt id="marvin.create_app">
 <tt class="descclassname">marvin.</tt><tt class="descname">create_app</tt><big>(</big><em>config_file=None</em>, <em>**extra_config</em><big>)</big><a class="headerlink" href="#marvin.create_app" title="Permalink to this definition">¶</a></dt>
@@ -77,6 +89,12 @@
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="marvin.generic_error_handler">
+<tt class="descclassname">marvin.</tt><tt class="descname">generic_error_handler</tt><big>(</big><em>exception</em><big>)</big><a class="headerlink" href="#marvin.generic_error_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log exception to the standard marvin logger.</p>
 </dd></dl>
 
 <dl class="function">
