@@ -35,7 +35,7 @@ class EntryDetailView(Resource):
                 'entry': entry.to_json(),
             }
         return {
-            'msg': 'Validation failed.',
+            'msg': 'Some attributes did not pass validation.',
             'errors': form.errors,
         }, 400
 
@@ -58,4 +58,7 @@ class CreateEntryView(Resource):
             form.populate_obj(entry)
             db.session.add(entry)
             return {'msg': 'Entry created.'}, 201
-        return {'msg': 'Validation failed.', 'errors': form.errors}, 400
+        return {
+            'msg': 'Some attributes did not pass validation.',
+            'errors': form.errors,
+        }, 400

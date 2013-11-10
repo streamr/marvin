@@ -81,10 +81,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
             # does not include stream_id
         }
         response = self.client.post('/entries', data=entry)
-        self.assert400(response)
-        json_response = json.loads(response.data)
-        self.assertEqual(json_response['msg'], 'Validation failed.')
-        self.assertEqual(len(json_response['errors']), 2)
+        self.assertValidClientError(response, expected_errors=1)
 
 
     def test_create_entry_to_invalid_stream(self):
@@ -94,9 +91,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
             'stream_id': -1,
         }
         response = self.client.post('/entries', data=entry)
-        self.assert400(response)
-        json_response = json.loads(response.data)
-        self.assertTrue('errors' in json_response)
+        json_response = self.assertValidClientError(response)
         self.assertEqual(json_response['errors']['stream_id'][0], 'No stream with id -1 found.')
 
 

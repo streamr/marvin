@@ -36,7 +36,7 @@ class StreamDetailView(Resource):
                 'stream': stream.to_json(),
             }
         return {
-            'msg': 'Validation failed.',
+            'msg': 'Some attributes did not pass validation.',
             'errors': form.errors,
         }, 400
 

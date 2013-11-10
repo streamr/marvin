@@ -50,10 +50,8 @@ class AllMovieViewTest(TestCaseWithTempDB):
             'title': '',
         }
         response = self.client.post('/movies', data=movie)
-        self.assert400(response)
-        json_response = json.loads(response.data)
+        json_response = self.assertValidClientError(response)
         self.assertTrue('Data did not validate' in json_response['msg'])
-        self.assertTrue('errors' in json_response)
         self.assertTrue('This field is required.' in json_response['errors']['title'])
 
 

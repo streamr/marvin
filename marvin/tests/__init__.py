@@ -4,6 +4,7 @@ from marvin import create_app, db
 
 import os
 import tempfile
+import ujson as json
 import unittest
 
 class MarvinBaseTestCase(unittest.TestCase):
@@ -47,6 +48,31 @@ class MarvinBaseTestCase(unittest.TestCase):
         def _assert_status(response):
             return self.assert_status(response, code)
         return _assert_status
+
+
+    def assertValidClientError(self, response, expected_errors=1):
+        """ Check that the response is a good reply to a invalid request.
+
+        More specifically, will verify that the request:
+        * Has status code 400
+        * Contains a message to the user
+        * Contains a list of **all** the errors the client did (specify number expected with
+            the :param expected_errors:)
+
+        :returns: The JSON data from the response.
+        """
+        self.assert400(response)
+        json_response = json.loads(response.data)
+        self.assertTrue('msg' in json_response, "Responses to client errors should always contain a message " +
+            "describing the problem")
+        self.assertTrue(len(json_response['msg']) > 20, "Responses to client errors should have a decent " +
+            "explanation of the problem. Was: '%s'" % json_response['msg'])
+        self.assertTrue('errors' in json_response, "Responses to client errors should always contain a list of the" +
+            "errors performed")
+        self.assertEqual(len(json_response['errors']), expected_errors, "The number of errors in the response " +
+            "did not equal what you expected. The errors were: \n%s" %
+            '\n'.join('%s: %s' % (key, val) for key, val in json_response['errors'].items()))
+        return json_response
 
 
 class TestCaseWithTempDB(MarvinBaseTestCase):

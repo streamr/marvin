@@ -70,10 +70,7 @@ class StreamDetailViewTest(TestCaseWithTempDB):
             'name': '',
         }
         response = self.client.put('/streams/%d' % self.stream_id, data=stream)
-        self.assert400(response)
-        json_response = json.loads(response.data)
-        self.assertEqual(json_response['msg'], 'Validation failed.')
-        self.assertTrue('errors' in json_response)
+        self.assertValidClientError(response)
 
 
     def test_create_stream(self):
@@ -94,9 +91,7 @@ class StreamDetailViewTest(TestCaseWithTempDB):
             'name': 'FactChecker',
         }
         response = self.client.post('/streams', data=stream)
-        self.assert400(response)
-        json_response = json.loads(response.data)
-        self.assertTrue('errors' in json_response)
+        self.assertValidClientError(response)
 
 
 class StreamEntryFetchTest(TestCaseWithTempDB):
