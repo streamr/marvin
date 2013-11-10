@@ -12,6 +12,9 @@ from ..models import Movie
 
 from flask import request
 from flask.ext.restful import Resource
+from logging import getLogger
+
+_logger = getLogger('marvin.views.movies')
 
 class MovieDetailView(Resource):
     """ RD interface to movies. """
@@ -68,9 +71,20 @@ class AllMoviesView(Resource):
 
         # Return results from our own db
         if search_query:
-            # Trigger an external search for movies
-            external_search.delay(search_query)
-            movies = Movie.query.filter(Movie.title.like('%' + search_query + '%'))
+            movie_query = Movie.query.filter(Movie.title.like('%' + search_query + '%'))
+            _logger.info("Got search query for '%s'", search_query)
+            movies = movie_query.all()
+            if movies:
+                _logger.info("Query for '%s' returned %d results", search_query, len(movies))
+                # Good, we found something, return that, and look for more asynchronously
+                external_search.delay(search_query)
+            else:
+                # Crap, database is empty, let's look for some more stuff synchronously, so that we don't
+                # give any empty responses
+                _logger.info("No movies found locally for query '%s', searching external resources...", search_query)
+                external_search(search_query)
+                movies = movie_query.all()
+                _logger.info("Synchronous search for '%s' resulted in %d new movies", search_query, len(movies))
         else:
             movies = Movie.query.all()
 

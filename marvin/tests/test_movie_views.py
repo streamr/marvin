@@ -28,6 +28,23 @@ class AllMovieViewTest(TestCaseWithTempDB):
         self.assertEqual(json_response['movies'][0]['title'], 'Avatar')
 
 
+    def test_search_results_empty_fetches_external(self):
+        # Search results for stuff we don't have should fetch more synchronously
+
+        def create_movie(query): # pylint: disable=unused-argument
+            movie = Movie(
+                title='Harry Potter',
+                external_id='imdb:tt0241527'
+            )
+            self.addItems(movie)
+
+        external_search = Mock(side_effect=create_movie)
+        with patch('marvin.tasks.external_search', external_search):
+            response = self.client.get('/movies?q=harry')
+        json_response = self.assert200(response)
+        self.assertEqual(len(json_response['movies']), 1)
+
+
     @unittest.skip("Should be reactivated when we want to support POST creation of movies")
     def test_post_movie(self):
         movie = {
