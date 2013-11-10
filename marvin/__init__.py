@@ -115,7 +115,7 @@ def create_app(config_file=None, **extra_config):
 
 def generic_error_handler(exception):
     """ Log exception to the standard marvin logger. """
-    _logger.exception(textwrap.dedent("""Error occured!
+    log_msg = textwrap.dedent("""Error occured!
         Path:                 %s
         HTTP Method:          %s
         Client IP Address:    %s
@@ -134,7 +134,13 @@ def generic_error_handler(exception):
             request.user_agent.version,
             exception
         )
-    ))
+    )
+    # sysout seems a bit eradic for the loggers, so if any tests fail, you might want to uncomment these lines
+    # print(log_msg)
+    # import traceback
+    # traceback.print_exc()
+    _logger.exception(log_msg)
+
 
 
 def init_db(app):
