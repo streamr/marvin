@@ -110,7 +110,7 @@ class TestCaseWithTempDB(MarvinBaseTestCase):
         self.tmp_config.write('\n'.join([
             "SQLALCHEMY_DATABASE_URI = 'sqlite:///../tmptestdb.sqlite'",
             "CELERY_BROKER_URL = 'amqp://'",
-            "TESTING = True",
+            "LOG_CONF_PATH = r'%s'" % path.abspath(path.join(path.dirname(__file__), 'test_log_conf.yaml')),
             ]).encode('utf-8')
         )
         self.tmp_config.close()
