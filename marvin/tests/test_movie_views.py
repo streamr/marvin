@@ -81,6 +81,17 @@ class MovieDetailView(TestCaseWithTempDB):
         self.assertEqual(json_response['movie']['title'], 'Red')
 
 
+    def test_details_contains_links(self):
+        response = self.client.get('/movies/%d' % self.movie_id)
+        json_response = self.assert200(response)
+        print json_response
+        self.assertTrue('createStream' in json_response['movie']['_links'])
+        # links should be absolute
+        self.assertTrue(json_response['movie']['_links']['createStream'].startswith('http'))
+        self.assertTrue(json_response['movie']['_links']['createStream'].endswith('/movies/%d/createStream' %
+            self.movie_id))
+
+
     def test_delete(self):
         response = self.client.delete('/movies/%d' % self.movie_id)
         json_response = self.assert200(response)

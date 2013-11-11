@@ -8,7 +8,7 @@
 # pylint: disable=no-self-use
 
 from .. import db
-from ..models import Stream, StreamForm, Entry
+from ..models import Stream, StreamForm, Entry, Movie
 
 from flask import request
 from flask.ext.restful import Resource
@@ -48,15 +48,17 @@ class StreamDetailView(Resource):
         return {'msg': 'Stream deleted.'}
 
 
-class AllStreamView(Resource):
+class CreateStreamView(Resource):
     """ C interface for streams. """
 
-    def post(self):
+    def post(self, movie_id):
         """ Create new stream. """
         form = StreamForm()
         if form.validate_on_submit():
+            movie = Movie.query.get_or_404(movie_id)
             stream = Stream()
             form.populate_obj(stream)
+            stream.movie = movie
             db.session.add(stream)
             db.session.commit()
             return {

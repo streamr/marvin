@@ -60,6 +60,9 @@ class Movie(db.Model):
             'category': self.category,
             'datetime_added': self.datetime_added,
             'year': self.year,
+            '_links': {
+                'createStream': url_for('createstreamview', movie_id=self.id, _external=True),
+            },
         }
         if include_streams:
             movie['streams'] = [stream.to_json(include_movie=False) for stream in self.streams]
@@ -125,7 +128,6 @@ class StreamForm(ModelForm):
         # explicitly define which fields should be considered
         only = (
             'name',
-            'movie_id',
         )
 
 

@@ -70,10 +70,9 @@ class StreamDetailViewTest(TestCaseWithTempDB):
 
     def test_create_stream(self):
         stream = {
-            'movie_id': self.movie_id,
             'name': 'FactChecker',
         }
-        response = self.client.post('/streams', data=stream)
+        response = self.client.post('/movies/%d/createStream' % self.movie_id, data=stream)
         self.assertValidCreate(response, object_name='stream')
         with self.app.test_request_context():
             streams = Stream.query.all()
@@ -82,10 +81,9 @@ class StreamDetailViewTest(TestCaseWithTempDB):
 
     def test_create_invalid(self):
         stream = {
-            # missing movie_id
-            'name': 'FactChecker',
+            # missing name
         }
-        response = self.client.post('/streams', data=stream)
+        response = self.client.post('/movies/%d/createStream' % self.movie_id, data=stream)
         self.assertValidClientError(response)
 
 

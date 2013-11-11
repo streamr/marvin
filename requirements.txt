@@ -1,8 +1,10 @@
 blinker==1.2
 celery
 flask
-flask-sqlalchemy
+flask-migrate
+flask-script
 flask-restful
+flask-sqlalchemy
 flask-wtf
 requests
 wtforms-alchemy
