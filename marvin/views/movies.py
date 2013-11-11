@@ -68,10 +68,11 @@ class AllMoviesView(Resource):
         from marvin.tasks import external_search
 
         search_query = request.args.get('q')
+        limit = 15
 
         # Return results from our own db
         if search_query:
-            movie_query = Movie.query.filter(Movie.title.like('%' + search_query + '%'))
+            movie_query = Movie.query.filter(Movie.title.like('%' + search_query + '%')).limit(limit)
             _logger.info("Got search query for '%s'", search_query)
             movies = movie_query.all()
             if movies:
@@ -86,7 +87,7 @@ class AllMoviesView(Resource):
                 movies = movie_query.all()
                 _logger.info("Synchronous search for '%s' resulted in %d new movies", search_query, len(movies))
         else:
-            movies = Movie.query.all()
+            movies = Movie.query.limit(limit).all()
 
         return {
             'movies': [movie.to_json(include_streams=False) for movie in movies],

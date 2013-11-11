@@ -120,3 +120,21 @@ class MovieDetailWithStreams(TestCaseWithTempDB):
         json_response = self.assert200(response)
         self.assertTrue('streams' in json_response['movie'])
         self.assertTrue(len(json_response['movie']['streams']), 2)
+
+
+class MovieLimitsInSearch(TestCaseWithTempDB):
+
+    def setUp(self):
+        for i in xrange(16):
+            movie = Movie(
+                title='Avatar %d' % i,
+                external_id='imdb:tt02415 %d' % i,
+            )
+            self.addItems(movie)
+
+
+    def test_movie_search_limits(self):
+        with patch('marvin.tasks.external_search', Mock()):
+            response = self.client.get('/movies?q=ava')
+        json_response = self.assert200(response)
+        self.assertEqual(len(json_response['movies']), 15)
