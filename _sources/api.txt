@@ -57,7 +57,11 @@ An :class:`Entry <marvin.models.Entry>` is an event that occurs at some time dur
 
 * ``DELETE /entries/<id>``: Delete the given entry.
 
-* ``POST /entries``: Create a new entry.
+* ``POST /entries``: Create a new entry. Required attributes:
+
+    * :attr:`entry_point_in_ms <marvin.models.Entry.entry_point_in_ms>`
+    * :attr:`stream_id <marvin.models.Entry.stream_id>`
+    * :attr:`title <marvin.models.Entry.title>`
 
 * ``GET /streams/<id>/entries``: Get the Entries associated with this stream, sorted by time of appearance. This
   endpoint accepts the following parameter:
