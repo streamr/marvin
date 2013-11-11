@@ -7,7 +7,6 @@
 
 """
 from . import db
-from .validators import fk_exists
 
 from flask import url_for
 from flask.ext.wtf import Form
@@ -111,6 +110,10 @@ class Stream(db.Model):
         stream = {
             'href': url_for('streamdetailview', stream_id=self.id, _external=True),
             'name': self.name,
+            '_links': {
+                'createEntry': url_for('createentryview', stream_id=self.id, _external=True),
+                'entries': url_for('streamentrysearch', stream_id=self.id, _external=True),
+            }
         }
         if include_movie:
             stream['movie'] = {
@@ -147,9 +150,6 @@ class Entry(db.Model):
     stream_id = Column(db.Integer,
         db.ForeignKey('stream.id'),
         nullable=False,
-        info={
-            'validators': fk_exists(Stream),
-        }
     )
     #: The stream this entry belongs to
     stream = db.relationship('Stream', backref=db.backref('entries', lazy='dynamic'))
@@ -187,6 +187,5 @@ class EntryForm(ModelForm):
         only = (
             'entry_point_in_ms',
             'content',
-            'stream_id',
             'title',
         )

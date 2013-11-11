@@ -8,7 +8,7 @@
 # pylint: disable=no-self-use
 
 from .. import db
-from ..models import Entry, EntryForm
+from ..models import Entry, EntryForm, Stream
 
 from flask.ext.restful import Resource
 
@@ -50,12 +50,14 @@ class EntryDetailView(Resource):
 class CreateEntryView(Resource):
     """ Create interface to entries. """
 
-    def post(self):
+    def post(self, stream_id):
         """ Create new entry. """
+        stream = Stream.query.get_or_404(stream_id)
         form = EntryForm()
         if form.validate_on_submit():
             entry = Entry()
             form.populate_obj(entry)
+            entry.stream = stream
             db.session.add(entry)
             db.session.commit()
             return {

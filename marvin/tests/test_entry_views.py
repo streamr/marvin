@@ -63,9 +63,8 @@ class EntryDetailViewTest(TestCaseWithTempDB):
             'entry_point_in_ms': 10*60*1000,
             'title': '<h1>Title</h1>',
             'content': '<p>Yes, a planet full of trees has no oxygen.</p>',
-            'stream_id': self.stream_id,
         }
-        response = self.client.post('/entries', data=entry)
+        response = self.client.post('/streams/%s/createEntry' % self.stream_id, data=entry)
         self.assertValidCreate(response, object_name='entry')
 
 
@@ -73,18 +72,18 @@ class EntryDetailViewTest(TestCaseWithTempDB):
         entry = {
             'entry_point_in_ms': -1, # entry points must be positive
             'content': '<p>Ripleys gotten old</p>',
-            # does not include stream_id or title
+            # does not include title
         }
-        response = self.client.post('/entries', data=entry)
-        self.assertValidClientError(response, expected_errors=3)
+        response = self.client.post('/streams/%s/createEntry' % self.stream_id, data=entry)
+        self.assertValidClientError(response, expected_errors=2)
 
 
-    def test_create_invalid_entry_not_in_ms(self):
+    def test_create_empty_entry(self):
         entry = {
-            # does not include stream_id, title, content and entry_point_in_ms
+            # does not include title or entry_point_in_ms (content is optional)
         }
-        response = self.client.post('/entries', data=entry)
-        self.assertValidClientError(response, expected_errors=3)
+        response = self.client.post('/streams/%d/createEntry' % self.stream_id, data=entry)
+        self.assertValidClientError(response, expected_errors=2)
 
 
     def test_create_entry_to_invalid_stream(self):
@@ -92,11 +91,9 @@ class EntryDetailViewTest(TestCaseWithTempDB):
             'entry_point_in_ms': 5*60*1000,
             'title': '<h1>Title</h1>',
             'content': 'This is bad.',
-            'stream_id': -1,
         }
-        response = self.client.post('/entries', data=entry)
-        json_response = self.assertValidClientError(response)
-        self.assertEqual(json_response['errors']['stream_id'][0], 'No stream with id -1 found.')
+        response = self.client.post('/streams/876543/createEntry', data=entry)
+        self.assert404(response)
 
 
     def test_create_entry_with_manual_id(self):
@@ -105,9 +102,8 @@ class EntryDetailViewTest(TestCaseWithTempDB):
             'entry_point_in_ms': 9*60*1000,
             'title': '<h1>Title</h1>',
             'content': '<p>Valid content here.</p>',
-            'stream_id': self.stream_id,
         }
-        response = self.client.post('/entries', data=entry)
+        response = self.client.post('/streams/%s/createEntry' % self.stream_id, data=entry)
         # should ignore non-accepted fields
         self.assertValidCreate(response, object_name='entry')
         with self.app.test_request_context():
