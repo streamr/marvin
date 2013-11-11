@@ -136,7 +136,7 @@ class MovieDetailWithStreams(TestCaseWithTempDB):
 class MovieLimitsInSearch(TestCaseWithTempDB):
 
     def setUp(self):
-        for i in xrange(16):
+        for i in range(16):
             movie = Movie(
                 title='Avatar %d' % i,
                 external_id='imdb:tt02415 %d' % i,
