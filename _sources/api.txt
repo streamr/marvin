@@ -44,8 +44,14 @@ Streams
 A :class:`Stream <marvin.models.Stream>` is a collection of timecoded events that should occur during playback of a
 movie. Streams are available at the following endpoints:
 
-* ``GET /streams/<id>``: Details about the stream with the given ID. Properties include at least
-  :attr:`id <marvin.models.Stream.id>` and :attr:`name <marvin.models.Stream.name>`.
+* ``GET /streams/<id>``: Details about the stream with the given ID. Properties include at least:
+
+    * `href`: Link to this stream for further operations
+    * :attr:`name <marvin.models.Stream.name>`
+    * `_links`: Links for further operations with the stream. Currently includes the following keys:
+
+        * `createEntry`: Create a new entry for this stream. See required properties under entries.
+        * `entries`: An endpoint for querying for entries in this stream
 
 * ``PUT /streams/<id>``: Update the given stream. All properties of the object must be present, anything missing will be deleted.
 
@@ -67,10 +73,9 @@ An :class:`Entry <marvin.models.Entry>` is an event that occurs at some time dur
 
 * ``DELETE /entries/<id>``: Delete the given entry.
 
-* ``POST /entries``: Create a new entry. Required attributes:
+* ``POST /streams/<stream_id>/createEntry``: Create a new entry. Required attributes:
 
     * :attr:`entry_point_in_ms <marvin.models.Entry.entry_point_in_ms>`
-    * :attr:`stream_id <marvin.models.Entry.stream_id>`
     * :attr:`title <marvin.models.Entry.title>`
 
 * ``GET /streams/<id>/entries``: Get the Entries associated with this stream, sorted by time of appearance. This
