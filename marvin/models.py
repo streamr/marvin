@@ -136,9 +136,11 @@ class Entry(db.Model):
     #: Unique identifier
     id = Column(db.Integer, primary_key=True)
     #: The time this entry should appear, in ms since the beginning of the stream
-    entry_point_in_ms = Column(db.Integer, min=0)
+    entry_point_in_ms = Column(db.Integer, min=0, nullable=False)
+    #: The title of the entry
+    title = Column(db.String(30), nullable=False)
     #: The content of the entry
-    content = Column(db.Text)
+    content = Column(db.Text, default='')
     #: Foreign key to a stream
     stream_id = Column(db.Integer,
         db.ForeignKey('stream.id'),
@@ -184,4 +186,5 @@ class EntryForm(ModelForm):
             'entry_point_in_ms',
             'content',
             'stream_id',
+            'title',
         )

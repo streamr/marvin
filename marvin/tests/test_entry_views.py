@@ -9,9 +9,9 @@ class EntryDetailViewTest(TestCaseWithTempDB):
             external_id='imdb:tt0499549',
         )
         stream = Stream(name='CinemaSins', movie=movie)
-        too_big_tv = Entry(entry_point_in_ms=3*60*1000, stream=stream,
+        too_big_tv = Entry(entry_point_in_ms=3*60*1000, stream=stream, title='<h1>Title</h1>',
             content="<p>Do you really need a wall-sized TV when you're sitting three inches from it?</p>")
-        cardboard_coffin = Entry(entry_point_in_ms=5*60*1000, stream=stream,
+        cardboard_coffin = Entry(entry_point_in_ms=5*60*1000, stream=stream, title='<h1>Title</h1>',
             content="<p>Why are the coffins of the future made out of cardboard?</p>")
         self.stream_id, self.tv_id, self.cardboard_id, _ = self.addItems(stream, too_big_tv, cardboard_coffin, movie)
 
@@ -26,6 +26,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
     def test_update_nonexistent_entry(self):
         entry = {
             'entry_point_in_ms': 3*60*1000,
+            'title': '<h1>Title</h1>',
             'content': '<p>This is weird</p>',
         }
         response = self.client.put('/entries/65432', data=entry)
@@ -36,6 +37,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
         entry = {
             'id': self.tv_id,
             'entry_point_in_ms': 2*60*1000, # We change the entry point
+            'title': '<h1>Title</h1>',
             'content': "<p>Do you really need a wall-sized TV when you're sitting three inches from it?</p>",
         }
         response = self.client.put('/entries/%d' % self.tv_id, data=entry)
@@ -59,6 +61,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
     def test_create_new_entry(self):
         entry = {
             'entry_point_in_ms': 10*60*1000,
+            'title': '<h1>Title</h1>',
             'content': '<p>Yes, a planet full of trees has no oxygen.</p>',
             'stream_id': self.stream_id,
         }
@@ -70,15 +73,24 @@ class EntryDetailViewTest(TestCaseWithTempDB):
         entry = {
             'entry_point_in_ms': -1, # entry points must be positive
             'content': '<p>Ripleys gotten old</p>',
-            # does not include stream_id
+            # does not include stream_id or title
         }
         response = self.client.post('/entries', data=entry)
-        self.assertValidClientError(response, expected_errors=2)
+        self.assertValidClientError(response, expected_errors=3)
+
+
+    def test_create_invalid_entry_not_in_ms(self):
+        entry = {
+            # does not include stream_id, title, content and entry_point_in_ms
+        }
+        response = self.client.post('/entries', data=entry)
+        self.assertValidClientError(response, expected_errors=3)
 
 
     def test_create_entry_to_invalid_stream(self):
         entry = {
             'entry_point_in_ms': 5*60*1000,
+            'title': '<h1>Title</h1>',
             'content': 'This is bad.',
             'stream_id': -1,
         }
@@ -91,6 +103,7 @@ class EntryDetailViewTest(TestCaseWithTempDB):
         entry = {
             'id': 6543, #should not be able to assign ID manually,
             'entry_point_in_ms': 9*60*1000,
+            'title': '<h1>Title</h1>',
             'content': '<p>Valid content here.</p>',
             'stream_id': self.stream_id,
         }

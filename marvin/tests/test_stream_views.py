@@ -99,7 +99,7 @@ class StreamEntryFetchTest(TestCaseWithTempDB):
         stream = Stream(name='DurationNotifier', movie=movie)
         self.stream_id, _ = self.addItems(stream, movie)
         for i in range(20):
-            entry = Entry(entry_point_in_ms=i*60*1000,
+            entry = Entry(entry_point_in_ms=i*60*1000, title='<h1>Title</h1>',
                 content="We're now at %d minutes into the movie." % i, stream=stream)
             self.addItems(entry)
 
