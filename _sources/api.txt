@@ -8,10 +8,21 @@ but this is likely to change.
 Movies
 ------
 
-A :class:`Movie <marvin.models.Movie>` is an entity to which streams are bound. Movies are found at the following endpoints:
+A :class:`Movie <marvin.models.Movie>` is an entity to which streams are bound. Movies are found at the following
+endpoints:
 
-* ``GET /movies``: A list of all movies in the marvin database. Each movie is am object with at least an
-  :attr:`id <marvin.models.Movie.id>` and a :attr:`title <marvin.models.Movie.title>`.
+* ``GET /movies``: A list of movies in the marvin database, truncated to 15 results. This endpoints respect the
+  following GET parameters:
+
+    * `q`: A search query to limit movies by. Searches titles only.
+
+  Each movie is am object with at least the following properties:
+
+    * `href`: The URI for this movie. Use this for all operations on the movie, such as DELETE, PUT or GET.
+    * :attr:`title <marvin.models.Movie.title>`
+    * `_links`: An object with other relevant endpoints for the movie. Currently this includes:
+
+        * `createStreams`: Where you should POST new streams. See under streams for the required attributes.
 
 * ``POST /movies``: Create a new movie. Required attributes:
 
@@ -19,10 +30,10 @@ A :class:`Movie <marvin.models.Movie>` is an entity to which streams are bound. 
 
 * ``GET /movies/<id>``: Get details for a single movie. Properties are subject to change, but you can expect *at least*
    the following:
-    * :attr:`id <marvin.models.Movie.id>`
+    * `href`: URI of the movie.
     * :attr:`title <marvin.models.Movie.title>`
     * :attr:`streams <marvin.models.Movie.streams>`: A list of stream objects with at least an
-      :attr:`id <marvin.models.Stream.id>` and a :attr:`name <marvin.models.Stream.name>` attribute.
+      `href` and a :attr:`name <marvin.models.Stream.name>` attribute.
 
 * ``DELETE /movies/<id>``: Delete the movie with the given id.
 
@@ -30,8 +41,8 @@ A :class:`Movie <marvin.models.Movie>` is an entity to which streams are bound. 
 Streams
 -------
 
-A :class:`Stream <marvin.models.Stream>` is a collection of timecoded events that should occur during playback of a movie. Streams are available at the
-following endpoints:
+A :class:`Stream <marvin.models.Stream>` is a collection of timecoded events that should occur during playback of a
+movie. Streams are available at the following endpoints:
 
 * ``GET /streams/<id>``: Details about the stream with the given ID. Properties include at least
   :attr:`id <marvin.models.Stream.id>` and :attr:`name <marvin.models.Stream.name>`.
@@ -40,10 +51,9 @@ following endpoints:
 
 * ``DELETE /streams/<id>``: Delete the given stream.
 
-* ``POST /streams``: Create a new stream. Required attributes:
+* ``POST /movies/<movie_id>/createStream``: Create a new stream. Required attributes:
 
     * :attr:`name <marvin.models.Stream.name>`
-    * :attr:`movie_id <marvin.models.Stream.movie_id>`
 
 
 Entries

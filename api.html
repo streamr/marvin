@@ -65,10 +65,32 @@
 but this is likely to change.</p>
 <div class="section" id="movies">
 <h2>Movies<a class="headerlink" href="#movies" title="Permalink to this headline">¶</a></h2>
-<p>A <a class="reference internal" href="internal_api.html#marvin.models.Movie" title="marvin.models.Movie"><tt class="xref py py-class docutils literal"><span class="pre">Movie</span></tt></a> is an entity to which streams are bound. Movies are found at the following endpoints:</p>
+<p>A <a class="reference internal" href="internal_api.html#marvin.models.Movie" title="marvin.models.Movie"><tt class="xref py py-class docutils literal"><span class="pre">Movie</span></tt></a> is an entity to which streams are bound. Movies are found at the following
+endpoints:</p>
 <ul>
-<li><p class="first"><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/movies</span></tt>: A list of all movies in the marvin database. Each movie is am object with at least an
-<a class="reference internal" href="internal_api.html#marvin.models.Movie.id" title="marvin.models.Movie.id"><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt></a> and a <a class="reference internal" href="internal_api.html#marvin.models.Movie.title" title="marvin.models.Movie.title"><tt class="xref py py-attr docutils literal"><span class="pre">title</span></tt></a>.</p>
+<li><p class="first"><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/movies</span></tt>: A list of movies in the marvin database, truncated to 15 results. This endpoints respect the
+following GET parameters:</p>
+<blockquote>
+<div><ul class="simple">
+<li><cite>q</cite>: A search query to limit movies by. Searches titles only.</li>
+</ul>
+</div></blockquote>
+<p>Each movie is am object with at least the following properties:</p>
+<blockquote>
+<div><ul>
+<li><p class="first"><cite>href</cite>: The URI for this movie. Use this for all operations on the movie, such as DELETE, PUT or GET.</p>
+</li>
+<li><p class="first"><a class="reference internal" href="internal_api.html#marvin.models.Movie.title" title="marvin.models.Movie.title"><tt class="xref py py-attr docutils literal"><span class="pre">title</span></tt></a></p>
+</li>
+<li><p class="first"><cite>_links</cite>: An object with other relevant endpoints for the movie. Currently this includes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><cite>createStreams</cite>: Where you should POST new streams. See under streams for the required attributes.</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
 </li>
 <li><p class="first"><tt class="docutils literal"><span class="pre">POST</span> <span class="pre">/movies</span></tt>: Create a new movie. Required attributes:</p>
 <blockquote>
@@ -82,10 +104,10 @@ but this is likely to change.</p>
 <dd><dl class="first last docutils">
 <dt>the following:</dt>
 <dd><ul class="first last simple">
-<li><a class="reference internal" href="internal_api.html#marvin.models.Movie.id" title="marvin.models.Movie.id"><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt></a></li>
+<li><cite>href</cite>: URI of the movie.</li>
 <li><a class="reference internal" href="internal_api.html#marvin.models.Movie.title" title="marvin.models.Movie.title"><tt class="xref py py-attr docutils literal"><span class="pre">title</span></tt></a></li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">streams</span></tt>: A list of stream objects with at least an
-<a class="reference internal" href="internal_api.html#marvin.models.Stream.id" title="marvin.models.Stream.id"><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt></a> and a <a class="reference internal" href="internal_api.html#marvin.models.Stream.name" title="marvin.models.Stream.name"><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt></a> attribute.</li>
+<cite>href</cite> and a <a class="reference internal" href="internal_api.html#marvin.models.Stream.name" title="marvin.models.Stream.name"><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt></a> attribute.</li>
 </ul>
 </dd>
 </dl>
@@ -98,8 +120,8 @@ but this is likely to change.</p>
 </div>
 <div class="section" id="streams">
 <h2>Streams<a class="headerlink" href="#streams" title="Permalink to this headline">¶</a></h2>
-<p>A <a class="reference internal" href="internal_api.html#marvin.models.Stream" title="marvin.models.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> is a collection of timecoded events that should occur during playback of a movie. Streams are available at the
-following endpoints:</p>
+<p>A <a class="reference internal" href="internal_api.html#marvin.models.Stream" title="marvin.models.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> is a collection of timecoded events that should occur during playback of a
+movie. Streams are available at the following endpoints:</p>
 <ul>
 <li><p class="first"><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/streams/&lt;id&gt;</span></tt>: Details about the stream with the given ID. Properties include at least
 <a class="reference internal" href="internal_api.html#marvin.models.Stream.id" title="marvin.models.Stream.id"><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt></a> and <a class="reference internal" href="internal_api.html#marvin.models.Stream.name" title="marvin.models.Stream.name"><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt></a>.</p>
@@ -108,11 +130,10 @@ following endpoints:</p>
 </li>
 <li><p class="first"><tt class="docutils literal"><span class="pre">DELETE</span> <span class="pre">/streams/&lt;id&gt;</span></tt>: Delete the given stream.</p>
 </li>
-<li><p class="first"><tt class="docutils literal"><span class="pre">POST</span> <span class="pre">/streams</span></tt>: Create a new stream. Required attributes:</p>
+<li><p class="first"><tt class="docutils literal"><span class="pre">POST</span> <span class="pre">/movies/&lt;movie_id&gt;/createStream</span></tt>: Create a new stream. Required attributes:</p>
 <blockquote>
 <div><ul class="simple">
 <li><a class="reference internal" href="internal_api.html#marvin.models.Stream.name" title="marvin.models.Stream.name"><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt></a></li>
-<li><a class="reference internal" href="internal_api.html#marvin.models.Stream.movie_id" title="marvin.models.Stream.movie_id"><tt class="xref py py-attr docutils literal"><span class="pre">movie_id</span></tt></a></li>
 </ul>
 </div></blockquote>
 </li>
