@@ -84,7 +84,6 @@ class MovieDetailView(TestCaseWithTempDB):
     def test_details_contains_links(self):
         response = self.client.get('/movies/%d' % self.movie_id)
         json_response = self.assert200(response)
-        print json_response
         self.assertTrue('createStream' in json_response['movie']['_links'])
         # links should be absolute
         self.assertTrue(json_response['movie']['_links']['createStream'].startswith('http'))
