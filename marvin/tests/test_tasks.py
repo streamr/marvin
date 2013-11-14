@@ -42,7 +42,8 @@ class OMDBFetchTest(TestCaseWithTempDB):
                         u'Title': u'Signora Ava'
                     }
                 ]
-            }
+            },
+            'status_code': 200,
         }
         response = Mock(**attrs)
         requests = Mock(**{'get.return_value': response})
@@ -77,7 +78,8 @@ class OMDBFetchTest(TestCaseWithTempDB):
                         "imdbID": "tt1170358"
                     }
                 ]
-            }
+            },
+            'status_code': 200,
         }
         response = Mock(**attrs)
         requests = Mock(**{'get.return_value': response})

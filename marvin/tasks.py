@@ -48,6 +48,12 @@ class OMDBFetcher(object):
         _logger.info("Querying OMDB for '%s'", query)
         payload = {'s': query}
         results = requests.get(self.OMDB_URL, params=payload)
+        if results.status_code != 200:
+            _logger.warning(textwrap.dedent("""OMDb request returned non-200 status code.
+                Status code: %d
+                Query:       %s
+                Response:    %s
+            """), results.status_code, results.url, results.text)
         try:
             json_results = results.json()
             return json_results
