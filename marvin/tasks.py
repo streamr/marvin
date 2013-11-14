@@ -39,9 +39,14 @@ class OMDBFetcher(object):
     OMDB_URL = 'http://www.omdbapi.com/'
 
     def search_and_store(self, query):
-        """ Get OMDb search results for `query`, store the results. """
-        results = self._query_omdb(query)
-        self._parse_omdb_results(results)
+        """ Get OMDb search results for `query`, store the results.
+
+        :param query: The query to search for. Queryies shorter than 2 characters will be ignored.
+        """
+        # OMDb refuses queries shorter than 2 chars
+        if len(query) > 1:
+            results = self._query_omdb(query)
+            self._parse_omdb_results(results)
 
 
     def _query_omdb(self, query):
@@ -49,7 +54,7 @@ class OMDBFetcher(object):
         payload = {'s': query}
         results = requests.get(self.OMDB_URL, params=payload)
         if results.status_code != 200:
-            _logger.warning(textwrap.dedent("""OMDb request returned non-200 status code.
+            _logger.error(textwrap.dedent("""OMDb request returned non-200 status code.
                 Status code: %d
                 Query:       %s
                 Response:    %s
@@ -67,13 +72,13 @@ class OMDBFetcher(object):
 
 
     def _parse_omdb_results(self, results):
-        external_ids = ['imdb:%s' % omdb_movie['imdbID'] for omdb_movie in results['Search']]
+        external_ids = ['imdb:%s' % omdb_movie['imdbID'] for omdb_movie in results.get('Search', [])]
         existing_movies = Movie.query.filter(Movie.external_id.in_(external_ids))
         new_ids = external_ids[:]
         for existing_movie in existing_movies:
             new_ids.remove(existing_movie.external_id)
         accepted_types = ['movie', 'episode']
-        for omdb_movie in results['Search']:
+        for omdb_movie in results.get('Search', []):
             if omdb_movie['Type'] in accepted_types and 'imdb:%s' % omdb_movie['imdbID'] in new_ids:
                 movie = Movie()
                 movie.title = omdb_movie['Title']
