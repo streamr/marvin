@@ -40,6 +40,9 @@ class Movie(db.Model):
     datetime_added = Column(db.DateTime, auto_now=True)
     #: Year the movies was first shown
     year = Column(db.Integer, min=1880, max=2050)
+    #: Small cover art, 300px-ish
+    cover_img = Column(db.String(100), nullable=True)
+
 
 
     def __init__(self, **kwargs):
@@ -59,6 +62,7 @@ class Movie(db.Model):
             'category': self.category,
             'datetime_added': self.datetime_added,
             'year': self.year,
+            'cover_img': self.cover_img,
             '_links': {
                 'createStream': url_for('createstreamview', movie_id=self.id, _external=True),
             },

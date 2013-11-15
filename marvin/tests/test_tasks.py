@@ -8,8 +8,10 @@ class OMDBFetchTest(TestCaseWithTempDB):
     def setUp(self):
         # We can't import the tasks module until create_app has been called,
         # which is why we do it down here
-        from marvin.tasks import external_search
+        from marvin.tasks import external_search, find_cover_art, find_cover_art_for_movie
         self.external_search = external_search
+        self.find_cover_art = find_cover_art
+        self.find_cover_art_for_movie = find_cover_art_for_movie
 
 
     def test_query_omdb(self):
@@ -49,7 +51,9 @@ class OMDBFetchTest(TestCaseWithTempDB):
         requests = Mock(**{'get.return_value': response})
 
         # pylint: disable=multiple-statements
-        with patch('marvin.tasks.requests', requests), self.app.test_request_context():
+        patch_requests = patch('marvin.tasks.requests', requests)
+        patch_cover_art = patch('marvin.tasks.find_cover_art', Mock())
+        with patch_requests, patch_cover_art, self.app.test_request_context():
             self.external_search('ava')
         with self.app.test_request_context():
             # we expect the 'series'-type to be ignored
@@ -85,6 +89,89 @@ class OMDBFetchTest(TestCaseWithTempDB):
         requests = Mock(**{'get.return_value': response})
 
         # pylint: disable=multiple-statements
-        with patch('marvin.tasks.requests', requests), self.app.test_request_context():
+        patch_requests = patch('marvin.tasks.requests', requests)
+        patch_cover_art = patch('marvin.tasks.find_cover_art', Mock())
+        with patch_requests, patch_cover_art, self.app.test_request_context():
             self.external_search('the hobbit')
             self.assertEqual(len(Movie.query.all()), 2)
+
+
+    def test_image_fetching(self):
+        movie = Movie(
+            title='The Hobbit: The Desolation of Smaug',
+            external_id='imdb:tt1170358'
+        )
+        movie_id = self.addItems(movie)
+        attrs = {
+            'json.return_value': {
+                "Actors": "Martin Freeman, Ian McKellen, Richard Armitage, Benedict Cumberbatch",
+                "Director": "Peter Jackson",
+                "Genre": "Adventure, Drama, Fantasy",
+                "Plot": "The Dwarves, Bilbo and Gandalf have successfully escaped the Misty Mountains, and Bilbo " +
+                    "has gained the One Ring. They all continue their journey to get their gold back from the " +
+                    "Dragon, Smaug.",
+                "Poster": "http://ia.media-imdb.com/images/M/MV5BMjAxMjMzMzAxOV5BMl5BanBnXkFtZTcwNTU3NzU2OQ@@._V1_SX300.jpg", # pylint: disable=line-too-long
+                "Rated": "N/A",
+                "Released": "13 Dec 2013",
+                "Response": "True",
+                "Runtime": "N/A",
+                "Title": "The Hobbit: The Desolation of Smaug",
+                "Type": "N/A",
+                "Writer": "Fran Walsh, Philippa Boyens",
+                "Year": "2013",
+                "imdbID": "tt1170358",
+                "imdbRating": "N/A",
+                "imdbVotes": "N/A"
+            },
+            'status_code': 200,
+        }
+        response = Mock(**attrs)
+        requests = Mock(**{'get.return_value': response})
+        artfinder = Mock()
+        with patch('marvin.tasks.find_cover_art_for_movie', artfinder):
+            self.find_cover_art()
+        # Should have called the finder once
+        self.assertEqual(len(artfinder.mock_calls), 1)
+        with patch('marvin.tasks.requests', requests):
+            self.find_cover_art_for_movie('imdb:tt1170358')
+        with self.app.test_request_context():
+            movie = Movie.query.get(movie_id)
+            self.assertEqual(movie.cover_img,
+                "http://ia.media-imdb.com/images/M/MV5BMjAxMjMzMzAxOV5BMl5BanBnXkFtZTcwNTU3NzU2OQ@@._V1_SX300.jpg")
+
+
+    def test_add_with_missing_cover_art(self):
+        movie = Movie(
+            title='H&G',
+            external_id='imdb:tt1170357',
+        )
+        movie_id = self.addItems(movie)
+        attrs = {
+            'json.return_value': {
+                "Actors": "Ted Arcidi, Miryam Coppersmith, Arthur French, Patty Goodwin",
+                "Director": u"Esther Dur\u00e1n, Caterina Klusemann",
+                "Genre": "Short",
+                "Plot": "N/A",
+                "Poster": "N/A",
+                "Rated": "N/A",
+                "Released": "N/A",
+                "Response": "True",
+                "Runtime": "21 min",
+                "Title": "H&G",
+                "Type": "movie",
+                "Writer": u"Caterina Klusemann, Esther Dur\u00e1n",
+                "Year": "2000",
+                "imdbID": "tt1170357",
+                "imdbRating": "6.9",
+                "imdbVotes": "12"
+            },
+            'status_code': 200,
+        }
+        response = Mock(**attrs)
+        requests = Mock(**{'get.return_value': response})
+        with patch('marvin.tasks.requests', requests):
+            self.find_cover_art_for_movie('imdb:tt1170357')
+        # Since Poster = N/A, should still be null
+        with self.app.test_request_context():
+            movie = Movie.query.get(movie_id)
+            self.assertIsNone(movie.cover_img)

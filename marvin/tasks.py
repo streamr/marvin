@@ -30,6 +30,46 @@ def external_search(query):
     omdb.search_and_store(query)
 
 
+@celery.task(name='find-images', base=celery.Task)
+def find_cover_art(external_ids=None):
+    """ Look up images for all movies where it's missing. """
+    if external_ids is None:
+        movies = Movie.query.filter(Movie.cover_img == None).all()
+    else:
+        movies = Movie.query.filter(Movie.external_id.in_(external_ids)).all()
+    for movie in movies:
+        find_cover_art_for_movie.delay(movie.external_id)
+
+
+@celery.task(name='find-image-for-movie', base=celery.Task)
+def find_cover_art_for_movie(external_id):
+    """ Find cover art for one movie. """
+    _logger.info("Searching for cover art for %s...", external_id)
+    provider, movie_id = external_id.split(':', 1)
+    if provider == 'imdb':
+        query_params = {
+            'i': movie_id,
+        }
+        response = requests.get('http://omdbapi.com', params=query_params)
+        if response.status_code != 200:
+            _logger.error(textwrap.dedent("""OMDb query for movie details returned non-200 status code.
+                URL:         %s
+                Status code: %d
+                Response:    %s
+            """), response.url, response.status_code, response.text)
+            return
+        json_results = response.json()
+        cover_art = json_results.get('Poster')
+        if cover_art and cover_art != 'N/A':
+            movie = Movie.query.filter_by(external_id=external_id).one()
+            _logger.info("Cover art for %s (%s) found", external_id, movie.title)
+            movie.cover_img = cover_art
+            db.session.add(movie)
+            db.session.commit()
+    else:
+        _logger.warning("I don't know how to find cover images for provider '%s'", provider)
+
+
 class OMDBFetcher(object):
     """
         Query OMDb for movies, store to our db. OMDb provides an imdb ID for all
@@ -46,7 +86,8 @@ class OMDBFetcher(object):
         # OMDb refuses queries shorter than 2 chars
         if len(query) > 1:
             results = self._query_omdb(query)
-            self._parse_omdb_results(results)
+            new_movies = self._parse_omdb_results(results)
+            find_cover_art.delay(new_movies)
 
 
     def _query_omdb(self, query):
@@ -88,3 +129,4 @@ class OMDBFetcher(object):
                 db.session.add(movie)
                 _logger.info("New movie added: '%s' (%d)", movie.title, movie.year)
         db.session.commit()
+        return new_ids
