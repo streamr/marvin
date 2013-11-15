@@ -72,7 +72,7 @@ class AllMoviesView(Resource):
 
         # Return results from our own db
         if search_query:
-            movie_query = Movie.query.filter(Movie.title.like('%' + search_query + '%')).limit(limit)
+            movie_query = Movie.query.filter(Movie.title.ilike('%' + search_query + '%')).limit(limit)
             _logger.info("Got search query for '%s'", search_query)
             movies = movie_query.all()
             if movies:
