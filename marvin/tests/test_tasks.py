@@ -51,7 +51,9 @@ class OMDBFetchTest(TestCaseWithTempDB):
         requests = Mock(**{'get.return_value': response})
 
         # pylint: disable=multiple-statements
-        with patch('marvin.tasks.requests', requests), self.app.test_request_context():
+        patch_requests = patch('marvin.tasks.requests', requests)
+        patch_cover_art = patch('marvin.tasks.find_cover_art', Mock())
+        with patch_requests, patch_cover_art, self.app.test_request_context():
             self.external_search('ava')
         with self.app.test_request_context():
             # we expect the 'series'-type to be ignored
@@ -87,7 +89,9 @@ class OMDBFetchTest(TestCaseWithTempDB):
         requests = Mock(**{'get.return_value': response})
 
         # pylint: disable=multiple-statements
-        with patch('marvin.tasks.requests', requests), self.app.test_request_context():
+        patch_requests = patch('marvin.tasks.requests', requests)
+        patch_cover_art = patch('marvin.tasks.find_cover_art', Mock())
+        with patch_requests, patch_cover_art, self.app.test_request_context():
             self.external_search('the hobbit')
             self.assertEqual(len(Movie.query.all()), 2)
 
