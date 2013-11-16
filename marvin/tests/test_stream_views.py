@@ -7,6 +7,7 @@ class StreamDetailViewTest(TestCaseWithTempDB):
         movie = Movie(
             title='Titanic',
             external_id='imdb:tt1245526',
+            number_of_streams=1,
         )
         stream = Stream(name='CinemaSins', movie=movie)
         self.stream_id, self.movie_id = self.addItems(stream, movie)
@@ -25,6 +26,8 @@ class StreamDetailViewTest(TestCaseWithTempDB):
         self.assertEqual(json_response['msg'], 'Stream deleted.')
         with self.app.test_request_context():
             self.assertEqual(len(Stream.query.all()), 0)
+            movie = Movie.query.get(self.movie_id)
+            self.assertEqual(movie.number_of_streams, 0)
 
 
     def test_put(self):
@@ -77,6 +80,8 @@ class StreamDetailViewTest(TestCaseWithTempDB):
         with self.app.test_request_context():
             streams = Stream.query.all()
             self.assertEqual(len(streams), 2)
+            movie = Movie.query.get(self.movie_id)
+            self.assertEqual(movie.number_of_streams, 2)
 
 
     def test_create_invalid(self):
@@ -85,6 +90,9 @@ class StreamDetailViewTest(TestCaseWithTempDB):
         }
         response = self.client.post('/movies/%d/createStream' % self.movie_id, data=stream)
         self.assertValidClientError(response)
+        with self.app.test_request_context():
+            movie = Movie.query.get(self.movie_id)
+            self.assertEqual(movie.number_of_streams, 1) # should still be only 1
 
 
 class StreamEntryFetchTest(TestCaseWithTempDB):

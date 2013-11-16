@@ -42,7 +42,8 @@ class Movie(db.Model):
     year = Column(db.Integer, min=1880, max=2050)
     #: Small cover art, 300px-ish
     cover_img = Column(db.String(100), nullable=True)
-
+    #: An aggregate of number of streams available
+    number_of_streams = Column(db.Integer, default=0, nullable=False, min=0)
 
 
     def __init__(self, **kwargs):
@@ -63,6 +64,7 @@ class Movie(db.Model):
             'datetime_added': self.datetime_added,
             'year': self.year,
             'cover_img': self.cover_img,
+            'number_of_streams': self.number_of_streams,
             '_links': {
                 'createStream': url_for('createstreamview', movie_id=self.id, _external=True),
             },

@@ -44,7 +44,10 @@ class StreamDetailView(Resource):
     def delete(self, stream_id):
         """ Delete the stream with the given ID. """
         stream = Stream.query.get_or_404(stream_id)
+        movie = stream.movie
+        movie.number_of_streams -= 1
         db.session.delete(stream)
+        db.session.add(movie)
         return {'msg': 'Stream deleted.'}
 
 
@@ -56,10 +59,12 @@ class CreateStreamView(Resource):
         form = StreamForm()
         if form.validate_on_submit():
             movie = Movie.query.get_or_404(movie_id)
+            movie.number_of_streams += 1
             stream = Stream()
             form.populate_obj(stream)
             stream.movie = movie
             db.session.add(stream)
+            db.session.add(movie)
             db.session.commit()
             return {
                 'msg': 'Stream created',
