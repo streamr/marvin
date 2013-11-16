@@ -1,4 +1,4 @@
-"""empty message
+"""Initial commit.
 
 Revision ID: 2fc2a1f6946d
 Revises: None

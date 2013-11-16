@@ -1,4 +1,4 @@
-"""empty message
+"""Add title to entries. Make entry_point_in_ms nullable=False.
 
 Revision ID: 6fae75bb79c
 Revises: 2fc2a1f6946d
