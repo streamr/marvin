@@ -117,21 +117,25 @@ def generic_error_handler(exception):
     """ Log exception to the standard marvin logger. """
     log_msg = textwrap.dedent("""Error occured!
         Path:                 %s
+        Params:               %s
         HTTP Method:          %s
         Client IP Address:    %s
         User Agent:           %s
         User Platform:        %s
         User Browser:         %s
         User Browser Version: %s
+        HTTP Headers:         %s
         Exception:            %s
         """ % (
             request.path,
+            request.values,
             request.method,
             request.remote_addr,
             request.user_agent.string,
             request.user_agent.platform,
             request.user_agent.browser,
             request.user_agent.version,
+            request.headers,
             exception
         )
     )
