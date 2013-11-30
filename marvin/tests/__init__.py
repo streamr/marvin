@@ -15,6 +15,7 @@ class MarvinBaseTestCase(unittest.TestCase):
         200,
         201,
         400,
+        403,
         404,
     )
 
@@ -139,6 +140,7 @@ class TestCaseWithTempDB(MarvinBaseTestCase):
             "SQLALCHEMY_DATABASE_URI = 'sqlite:///../tmptestdb.sqlite'",
             "CELERY_BROKER_URL = 'amqp://'",
             "TESTING = True",
+            "SECRET_KEY = 'supersecret'",
             "LOG_CONF_PATH = r'%s'" % path.abspath(path.join(path.dirname(__file__), 'test_log_conf.yaml')),
             ]).encode('utf-8')
         )
