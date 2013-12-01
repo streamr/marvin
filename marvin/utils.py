@@ -57,7 +57,7 @@ def generate_pw_hash(password):
     Return a string in the format ``method$salt$hash``.
     """
     # pylint: disable=invalid-name
-    salt =_generate_salt_bytes()
+    salt = _generate_salt_bytes()
     (N, p, r) = get_system_scrypt_params()
     method = '%s:%d:%d:%d' % ('scrypt', N, p, r)
     password_bytes = password.encode('utf-8')
@@ -135,4 +135,4 @@ def before_request_authentication():
         data = decode_token_or_400(auth_token)
         user = get_user_from_auth_data(data)
         g.user = user
-        identity_changed.send(currenth_app._get_current_object(), identity=Identity(user.id))
+        identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
