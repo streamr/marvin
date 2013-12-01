@@ -98,7 +98,9 @@ def is_correct_pw(password, password_hash):
     (N, p, r) = (int(N), int(p), int(r))
     hashed_bytes = scrypt.hash(password_bytes, salt_bytes, N, p, r)
     b64hash = base64.b64encode(hashed_bytes)
-    return constant_time_compare(hashed_pw.encode('utf-8'), b64hash.encode('utf-8'))
+    b64hash_bytes = force_bytes(b64hash)
+    hashed_pw_bytes = force_bytes(hashed_pw)
+    return constant_time_compare(hashed_pw_bytes, b64hash_bytes)
 
 
 def decode_token_or_400(auth_token):
