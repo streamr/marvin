@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -13,7 +14,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
+        URL_ROOT:    '',
         VERSION:     '0.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -183,6 +184,35 @@ you can pass in the starttime of the last entry you have, to fetch the next ones
 </li>
 </ul>
 </div>
+<div class="section" id="users">
+<h2>Users<a class="headerlink" href="#users" title="Permalink to this headline">¶</a></h2>
+<p>These endpoints are for creating users and getting auth tokens.</p>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">POST</span> <span class="pre">/users</span></tt>: Create a new user. Required fields:</p>
+<blockquote>
+<div><ul class="simple">
+<li><tt class="docutils literal"><span class="pre">username</span></tt>: The desired username</li>
+<li><tt class="docutils literal"><span class="pre">password</span></tt>: Desired password. Must be between 6 and 1024 characters long.</li>
+<li><tt class="docutils literal"><span class="pre">email</span></tt>: The email the user wants to use to recover the account.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><dl class="first docutils">
+<dt><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/users/&lt;user_id&gt;</span></tt>: View details for the given user. Access is restricted by auth_token, and users only have</dt>
+<dd><p class="first last">access to their own data.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">POST</span> <span class="pre">/login</span></tt>: Get a new auth_token for user. Required fields:</p>
+<blockquote>
+<div><ul class="simple">
+<li><tt class="docutils literal"><span class="pre">identifier</span></tt>: Either username or email of user</li>
+<li><tt class="docutils literal"><span class="pre">password</span></tt>: The users password</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
 </div>
 
 
@@ -197,6 +227,7 @@ you can pass in the starttime of the last entry you have, to fetch the next ones
 <li><a class="reference internal" href="#movies">Movies</a></li>
 <li><a class="reference internal" href="#streams">Streams</a></li>
 <li><a class="reference internal" href="#entries">Entries</a></li>
+<li><a class="reference internal" href="#users">Users</a></li>
 </ul>
 </li>
 </ul>
