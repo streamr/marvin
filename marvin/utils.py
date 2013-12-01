@@ -39,13 +39,25 @@ except ImportError: # pragma: no cover
 _logger = getLogger('marvin.utils')
 
 
+def _generate_salt_bytes():
+    """ Generate a random bytestring that can be used as a cryptographic salt.
+
+    The resulting bytestring will be approx 88 bytes long, 64 bytes of pure randomness
+    and 33% overhead due to base64-encoding the result.
+    """
+    randomness = os.urandom(64)
+    b64encoded = base64.b64encode(randomness)
+    bytestring = force_bytes(b64encoded)
+    return bytestring
+
+
 def generate_pw_hash(password):
     """ Hash the given password.
 
     Return a string in the format ``method$salt$hash``.
     """
     # pylint: disable=invalid-name
-    salt = base64.b64encode(os.urandom(64)).encode('utf-8')
+    salt =_generate_salt_bytes()
     (N, p, r) = get_system_scrypt_params()
     method = '%s:%d:%d:%d' % ('scrypt', N, p, r)
     password_bytes = password.encode('utf-8')
@@ -57,6 +69,15 @@ def get_system_scrypt_params():
     """ Get optimal N, p and r values for this sytem. """
     #FIXME: Hardcoded for now since lead dev is on windows and can't test against working scrypt...
     return (1024, 8, 1)
+
+
+def force_bytes(string):
+    """ Make sure the given argument is an instance of bytes. On python3, this is probably the case,
+    but on python2 we have to encode it with an encoding, in this case we'll use utf-8.
+    """
+    if hasattr(string, 'encode'): # py2
+        string = string.encode('utf-8')
+    return string
 
 
 def is_correct_pw(password, password_hash):
@@ -114,4 +135,4 @@ def before_request_authentication():
         data = decode_token_or_400(auth_token)
         user = get_user_from_auth_data(data)
         g.user = user
-        identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
+        identity_changed.send(currenth_app._get_current_object(), identity=Identity(user.id))
