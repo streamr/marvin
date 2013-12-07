@@ -6,14 +6,21 @@
     make it a package and split it up into smaller pieces.
 
 """
-from . import db
+from . import db, utils
 
-from flask import url_for
+from flask import url_for, current_app
 from flask.ext.wtf import Form
-from wtforms_alchemy import model_form_factory
+from itsdangerous import constant_time_compare, URLSafeSerializer
 from sqlalchemy_defaults import Column
+from sqlalchemy_utils import EmailType
+from time import time
+from wtforms_alchemy import model_form_factory
+from wtforms.fields import TextField
+from wtforms.validators import Length
+
 
 ModelForm = model_form_factory(Form)
+
 
 class Movie(db.Model):
     """ Movies are the first thing the user will search for.
@@ -195,3 +202,93 @@ class EntryForm(ModelForm):
             'content',
             'title',
         )
+
+
+class User(db.Model):
+    """ A user of the app. """
+    __lazy_options__ = {}
+
+    #: Unique identifier for this user
+    id = Column(db.Integer, primary_key=True)
+    #: The users chosen username
+    username = Column(db.String(20), index=True, unique=True)
+    #: The user's email address
+    email = Column(EmailType, nullable=False, unique=True)
+    #: A string in the format method$salt$hash, where method for now will be scrypt:N:p:r,
+    #: with N, p and r can be chosen to be arbitrary strong on a given machine.
+    password_hash = Column(db.String(250))
+    #: Date and time of signup
+    user_created_datetime = Column(db.DateTime, auto_now=True)
+
+
+    def __init__(self, **kwargs):
+        """ Create a new user.
+
+        :param kwargs: All properties can be set directory from the constructor.
+        """
+        if 'password' in kwargs:
+            password = kwargs.pop('password')
+            self.password_hash = utils.generate_pw_hash(password)
+        self.__dict__.update(kwargs)
+
+
+    def to_json(self, include_personal_data=False):
+        """ A dict representation of the user.
+
+        :param include_personal_data: Whether to include sensitive data such as email.
+        """
+        data = {
+            'username': self.username,
+            'href': url_for('userdetailview', user_id=self.id),
+        }
+
+        if include_personal_data:
+            data['email'] = self.email
+            data['signup_date'] = self.user_created_datetime
+
+        return data
+
+
+    def get_auth_token(self):
+        """ Get a auth token the user can use to authenticate agains the service. """
+        # The data keys should be as short as possible to keep the token short
+        data = {
+            # The user's id
+            'i': self.id,
+            # Time of issue
+            't': time(),
+            # Last characters of user's hashed password, makes sure the key is automatically
+            # expired if the user changes password
+            'p': self.password_hash[-10:],
+        }
+        serializer = URLSafeSerializer(current_app.config['SECRET_KEY'])
+        return serializer.dumps(data)
+
+
+    def verify_auth_data(self, auth_data):
+        """ Verify that an auth_data is valid for this user.
+
+        In pracice this means checking that the password in the given data is still valid
+        and has not expired yet.
+        """
+        return constant_time_compare(auth_data['p'].encode('ascii'), self.password_hash[-10:].encode('ascii'))
+
+
+class UserForm(ModelForm):
+    """ Form used to validate new user creation. """
+
+    class Meta(object):
+        model = User
+        only = (
+            'username',
+            'email',
+        )
+
+    password = TextField(validators=[Length(min=6, max=1024)])
+
+
+class UserLoginForm(Form):
+    """ Form used to validate user logins. """
+
+    identifier = TextField()
+    password = TextField(validators=[Length(min=6, max=1024)])

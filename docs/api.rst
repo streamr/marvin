@@ -85,3 +85,23 @@ An :class:`Entry <marvin.models.Entry>` is an event that occurs at some time dur
     avoid eating up all the memory of a device, and rather ask for more later.
   * ``starttime_gt``: Only fetch entries starting later than this time, in `ms`. Since this is a strict greater then,
     you can pass in the starttime of the last entry you have, to fetch the next ones after that.
+
+
+Users
+-----
+
+These endpoints are for creating users and getting auth tokens.
+
+* ``POST /users``: Create a new user. Required fields:
+
+    * ``username``: The desired username
+    * ``password``: Desired password. Must be between 6 and 1024 characters long.
+    * ``email``: The email the user wants to use to recover the account.
+
+* ``GET /users/<user_id>``: View details for the given user. Access is restricted by auth_token, and users only have
+    access to their own data.
+
+* ``POST /login``: Get a new auth_token for user. Required fields:
+
+    * ``identifier``: Either username or email of user
+    * ``password``: The users password

@@ -4,7 +4,6 @@ language:
 
 python:
   - "2.7"
-  - "3.3"
 
 before_install:
   - ./travis/before_script.sh
@@ -20,7 +19,7 @@ install:
 
 script:
   - grunt lint --force --virtualenv $VIRTUAL_ENV
-  - grunt test --virtualenv $VIRTUAL_ENV
+  - grunt test --virtualenv $VIRTUAL_ENV --dontstop
 
   # Only build in the build that will be deployed
   - if [[ $TRAVIS_PYTHON_VERSION == "2.7" ]]; then grunt build; fi

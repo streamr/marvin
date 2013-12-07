@@ -9,8 +9,9 @@
 
 from celery import Celery
 from flask import Flask, make_response, request
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.principal import Principal
 from flask.ext.restful import Api
+from flask.ext.sqlalchemy import SQLAlchemy
 from logging import getLogger
 from sqlalchemy_defaults import make_lazy_configured
 from os import path, environ
@@ -22,8 +23,6 @@ import ujson
 import yaml
 
 
-db = SQLAlchemy()
-
 class ApiBase(Api):
     """ Base API class used to add some extra functionality to Flask-RESTful. """
     # pylint: disable=super-on-old-class
@@ -34,6 +33,8 @@ class ApiBase(Api):
         return super(ApiBase, self).handle_error(exception)
 
 api = ApiBase()
+db = SQLAlchemy()
+principal = Principal()
 
 _logger = getLogger('marvin')
 
@@ -43,6 +44,7 @@ def _fastjson(data, code, headers=None):
     response = make_response(ujson.dumps(data), code)
     response.headers.extend(headers or {})
     return response
+
 
 def create_app(config_file=None, **extra_config):
     """ Creates a WSGI app.
@@ -77,6 +79,7 @@ def create_app(config_file=None, **extra_config):
     # Connect extensions
     db.init_app(app)
     api.init_app(app)
+    principal.init_app(app)
 
     # Configure lazy models
     make_lazy_configured(sqlalchemy.orm.mapper)
@@ -86,6 +89,7 @@ def create_app(config_file=None, **extra_config):
     from .views import streams
     from .views import entries
     from .views import stats
+    from .views import users
 
     # Register blueprints
     app.register_blueprint(stats.mod)
@@ -98,6 +102,9 @@ def create_app(config_file=None, **extra_config):
     api.add_resource(streams.StreamEntrySearch, '/streams/<int:stream_id>/entries')
     api.add_resource(entries.CreateEntryView, '/streams/<int:stream_id>/createEntry')
     api.add_resource(entries.EntryDetailView, '/entries/<int:entry_id>')
+    api.add_resource(users.CreateUserView, '/users')
+    api.add_resource(users.UserDetailView, '/users/<int:user_id>')
+    api.add_resource(users.LoginView, '/login')
 
     # Error handlers
     @app.errorhandler(500)
@@ -109,6 +116,15 @@ def create_app(config_file=None, **extra_config):
         }
         response = _fastjson(response_data, 500, {'Content-Type': 'application/json'})
         return response
+
+
+    from . import utils
+
+    # Connect before and after request handlers
+    app.before_request(utils.before_request_authentication)
+
+    # Import modules that connect to signals
+    from . import permissions as _
 
     return app
 

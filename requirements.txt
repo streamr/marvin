@@ -2,12 +2,15 @@ blinker==1.2
 celery
 flask
 flask-migrate
+flask-principal
 flask-script
 flask-restful
 flask-sqlalchemy
 flask-wtf
+pyyaml
 requests
-wtforms-alchemy
+scrypt
 sqlalchemy-defaults
 ujson
-pyyaml
+wtforms-alchemy==0.8.5
+wtforms-components==0.8.0
