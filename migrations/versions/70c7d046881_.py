@@ -11,6 +11,7 @@ revision = '70c7d046881'
 down_revision = '19b7fe1331be'
 
 from alembic import op
+from sqlalchemy_utils import EmailType
 import sqlalchemy as sa
 
 
@@ -19,7 +20,7 @@ def upgrade():
     op.create_table('user',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('username', sa.String(length=20), nullable=False),
-        sa.Column('email', sa.EmailType(length=255), nullable=False),
+        sa.Column('email', EmailType(length=255), nullable=False),
         sa.Column('password_hash', sa.String(length=250), nullable=False),
         sa.Column('user_created_datetime', sa.DateTime(), nullable=True),
         sa.PrimaryKeyConstraint('id'),
