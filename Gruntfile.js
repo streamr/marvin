@@ -28,7 +28,7 @@ module.exports = function (grunt) {
       python: {
         files: [
           'marvin/**/*.py',
-          'run_devserver.py',
+          'manage.py',
         ]
       },
       docs: {
@@ -71,7 +71,7 @@ module.exports = function (grunt) {
         options: {
           stdout: true,
         },
-        command: 'python run_devserver.py'
+        command: 'python manage.py runserver'
       },
       sphinx: {
         options: {
