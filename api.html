@@ -62,8 +62,10 @@
             
   <div class="section" id="external-api">
 <h1>External API<a class="headerlink" href="#external-api" title="Permalink to this headline">¶</a></h1>
-<p>This document describes the public-facing API of marvin. For now, there&#8217;s no authentication required to use the API,
-but this is likely to change.</p>
+<p>This document describes the public-facing API of marvin.</p>
+<p>For endpoints where it&#8217;s specified that authorization is required, a HTTP Authorization header is expected,
+with type &#8216;Token&#8217;, like this: <cite>Authorization: Token &lt;auth_token&gt;</cite>. See details under the Users section for
+how to obtain an auth_token.</p>
 <div class="section" id="movies">
 <h2>Movies<a class="headerlink" href="#movies" title="Permalink to this headline">¶</a></h2>
 <p>A <a class="reference internal" href="internal_api.html#marvin.models.Movie" title="marvin.models.Movie"><tt class="xref py py-class docutils literal"><span class="pre">Movie</span></tt></a> is an entity to which streams are bound. Movies are found at the following
@@ -142,11 +144,19 @@ movie. Streams are available at the following endpoints:</p>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><tt class="docutils literal"><span class="pre">PUT</span> <span class="pre">/streams/&lt;id&gt;</span></tt>: Update the given stream. All properties of the object must be present, anything missing will be deleted.</p>
+<li><dl class="first docutils">
+<dt><tt class="docutils literal"><span class="pre">PUT</span> <span class="pre">/streams/&lt;id&gt;</span></tt>: Update the given stream. All properties of the object must be present, anything missing will</dt>
+<dd><p class="first last">be deleted. Authorized user required, and only available to the user that created the stream.</p>
+</dd>
+</dl>
 </li>
-<li><p class="first"><tt class="docutils literal"><span class="pre">DELETE</span> <span class="pre">/streams/&lt;id&gt;</span></tt>: Delete the given stream.</p>
+<li><dl class="first docutils">
+<dt><tt class="docutils literal"><span class="pre">DELETE</span> <span class="pre">/streams/&lt;id&gt;</span></tt>: Delete the given stream. Authorized user required, and only available to the user that</dt>
+<dd><p class="first last">created the stream.</p>
+</dd>
+</dl>
 </li>
-<li><p class="first"><tt class="docutils literal"><span class="pre">POST</span> <span class="pre">/movies/&lt;movie_id&gt;/createStream</span></tt>: Create a new stream. Required attributes:</p>
+<li><p class="first"><tt class="docutils literal"><span class="pre">POST</span> <span class="pre">/movies/&lt;movie_id&gt;/createStream</span></tt>: Create a new stream. Authorized user required. Required attributes:</p>
 <blockquote>
 <div><ul class="simple">
 <li><a class="reference internal" href="internal_api.html#marvin.models.Stream.name" title="marvin.models.Stream.name"><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt></a></li>
@@ -198,7 +208,7 @@ you can pass in the starttime of the last entry you have, to fetch the next ones
 </div></blockquote>
 </li>
 <li><dl class="first docutils">
-<dt><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/users/&lt;user_id&gt;</span></tt>: View details for the given user. Access is restricted by auth_token, and users only have</dt>
+<dt><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/users/&lt;user_id&gt;</span></tt>: View details for the given user. Access is restricted logged in users, and users only have</dt>
 <dd><p class="first last">access to their own data.</p>
 </dd>
 </dl>

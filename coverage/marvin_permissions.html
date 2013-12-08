@@ -97,13 +97,14 @@
 <p id='n32' class='pln'><a href='#n32'>32</a></p>
 <p id='n33' class='stm run hide_run'><a href='#n33'>33</a></p>
 <p id='n34' class='pln'><a href='#n34'>34</a></p>
-<p id='n35' class='stm run hide_run'><a href='#n35'>35</a></p>
+<p id='n35' class='pln'><a href='#n35'>35</a></p>
 <p id='n36' class='stm run hide_run'><a href='#n36'>36</a></p>
-<p id='n37' class='pln'><a href='#n37'>37</a></p>
-<p id='n38' class='stm run hide_run'><a href='#n38'>38</a></p>
-<p id='n39' class='pln'><a href='#n39'>39</a></p>
+<p id='n37' class='stm run hide_run'><a href='#n37'>37</a></p>
+<p id='n38' class='pln'><a href='#n38'>38</a></p>
+<p id='n39' class='stm run hide_run'><a href='#n39'>39</a></p>
 <p id='n40' class='pln'><a href='#n40'>40</a></p>
-<p id='n41' class='stm run hide_run'><a href='#n41'>41</a></p>
+<p id='n41' class='pln'><a href='#n41'>41</a></p>
+<p id='n42' class='stm run hide_run'><a href='#n42'>42</a></p>
                 
             </td>
             <td class='text' valign='top'>
@@ -141,13 +142,14 @@
 <p id='t32' class='pln'><span class='strut'>&nbsp;</span></p>
 <p id='t33' class='stm run hide_run'>&nbsp; &nbsp; <span class='op'>@</span><span class='nam'>wraps</span><span class='op'>(</span><span class='nam'>func</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t34' class='pln'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>decorated_view</span><span class='op'>(</span><span class='op'>*</span><span class='nam'>args</span><span class='op'>,</span> <span class='op'>**</span><span class='nam'>kwargs</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t35' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>if</span> <span class='nam'>g</span><span class='op'>.</span><span class='nam'>user</span><span class='op'>.</span><span class='nam'>is_authenticated</span><span class='op'>(</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t36' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>return</span> <span class='nam'>func</span><span class='op'>(</span><span class='op'>*</span><span class='nam'>args</span><span class='op'>,</span> <span class='op'>**</span><span class='nam'>kwargs</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t37' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>else</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t38' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>return</span> <span class='op'>{</span><span class='strut'>&nbsp;</span></p>
-<p id='t39' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&#39;msg&#39;</span><span class='op'>:</span> <span class='str'>&#39;You must pass an auth_token to be able to access this endpoint&#39;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
-<p id='t40' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='op'>}</span><span class='op'>,</span> <span class='num'>401</span><span class='strut'>&nbsp;</span></p>
-<p id='t41' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>return</span> <span class='nam'>decorated_view</span><span class='strut'>&nbsp;</span></p>
+<p id='t35' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;&quot;&quot; View that only grants access to authenticated users. &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t36' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>if</span> <span class='nam'>g</span><span class='op'>.</span><span class='nam'>user</span><span class='op'>.</span><span class='nam'>is_authenticated</span><span class='op'>(</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t37' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>return</span> <span class='nam'>func</span><span class='op'>(</span><span class='op'>*</span><span class='nam'>args</span><span class='op'>,</span> <span class='op'>**</span><span class='nam'>kwargs</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t38' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>else</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t39' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>return</span> <span class='op'>{</span><span class='strut'>&nbsp;</span></p>
+<p id='t40' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&#39;msg&#39;</span><span class='op'>:</span> <span class='str'>&#39;You must pass an auth_token to be able to access this endpoint&#39;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t41' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='op'>}</span><span class='op'>,</span> <span class='num'>401</span><span class='strut'>&nbsp;</span></p>
+<p id='t42' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>return</span> <span class='nam'>decorated_view</span><span class='strut'>&nbsp;</span></p>
                 
             </td>
         </tr>

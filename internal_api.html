@@ -127,6 +127,12 @@ make it a package and split it up into smaller pieces.</p>
 <dt id="marvin.models.AnonymousUser">
 <em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">AnonymousUser</tt><a class="headerlink" href="#marvin.models.AnonymousUser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents an anonymous user.</p>
+<dl class="method">
+<dt id="marvin.models.AnonymousUser.is_authenticated">
+<tt class="descname">is_authenticated</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.models.AnonymousUser.is_authenticated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to tell anonymous users apart from authenticated users. Always returns False.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -258,11 +264,23 @@ movie. Always use IDs if you need to do that.</p>
 
 <dl class="class">
 <dt id="marvin.models.Stream">
-<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">Stream</tt><big>(</big><em>movie=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.Stream" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">Stream</tt><big>(</big><em>movie=None</em>, <em>creator=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.Stream" title="Permalink to this definition">¶</a></dt>
 <dd><p>A collection of related, timecoded entries that accompanies a movie.</p>
 <p>Entries in a stream will usually have some common theme, like annoucing new
 actors that enter the screen, or providing references for topics mentioned
 in a movie.</p>
+<dl class="attribute">
+<dt id="marvin.models.Stream.creator">
+<tt class="descname">creator</tt><a class="headerlink" href="#marvin.models.Stream.creator" title="Permalink to this definition">¶</a></dt>
+<dd><p>The user that created the stream</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="marvin.models.Stream.creator_id">
+<tt class="descname">creator_id</tt><a class="headerlink" href="#marvin.models.Stream.creator_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Foreign key to the user that created the stream</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="marvin.models.Stream.id">
 <tt class="descname">id</tt><a class="headerlink" href="#marvin.models.Stream.id" title="Permalink to this definition">¶</a></dt>
@@ -381,7 +399,7 @@ and has not expired yet.</p>
 
 <dl class="class">
 <dt id="marvin.models.UserLoginForm">
-<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">UserLoginForm</tt><big>(</big><em>formdata=&lt;class flask_wtf.form._Auto at 0x439d6d0&gt;</em>, <em>obj=None</em>, <em>prefix=''</em>, <em>csrf_context=None</em>, <em>secret_key=None</em>, <em>csrf_enabled=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.UserLoginForm" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">UserLoginForm</tt><big>(</big><em>formdata=&lt;class flask_wtf.form._Auto at 0x5208668&gt;</em>, <em>obj=None</em>, <em>prefix=''</em>, <em>csrf_context=None</em>, <em>secret_key=None</em>, <em>csrf_enabled=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.UserLoginForm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Form used to validate user logins.</p>
 </dd></dl>
 
@@ -499,7 +517,7 @@ so that we can look up the necessary parameters ourselves. This will be implemen
 <dd><p>RUD interface to streams.</p>
 <dl class="method">
 <dt id="marvin.views.streams.StreamDetailView.delete">
-<tt class="descname">delete</tt><big>(</big><em>stream_id</em><big>)</big><a class="headerlink" href="#marvin.views.streams.StreamDetailView.delete" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">delete</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.views.streams.StreamDetailView.delete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete the stream with the given ID.</p>
 </dd></dl>
 
@@ -511,7 +529,7 @@ so that we can look up the necessary parameters ourselves. This will be implemen
 
 <dl class="method">
 <dt id="marvin.views.streams.StreamDetailView.put">
-<tt class="descname">put</tt><big>(</big><em>stream_id</em><big>)</big><a class="headerlink" href="#marvin.views.streams.StreamDetailView.put" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">put</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.views.streams.StreamDetailView.put" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the stream with the given ID.</p>
 </dd></dl>
 

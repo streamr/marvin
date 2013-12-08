@@ -76,7 +76,7 @@ I1
 sg19
 I12
 sg20
-I32
+I33
 sg21
 I0
 sg22
@@ -86,7 +86,7 @@ I3
 sg24
 I4
 sbssg25
-S'\xea\xc8\xde\x0c\xe0\x10\xef\xb1\x15\x8e\xccGJ\xd2\xd5\xae'
+S'\ng\x88S\x19\xd1\xfa}\xf2\x9f/\xdb\xda\xc9L\xd5'
 p34
 ssS'marvin'
 p35
@@ -211,7 +211,7 @@ I1
 sg19
 I8
 sg20
-I103
+I106
 sg21
 I0
 sg22
@@ -221,7 +221,7 @@ I0
 sg24
 I1
 sbssg25
-S"_\x08\xca=\xa0\x11XAJ\xe0\x93'\x1f\x02\xb2\xd4"
+S'w\x06\x0f\xbd}\xffS\x1a\xc6^\x82\xb7}\x17\x1b\x15'
 p65
 ssS'marvin_validators'
 p66
@@ -345,9 +345,9 @@ NtRp95
 g18
 I1
 sg19
-I4
+I8
 sg20
-I44
+I51
 sg21
 I0
 sg22
@@ -357,7 +357,7 @@ I0
 sg24
 I0
 sbssg25
-S'i\xa0\xadz\x08\x18\x9e}n\xb1\x04u\x11\xa3\xac2'
+S'\x03^\x17Mz\x83\x98\xda\x8c\xcb 3I-\x11\xac'
 p97
 ssS'marvin_permissions'
 p98
@@ -391,7 +391,7 @@ I0
 sg24
 I0
 sbssg25
-S'F\x81\x9a\x88\x15W\xfe\x9f\xf1\xb3X3\x96\xb5\xec\xdb'
+S'\x98\xd7\x05&T\x195\xc6\xabh\xacn}\x0cJm'
 p105
 ssS'marvin_utils'
 p106
@@ -413,19 +413,19 @@ NtRp111
 g18
 I1
 sg19
-I6
+I8
 sg20
-I62
+I68
 sg21
 I14
 sg22
 I2
 sg23
-I4
+I1
 sg24
 I2
 sbssg25
-S')\xd4 \xb3x\x9d8\x06p\x86\x9b\xaex\x85E\n'
+S'"\x89{\x8f?\\.\xd6\x14\xbb\xfa\xf2\xe1\xe0\xc4\x9e'
 p113
 sssS'version'
 p114
