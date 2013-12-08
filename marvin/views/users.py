@@ -9,6 +9,7 @@
 
 from .. import db
 from ..models import User, UserForm, UserLoginForm
+from ..permissions import login_required
 from ..utils import is_correct_pw
 
 from flask.ext.restful import Resource
@@ -62,6 +63,7 @@ class LoginView(Resource):
 class UserDetailView(Resource):
     """ Read/Update endpoint for users. """
 
+    @login_required
     def get(self, user_id):
         """ Get details for a given user. """
         view_permission = Permission(UserNeed(user_id))
