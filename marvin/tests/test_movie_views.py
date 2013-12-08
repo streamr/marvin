@@ -1,5 +1,5 @@
 from marvin.models import Movie, Stream
-from marvin.tests import TestCaseWithTempDB
+from marvin.tests import TestCaseWithTempDB, AuthenticatedUserMixin
 
 from mock import Mock, patch
 
@@ -113,15 +113,16 @@ class MovieDetailView(TestCaseWithTempDB):
         self.assert404(response)
 
 
-class MovieDetailWithStreams(TestCaseWithTempDB):
+class MovieDetailWithStreams(TestCaseWithTempDB, AuthenticatedUserMixin):
 
     def setUp(self):
+        self.authenticate()
         movie = Movie(
             title='Red',
             external_id='imdb:tt1245526'
         )
-        sins_stream = Stream(name='CinemaSins', movie=movie)
-        actors_stream = Stream(name="Who's that actor?", movie=movie)
+        sins_stream = Stream(name='CinemaSins', movie=movie, creator=self.user)
+        actors_stream = Stream(name="Who's that actor?", movie=movie, creator=self.user)
         self.movie_id, self.sins_stream_id, self.actors_stream_id = self.addItems(movie, sins_stream, actors_stream)
 
 

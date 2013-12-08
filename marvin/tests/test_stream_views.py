@@ -4,14 +4,14 @@ from marvin.tests import TestCaseWithTempDB, AuthenticatedUserMixin
 class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
 
     def setUp(self):
+        self.authenticate()
         movie = Movie(
             title='Titanic',
             external_id='imdb:tt1245526',
             number_of_streams=1,
         )
-        stream = Stream(name='CinemaSins', movie=movie)
+        stream = Stream(name='CinemaSins', movie=movie, creator=self.user)
         self.stream_id, self.movie_id = self.addItems(stream, movie)
-        self.authenticate()
 
 
     def test_detail_view(self):
@@ -35,6 +35,7 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         stream = {
             'id': self.stream_id,
             'name': 'Curiosa', # We change the name of the stream
+            'auth_token': self.auth_token,
         }
         response = self.client.put('/streams/%d' % self.stream_id, data=stream)
         json_response = self.assert200(response)
@@ -58,6 +59,7 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
     def test_put_nonexistent(self):
         stream = {
             'name': "Who's that?",
+            'auth_token': self.auth_token,
         }
         response = self.client.put('/streams/6543', data=stream)
         self.assert404(response)
@@ -67,6 +69,7 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         stream = {
             'id': self.stream_id,
             'name': '',
+            'auth_token': self.auth_token,
         }
         response = self.client.put('/streams/%d' % self.stream_id, data=stream)
         self.assertValidClientError(response)
@@ -106,14 +109,15 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         self.assert401(response)
 
 
-class StreamEntryFetchTest(TestCaseWithTempDB):
+class StreamEntryFetchTest(TestCaseWithTempDB, AuthenticatedUserMixin):
 
     def setUp(self):
+        self.authenticate()
         movie = Movie(
             title='Avatar',
             external_id='imdb:tt0499549',
         )
-        stream = Stream(name='DurationNotifier', movie=movie)
+        stream = Stream(name='DurationNotifier', movie=movie, creator=self.user)
         self.stream_id, _ = self.addItems(stream, movie)
         for i in range(20):
             entry = Entry(entry_point_in_ms=i*60*1000, title='<h1>Title</h1>',

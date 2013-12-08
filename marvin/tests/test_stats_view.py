@@ -1,5 +1,5 @@
 from marvin.models import Movie, Stream, Entry
-from marvin.tests import TestCaseWithTempDB
+from marvin.tests import TestCaseWithTempDB, AuthenticatedUserMixin
 
 from contextlib import contextmanager
 from flask import template_rendered
@@ -21,9 +21,10 @@ def rendered_context(app):
         template_rendered.disconnect(record, app)
 
 
-class StatsViewTest(TestCaseWithTempDB):
+class StatsViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
 
     def setUp(self):
+        self.authenticate()
 
         # Add movies
         avatar = Movie(
@@ -39,14 +40,17 @@ class StatsViewTest(TestCaseWithTempDB):
         avatar_sins = Stream(
             name='CinemaSins',
             movie=avatar,
+            creator=self.user,
         )
         avatar_actors = Stream(
             name='Actors Introduced',
             movie=avatar,
+            creator=self.user,
         )
         battleship_sins = Stream(
             name='CinemaSins',
             movie=battleship,
+            creator=self.user,
         )
 
         # Add entries

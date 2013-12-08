@@ -106,15 +106,21 @@ class Stream(db.Model):
     movie_id = Column(db.Integer, db.ForeignKey('movie.id'), nullable=False)
     #: The movie this stream is associated to.
     movie = db.relationship('Movie', backref=db.backref('streams', lazy='dynamic'))
+    #: Foreign key to the user that created the stream
+    creator_id = Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    #: The user that created the stream
+    creator = db.relationship('User', backref=db.backref('created_streams', lazy='dynamic'))
 
 
-    def __init__(self, movie=None, **kwargs):
+    def __init__(self, movie=None, creator=None, **kwargs):
         """ Create new stream.
 
         :param movie: The movie this stream should be associated to.
+        :param creator: The user that created the stream.
         :param kwargs: Set object properties from constructor.
         """
         self.movie = movie
+        self.creator = creator
         self.__dict__.update(kwargs)
 
 

@@ -186,3 +186,4 @@ class AuthenticatedUserMixin(object):
             db.session.add(user)
             db.session.commit()
             self.auth_token = user.get_auth_token()
+            self.user = user

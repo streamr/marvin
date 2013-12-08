@@ -1,14 +1,15 @@
 from marvin.models import Movie, Stream, Entry
-from marvin.tests import TestCaseWithTempDB
+from marvin.tests import TestCaseWithTempDB, AuthenticatedUserMixin
 
-class EntryDetailViewTest(TestCaseWithTempDB):
+class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
 
     def setUp(self):
+        self.authenticate()
         movie = Movie(
             title='Avatar',
             external_id='imdb:tt0499549',
         )
-        stream = Stream(name='CinemaSins', movie=movie)
+        stream = Stream(name='CinemaSins', movie=movie, creator=self.user)
         too_big_tv = Entry(entry_point_in_ms=3*60*1000, stream=stream, title='<h1>Title</h1>',
             content="<p>Do you really need a wall-sized TV when you're sitting three inches from it?</p>")
         cardboard_coffin = Entry(entry_point_in_ms=5*60*1000, stream=stream, title='<h1>Title</h1>',

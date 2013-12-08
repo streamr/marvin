@@ -11,7 +11,7 @@ from .. import db
 from ..models import Stream, StreamForm, Entry, Movie
 from ..permissions import login_required
 
-from flask import request
+from flask import g, request
 from flask.ext.restful import Resource
 
 class StreamDetailView(Resource):
@@ -62,7 +62,7 @@ class CreateStreamView(Resource):
         if form.validate_on_submit():
             movie = Movie.query.get_or_404(movie_id)
             movie.number_of_streams += 1
-            stream = Stream()
+            stream = Stream(creator=g.user)
             form.populate_obj(stream)
             stream.movie = movie
             db.session.add(stream)
