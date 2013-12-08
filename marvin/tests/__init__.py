@@ -182,8 +182,8 @@ class AuthenticatedUserMixin(object):
 
     def authenticate(self):
         with self.app.test_request_context():
-            user = User(username='Bob', password='bobspw', email='bob@example.com')
+            user = User(username='bob', password='bobspw', email='bob@example.com')
             db.session.add(user)
             db.session.commit()
-            self.auth_token = user.get_auth_token()
+            self.auth_header = {'authorization': 'Token %s' % user.get_auth_token()}
             self.user = user

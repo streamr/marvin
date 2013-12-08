@@ -24,16 +24,16 @@ class UserAccessRestrictionTest(TestCaseWithTempDB):
             alice = User(username='alice', email='alice@gmail.com', password='123456')
         self.bob_id, self.alice_id = self.addItems(bob, alice)
         with self.app.test_request_context():
-            self.bob_token = User.query.get(self.bob_id).get_auth_token()
+            self.bob_auth_header = {'authorization': 'Token %s' % User.query.get(self.bob_id).get_auth_token()}
 
 
     def test_restricted_profile(self):
-        response = self.client.get('/users/%d?auth_token=%s' % (self.alice_id, self.bob_token))
+        response = self.client.get('/users/%d' % self.alice_id, headers=self.bob_auth_header)
         self.assert403(response)
 
 
     def test_access_to_own_profile(self):
-        response = self.client.get('/users/%d?auth_token=%s' % (self.bob_id, self.bob_token))
+        response = self.client.get('/users/%d' % self.bob_id, headers=self.bob_auth_header)
         self.assert200(response)
 
 

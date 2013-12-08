@@ -22,7 +22,7 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
 
 
     def test_delete(self):
-        response = self.client.delete('/streams/%d' % self.stream_id)
+        response = self.client.delete('/streams/%d' % self.stream_id, headers=self.auth_header)
         json_response = self.assert200(response)
         self.assertEqual(json_response['msg'], 'Stream deleted.')
         with self.app.test_request_context():
@@ -35,9 +35,8 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         stream = {
             'id': self.stream_id,
             'name': 'Curiosa', # We change the name of the stream
-            'auth_token': self.auth_token,
         }
-        response = self.client.put('/streams/%d' % self.stream_id, data=stream)
+        response = self.client.put('/streams/%d' % self.stream_id, data=stream, headers=self.auth_header)
         json_response = self.assert200(response)
         self.assertEqual(json_response['msg'], 'Stream updated.')
         self.assertTrue(json_response['stream']['href'].endswith(str(self.stream_id)))
@@ -59,10 +58,9 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         stream = Stream(name='Alices stream', creator_id=13, movie_id=self.movie_id)
         (stream_id,) = self.addItems(stream)
         data = {
-            'auth_token': self.auth_token,
             'name': 'Bob stole Alices stream',
         }
-        response = self.client.put('/streams/%d' % stream_id, data=data)
+        response = self.client.put('/streams/%d' % stream_id, data=data, headers=self.auth_header)
         self.assert403(response)
 
 
@@ -72,16 +70,15 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
 
 
     def test_delete_nonexistent(self):
-        response = self.client.delete('/streams/654')
+        response = self.client.delete('/streams/654', headers=self.auth_header)
         self.assert404(response)
 
 
     def test_put_nonexistent(self):
         stream = {
             'name': "Who's that?",
-            'auth_token': self.auth_token,
         }
-        response = self.client.put('/streams/6543', data=stream)
+        response = self.client.put('/streams/6543', data=stream, headers=self.auth_header)
         self.assert404(response)
 
 
@@ -89,18 +86,16 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         stream = {
             'id': self.stream_id,
             'name': '',
-            'auth_token': self.auth_token,
         }
-        response = self.client.put('/streams/%d' % self.stream_id, data=stream)
+        response = self.client.put('/streams/%d' % self.stream_id, data=stream, headers=self.auth_header)
         self.assertValidClientError(response)
 
 
     def test_create_stream(self):
         data = {
             'name': 'FactChecker',
-            'auth_token': self.auth_token,
         }
-        response = self.client.post('/movies/%d/createStream' % self.movie_id, data=data)
+        response = self.client.post('/movies/%d/createStream' % self.movie_id, data=data, headers=self.auth_header)
         self.assertValidCreate(response, object_name='stream')
         with self.app.test_request_context():
             streams = Stream.query.all()
@@ -112,9 +107,8 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
     def test_create_invalid(self):
         data = {
             # missing name
-            'auth_token': self.auth_token,
         }
-        response = self.client.post('/movies/%d/createStream' % self.movie_id, data=data)
+        response = self.client.post('/movies/%d/createStream' % self.movie_id, data=data, headers=self.auth_header)
         self.assertValidClientError(response)
         with self.app.test_request_context():
             movie = Movie.query.get(self.movie_id)

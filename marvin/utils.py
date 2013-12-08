@@ -125,6 +125,20 @@ def get_user_from_auth_data(auth_data):
     abort(401)
 
 
+def get_auth_token_from_header():
+    """ Extract the token from a HTTP Authorization header.
+
+    The header is supposed to look be in the format `Authorization: Token <access token>`
+
+    :returns: Auth token from header, or `None` if none was found.
+    """
+    header = request.headers.get('authorization')
+    if header and header.startswith('Token '):
+        auth_token = header[6:]
+        return auth_token
+    return None
+
+
 def before_request_authentication():
     """ Connect with @app.before_request to authenticate users using the
     `auth_token` request param.
@@ -133,7 +147,7 @@ def before_request_authentication():
     """
     # pylint: disable=protected-access
     from .models import AnonymousUser
-    auth_token = request.values.get('auth_token')
+    auth_token = get_auth_token_from_header()
     if auth_token:
         data = decode_token_or_400(auth_token)
         user = get_user_from_auth_data(data)
