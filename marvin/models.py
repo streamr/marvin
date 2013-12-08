@@ -232,6 +232,11 @@ class User(db.Model):
         self.__dict__.update(kwargs)
 
 
+    def is_authenticated(self):
+        """ Used to tell the difference between authenticated users and anonymous users. """
+        return True
+
+
     def to_json(self, include_personal_data=False):
         """ A dict representation of the user.
 
@@ -272,6 +277,13 @@ class User(db.Model):
         and has not expired yet.
         """
         return constant_time_compare(auth_data['p'].encode('ascii'), self.password_hash[-10:].encode('ascii'))
+
+
+class AnonymousUser(object):
+    """ Represents an anonymous user. """
+
+    def is_authenticated(self):
+        return False
 
 
 class UserForm(ModelForm):

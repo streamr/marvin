@@ -129,12 +129,15 @@ def before_request_authentication():
     """ Connect with @app.before_request to authenticate users using the
     `auth_token` request param.
 
-    Assigns the authenticated user to `g.user`.
+    Assigns a user to `g.user`, AnonymousUser if no auth_token was sent in the request.
     """
     # pylint: disable=protected-access
-    auth_token = request.args.get('auth_token')
+    from .models import AnonymousUser
+    auth_token = request.values.get('auth_token')
     if auth_token:
         data = decode_token_or_400(auth_token)
         user = get_user_from_auth_data(data)
         g.user = user
         identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
+    else:
+        g.user = AnonymousUser()
