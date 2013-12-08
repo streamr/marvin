@@ -51,6 +51,17 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
                 "<p>Do you really need a wall-sized TV when you're sitting three inches from it?</p>")
 
 
+    def test_update_invalid(self):
+        entry = {
+            'id': self.tv_id,
+            'entry_point_in_ms': -1, # Invalid entry point,
+            'title': 'Fancy title',
+            'content': 'Too large TV',
+        }
+        response = self.client.put('/entries/%d' % self.tv_id, data=entry)
+        self.assert400(response)
+
+
     def test_delete_entry(self):
         response = self.client.delete('/entries/%d' % self.tv_id)
         json_response = self.assert200(response)
