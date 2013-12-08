@@ -1,7 +1,7 @@
 from marvin.models import Stream, Movie, Entry
-from marvin.tests import TestCaseWithTempDB
+from marvin.tests import TestCaseWithTempDB, AuthenticatedUserMixin
 
-class StreamDetailViewTest(TestCaseWithTempDB):
+class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
 
     def setUp(self):
         movie = Movie(
@@ -11,6 +11,7 @@ class StreamDetailViewTest(TestCaseWithTempDB):
         )
         stream = Stream(name='CinemaSins', movie=movie)
         self.stream_id, self.movie_id = self.addItems(stream, movie)
+        self.authenticate()
 
 
     def test_detail_view(self):
@@ -72,10 +73,11 @@ class StreamDetailViewTest(TestCaseWithTempDB):
 
 
     def test_create_stream(self):
-        stream = {
+        data = {
             'name': 'FactChecker',
+            'auth_token': self.auth_token,
         }
-        response = self.client.post('/movies/%d/createStream' % self.movie_id, data=stream)
+        response = self.client.post('/movies/%d/createStream' % self.movie_id, data=data)
         self.assertValidCreate(response, object_name='stream')
         with self.app.test_request_context():
             streams = Stream.query.all()
@@ -85,14 +87,23 @@ class StreamDetailViewTest(TestCaseWithTempDB):
 
 
     def test_create_invalid(self):
-        stream = {
+        data = {
             # missing name
+            'auth_token': self.auth_token,
         }
-        response = self.client.post('/movies/%d/createStream' % self.movie_id, data=stream)
+        response = self.client.post('/movies/%d/createStream' % self.movie_id, data=data)
         self.assertValidClientError(response)
         with self.app.test_request_context():
             movie = Movie.query.get(self.movie_id)
             self.assertEqual(movie.number_of_streams, 1) # should still be only 1
+
+
+    def test_stream_create_restricted(self):
+        data = {
+            'name': 'FactChecker',
+        }
+        response = self.client.post('/movies/%d/createStream' % self.movie_id, data=data)
+        self.assert401(response)
 
 
 class StreamEntryFetchTest(TestCaseWithTempDB):

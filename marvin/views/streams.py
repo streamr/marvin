@@ -9,6 +9,7 @@
 
 from .. import db
 from ..models import Stream, StreamForm, Entry, Movie
+from ..permissions import login_required
 
 from flask import request
 from flask.ext.restful import Resource
@@ -52,8 +53,9 @@ class StreamDetailView(Resource):
 
 
 class CreateStreamView(Resource):
-    """ C interface for streams. """
+    """ Create interface for streams. """
 
+    @login_required
     def post(self, movie_id):
         """ Create new stream. """
         form = StreamForm()
