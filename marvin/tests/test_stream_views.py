@@ -46,6 +46,26 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             self.assertEqual(new_stream.name, 'Curiosa')
 
 
+    def test_put_restricted(self):
+        stream = {
+            'id': self.stream_id,
+            'name': 'Curiosa', # We change the name of the stream
+        }
+        response = self.client.put('/streams/%d' % self.stream_id, data=stream)
+        self.assert401(response)
+
+
+    def test_edit_other_users_stream(self):
+        stream = Stream(name='Alices stream', creator_id=13, movie_id=self.movie_id)
+        (stream_id,) = self.addItems(stream)
+        data = {
+            'auth_token': self.auth_token,
+            'name': 'Bob stole Alices stream',
+        }
+        response = self.client.put('/streams/%d' % stream_id, data=data)
+        self.assert403(response)
+
+
     def test_get_nonexistent(self):
         response = self.client.get('/streams/7654')
         self.assert404(response)

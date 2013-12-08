@@ -12,6 +12,7 @@ from ..models import Stream, StreamForm, Entry, Movie
 from ..permissions import login_required
 
 from flask import g, request
+from flask.ext.principal import UserNeed, Permission
 from flask.ext.restful import Resource
 
 class StreamDetailView(Resource):
@@ -25,21 +26,28 @@ class StreamDetailView(Resource):
         }
 
 
+    @login_required
     def put(self, stream_id):
         """ Update the stream with the given ID. """
         stream = Stream.query.get_or_404(stream_id)
-        form = StreamForm(obj=stream)
-        form.populate_obj(stream)
-        if form.validate_on_submit():
-            db.session.add(stream)
+        edit_permission = Permission(UserNeed(stream.creator_id))
+        if edit_permission.can():
+            form = StreamForm(obj=stream)
+            form.populate_obj(stream)
+            if form.validate_on_submit():
+                db.session.add(stream)
+                return {
+                    'msg': 'Stream updated.',
+                    'stream': stream.to_json(),
+                }
             return {
-                'msg': 'Stream updated.',
-                'stream': stream.to_json(),
-            }
-        return {
-            'msg': 'Some attributes did not pass validation.',
-            'errors': form.errors,
-        }, 400
+                'msg': 'Some attributes did not pass validation.',
+                'errors': form.errors,
+            }, 400
+        else:
+            return {
+                'msg': "You're not allowed to edit this stream"
+            }, 403
 
 
     def delete(self, stream_id):
