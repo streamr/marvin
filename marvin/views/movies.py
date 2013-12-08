@@ -7,7 +7,6 @@
 """
 # pylint: disable=no-self-use
 
-from .. import db
 from ..models import Movie
 
 from flask import request
@@ -16,8 +15,9 @@ from logging import getLogger
 
 _logger = getLogger('marvin.views.movies')
 
+
 class MovieDetailView(Resource):
-    """ RD interface to movies. """
+    """ Read interface to movies. """
 
     def get(self, movie_id):
         """ Get the movie with the given ID. """
@@ -25,13 +25,6 @@ class MovieDetailView(Resource):
         return {
             'movie': movie.to_json(),
         }
-
-
-    def delete(self, movie_id):
-        """ Delete the movie with the given ID. """
-        movie = Movie.query.get_or_404(movie_id)
-        db.session.delete(movie)
-        return {'msg': 'Movie deleted.'}
 
 
 class AllMoviesView(Resource):

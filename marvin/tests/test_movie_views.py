@@ -3,7 +3,6 @@ from marvin.tests import TestCaseWithTempDB, AuthenticatedUserMixin
 
 from mock import Mock, patch
 
-import ujson as json
 import unittest
 
 class AllMovieViewTest(TestCaseWithTempDB):
@@ -91,25 +90,8 @@ class MovieDetailView(TestCaseWithTempDB):
             self.movie_id))
 
 
-    def test_delete(self):
-        response = self.client.delete('/movies/%d' % self.movie_id)
-        json_response = self.assert200(response)
-        self.assertEqual(json_response['msg'], 'Movie deleted.')
-        with self.app.test_request_context():
-            movies = Movie.query.all()
-            self.assertEqual(len(movies), 0)
-        with patch('marvin.tasks.external_search', Mock()):
-            frontpage_json = json.loads(self.client.get('/movies').data)
-        self.assertEqual(len(frontpage_json['movies']), 0)
-
-
     def test_get_nonexistent(self):
         response = self.client.get('/movies/65432')
-        self.assert404(response)
-
-
-    def test_delete_nonexistent(self):
-        response = self.client.delete('/movies/543')
         self.assert404(response)
 
 

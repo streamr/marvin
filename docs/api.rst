@@ -38,8 +38,6 @@ endpoints:
     * :attr:`streams <marvin.models.Movie.streams>`: A list of stream objects with at least an
       `href` and a :attr:`name <marvin.models.Stream.name>` attribute.
 
-* ``DELETE /movies/<id>``: Delete the movie with the given id.
-
 
 Streams
 -------
