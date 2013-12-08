@@ -50,14 +50,21 @@ class StreamDetailView(Resource):
             }, 403
 
 
+    @login_required
     def delete(self, stream_id):
         """ Delete the stream with the given ID. """
         stream = Stream.query.get_or_404(stream_id)
-        movie = stream.movie
-        movie.number_of_streams -= 1
-        db.session.delete(stream)
-        db.session.add(movie)
-        return {'msg': 'Stream deleted.'}
+        delete_permission = Permission(UserNeed(stream.creator_id))
+        if delete_permission.can():
+            movie = stream.movie
+            movie.number_of_streams -= 1
+            db.session.delete(stream)
+            db.session.add(movie)
+            return {'msg': 'Stream deleted.'}
+        else:
+            return {
+                'msg': "You're not allowed to delete this stream."
+            }, 403
 
 
 class CreateStreamView(Resource):

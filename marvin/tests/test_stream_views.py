@@ -31,6 +31,18 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             self.assertEqual(movie.number_of_streams, 0)
 
 
+    def test_delete_restricted(self):
+        response = self.client.delete('/streams/%d' % self.stream_id)
+        self.assert401(response)
+
+
+    def test_delete_other_users_stream(self):
+        stream = Stream(name='Alices stream', creator_id=13, movie_id=self.movie_id)
+        (stream_id,) = self.addItems(stream)
+        response = self.client.delete('/streams/%d' % stream_id, headers=self.auth_header)
+        self.assert403(response)
+
+
     def test_put(self):
         stream = {
             'id': self.stream_id,
