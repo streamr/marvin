@@ -19,7 +19,7 @@ endpoints:
 
     * `q`: A search query to limit movies by. Searches titles only.
 
-  Each movie is am object with at least the following properties:
+  Each movie is an object with at least the following properties:
 
     * `href`: The URI for this movie. Use this for all operations on the movie, such as DELETE, PUT or GET.
     * :attr:`title <marvin.models.Movie.title>`
@@ -28,11 +28,12 @@ endpoints:
         * `createStreams`: Where you should POST new streams. See under streams for the required attributes.
 
 * ``GET /movies/<id>``: Get details for a single movie. Properties are subject to change, but you can expect *at least*
-   the following:
+  the following:
+
     * `href`: URI of the movie.
     * :attr:`title <marvin.models.Movie.title>`
-    * :attr:`streams <marvin.models.Movie.streams>`: A list of stream objects with at least an
-      `href` and a :attr:`name <marvin.models.Stream.name>` attribute.
+    * :attr:`streams <marvin.models.Movie.streams>`: A list of stream objects with at least an `href` and a
+      :attr:`name <marvin.models.Stream.name>` attribute.
 
 
 Streams
@@ -51,10 +52,10 @@ movie. Streams are available at the following endpoints:
         * `entries`: An endpoint for querying for entries in this stream
 
 * ``PUT /streams/<id>``: Update the given stream. All properties of the object must be present, anything missing will
-    be deleted. Authorized user required, and only available to the user that created the stream.
+  be deleted. Authorized user required, and only available to the user that created the stream.
 
 * ``DELETE /streams/<id>``: Delete the given stream. Authorized user required, and only available to the user that
-    created the stream.
+  created the stream.
 
 * ``POST /movies/<movie_id>/createStream``: Create a new stream. Authorized user required. Required attributes:
 
@@ -97,10 +98,10 @@ These endpoints are for creating users and getting auth tokens.
     * ``password``: Desired password. Must be between 6 and 1024 characters long.
     * ``email``: The email the user wants to use to recover the account.
 
-* ``GET /users/<user_id>``: View details for the given user. Access is restricted logged in users, and users only have
-    access to their own data.
+* ``GET /users/<user_id>``: View details for the given user. Access is restricted to logged in users, and users only
+  have access to their own data.
 
 * ``POST /login``: Get a new auth_token for user. Required fields:
 
-    * ``identifier``: Either username or email of user
-    * ``password``: The users password
+    * ``identifier``: Either username or email of the user
+    * ``password``: The user's password

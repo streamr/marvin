@@ -78,7 +78,7 @@ following GET parameters:</p>
 <li><cite>q</cite>: A search query to limit movies by. Searches titles only.</li>
 </ul>
 </div></blockquote>
-<p>Each movie is am object with at least the following properties:</p>
+<p>Each movie is an object with at least the following properties:</p>
 <blockquote>
 <div><ul>
 <li><p class="first"><cite>href</cite>: The URI for this movie. Use this for all operations on the movie, such as DELETE, PUT or GET.</p>
@@ -95,20 +95,16 @@ following GET parameters:</p>
 </ul>
 </div></blockquote>
 </li>
-<li><dl class="first docutils">
-<dt><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/movies/&lt;id&gt;</span></tt>: Get details for a single movie. Properties are subject to change, but you can expect <em>at least</em></dt>
-<dd><dl class="first last docutils">
-<dt>the following:</dt>
-<dd><ul class="first last simple">
+<li><p class="first"><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/movies/&lt;id&gt;</span></tt>: Get details for a single movie. Properties are subject to change, but you can expect <em>at least</em>
+the following:</p>
+<blockquote>
+<div><ul class="simple">
 <li><cite>href</cite>: URI of the movie.</li>
 <li><a class="reference internal" href="internal_api.html#marvin.models.Movie.title" title="marvin.models.Movie.title"><tt class="xref py py-attr docutils literal"><span class="pre">title</span></tt></a></li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">streams</span></tt>: A list of stream objects with at least an
-<cite>href</cite> and a <a class="reference internal" href="internal_api.html#marvin.models.Stream.name" title="marvin.models.Stream.name"><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt></a> attribute.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">streams</span></tt>: A list of stream objects with at least an <cite>href</cite> and a
+<a class="reference internal" href="internal_api.html#marvin.models.Stream.name" title="marvin.models.Stream.name"><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt></a> attribute.</li>
 </ul>
-</dd>
-</dl>
-</dd>
-</dl>
+</div></blockquote>
 </li>
 </ul>
 </div>
@@ -135,17 +131,11 @@ movie. Streams are available at the following endpoints:</p>
 </ul>
 </div></blockquote>
 </li>
-<li><dl class="first docutils">
-<dt><tt class="docutils literal"><span class="pre">PUT</span> <span class="pre">/streams/&lt;id&gt;</span></tt>: Update the given stream. All properties of the object must be present, anything missing will</dt>
-<dd><p class="first last">be deleted. Authorized user required, and only available to the user that created the stream.</p>
-</dd>
-</dl>
+<li><p class="first"><tt class="docutils literal"><span class="pre">PUT</span> <span class="pre">/streams/&lt;id&gt;</span></tt>: Update the given stream. All properties of the object must be present, anything missing will
+be deleted. Authorized user required, and only available to the user that created the stream.</p>
 </li>
-<li><dl class="first docutils">
-<dt><tt class="docutils literal"><span class="pre">DELETE</span> <span class="pre">/streams/&lt;id&gt;</span></tt>: Delete the given stream. Authorized user required, and only available to the user that</dt>
-<dd><p class="first last">created the stream.</p>
-</dd>
-</dl>
+<li><p class="first"><tt class="docutils literal"><span class="pre">DELETE</span> <span class="pre">/streams/&lt;id&gt;</span></tt>: Delete the given stream. Authorized user required, and only available to the user that
+created the stream.</p>
 </li>
 <li><p class="first"><tt class="docutils literal"><span class="pre">POST</span> <span class="pre">/movies/&lt;movie_id&gt;/createStream</span></tt>: Create a new stream. Authorized user required. Required attributes:</p>
 <blockquote>
@@ -198,17 +188,14 @@ you can pass in the starttime of the last entry you have, to fetch the next ones
 </ul>
 </div></blockquote>
 </li>
-<li><dl class="first docutils">
-<dt><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/users/&lt;user_id&gt;</span></tt>: View details for the given user. Access is restricted logged in users, and users only have</dt>
-<dd><p class="first last">access to their own data.</p>
-</dd>
-</dl>
+<li><p class="first"><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/users/&lt;user_id&gt;</span></tt>: View details for the given user. Access is restricted to logged in users, and users only
+have access to their own data.</p>
 </li>
 <li><p class="first"><tt class="docutils literal"><span class="pre">POST</span> <span class="pre">/login</span></tt>: Get a new auth_token for user. Required fields:</p>
 <blockquote>
 <div><ul class="simple">
-<li><tt class="docutils literal"><span class="pre">identifier</span></tt>: Either username or email of user</li>
-<li><tt class="docutils literal"><span class="pre">password</span></tt>: The users password</li>
+<li><tt class="docutils literal"><span class="pre">identifier</span></tt>: Either username or email of the user</li>
+<li><tt class="docutils literal"><span class="pre">password</span></tt>: The user&#8217;s password</li>
 </ul>
 </div></blockquote>
 </li>
