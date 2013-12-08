@@ -1,6 +1,7 @@
 # pylint: disable=attribute-defined-outside-init
 
 from marvin import create_app, db
+from marvin.models import User
 
 from os import path
 
@@ -14,6 +15,7 @@ class MarvinBaseTestCase(unittest.TestCase):
     response_code_helpers = (
         200,
         201,
+        401,
         400,
         403,
         404,
@@ -169,3 +171,18 @@ class TestCaseWithTempDB(MarvinBaseTestCase):
             for item in args:
                 result_ids.append(item.id)
         return result_ids
+
+
+class AuthenticatedUserMixin(object):
+    """ Include this mixin if you want to test authenticated views.
+
+    Call `self.authenticate()` in setUp of your test, this will set the `auth_token` attribute on your
+    testcase.
+    """
+
+    def authenticate(self):
+        with self.app.test_request_context():
+            user = User(username='Bob', password='bobspw', email='bob@example.com')
+            db.session.add(user)
+            db.session.commit()
+            self.auth_token = user.get_auth_token()
