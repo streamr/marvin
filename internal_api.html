@@ -399,7 +399,7 @@ and has not expired yet.</p>
 
 <dl class="class">
 <dt id="marvin.models.UserLoginForm">
-<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">UserLoginForm</tt><big>(</big><em>formdata=&lt;class flask_wtf.form._Auto at 0x5208668&gt;</em>, <em>obj=None</em>, <em>prefix=''</em>, <em>csrf_context=None</em>, <em>secret_key=None</em>, <em>csrf_enabled=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.UserLoginForm" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">UserLoginForm</tt><big>(</big><em>formdata=&lt;class flask_wtf.form._Auto at 0x4676600&gt;</em>, <em>obj=None</em>, <em>prefix=''</em>, <em>csrf_context=None</em>, <em>secret_key=None</em>, <em>csrf_enabled=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.UserLoginForm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Form used to validate user logins.</p>
 </dd></dl>
 
@@ -418,7 +418,7 @@ registered to the app object in <tt class="xref py py-func docutils literal"><sp
 <dd><p>Create interface to entries.</p>
 <dl class="method">
 <dt id="marvin.views.entries.CreateEntryView.post">
-<tt class="descname">post</tt><big>(</big><em>stream_id</em><big>)</big><a class="headerlink" href="#marvin.views.entries.CreateEntryView.post" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">post</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.views.entries.CreateEntryView.post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new entry.</p>
 </dd></dl>
 
@@ -470,13 +470,7 @@ so that we can look up the necessary parameters ourselves. This will be implemen
 <dl class="class">
 <dt id="marvin.views.movies.MovieDetailView">
 <em class="property">class </em><tt class="descclassname">marvin.views.movies.</tt><tt class="descname">MovieDetailView</tt><a class="headerlink" href="#marvin.views.movies.MovieDetailView" title="Permalink to this definition">¶</a></dt>
-<dd><p>RD interface to movies.</p>
-<dl class="method">
-<dt id="marvin.views.movies.MovieDetailView.delete">
-<tt class="descname">delete</tt><big>(</big><em>movie_id</em><big>)</big><a class="headerlink" href="#marvin.views.movies.MovieDetailView.delete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete the movie with the given ID.</p>
-</dd></dl>
-
+<dd><p>Read interface to movies.</p>
 <dl class="method">
 <dt id="marvin.views.movies.MovieDetailView.get">
 <tt class="descname">get</tt><big>(</big><em>movie_id</em><big>)</big><a class="headerlink" href="#marvin.views.movies.MovieDetailView.get" title="Permalink to this definition">¶</a></dt>
@@ -553,37 +547,6 @@ so that we can look up the necessary parameters ourselves. This will be implemen
 </dd></dl>
 
 </div>
-<span class="target" id="module-marvin.validators"></span><div class="section" id="marvin-validators">
-<h2>marvin.validators<a class="headerlink" href="#marvin-validators" title="Permalink to this headline">¶</a></h2>
-<p>Some extra validators that can be used in model definitions.</p>
-<dl class="function">
-<dt id="marvin.validators.fk_exists">
-<tt class="descclassname">marvin.validators.</tt><tt class="descname">fk_exists</tt><big>(</big><em>model</em><big>)</big><a class="headerlink" href="#marvin.validators.fk_exists" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate that the object pointed to by the foreign key exists.</p>
-<p>Usage example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-    <span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
-        <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span>
-    <span class="p">)</span>
-    <span class="n">group_id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span>
-        <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;group.id&#39;</span><span class="p">),</span>
-        <span class="n">info</span><span class="o">=</span><span class="p">{</span>
-            <span class="s">&#39;validators&#39;</span><span class="p">:</span> <span class="n">fk_exists</span><span class="p">(</span><span class="n">Group</span><span class="p">),</span>
-        <span class="p">}</span>
-    <span class="p">)</span>
-</pre></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> &#8211; The model the foreign key should be checked against.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
 </div>
 
 
@@ -602,7 +565,6 @@ so that we can look up the necessary parameters ourselves. This will be implemen
 <li><a class="reference internal" href="#marvin-views-movies">marvin.views.movies</a></li>
 <li><a class="reference internal" href="#marvin-views-stats">marvin.views.stats</a></li>
 <li><a class="reference internal" href="#marvin-views-streams">marvin.views.streams</a></li>
-<li><a class="reference internal" href="#marvin-validators">marvin.validators</a></li>
 </ul>
 </li>
 </ul>
