@@ -1,8 +1,11 @@
 External API
 ============
 
-This document describes the public-facing API of marvin. For now, there's no authentication required to use the API,
-but this is likely to change.
+This document describes the public-facing API of marvin.
+
+For endpoints where it's specified that authorization is required, a HTTP Authorization header is expected,
+with type 'Token', like this: `Authorization: Token <auth_token>`. See details under the Users section for
+how to obtain an auth_token.
 
 
 Movies
@@ -53,11 +56,13 @@ movie. Streams are available at the following endpoints:
         * `createEntry`: Create a new entry for this stream. See required properties under entries.
         * `entries`: An endpoint for querying for entries in this stream
 
-* ``PUT /streams/<id>``: Update the given stream. All properties of the object must be present, anything missing will be deleted.
+* ``PUT /streams/<id>``: Update the given stream. All properties of the object must be present, anything missing will
+    be deleted. Authorized user required, and only available to the user that created the stream.
 
-* ``DELETE /streams/<id>``: Delete the given stream.
+* ``DELETE /streams/<id>``: Delete the given stream. Authorized user required, and only available to the user that
+    created the stream.
 
-* ``POST /movies/<movie_id>/createStream``: Create a new stream. Required attributes:
+* ``POST /movies/<movie_id>/createStream``: Create a new stream. Authorized user required. Required attributes:
 
     * :attr:`name <marvin.models.Stream.name>`
 
@@ -98,7 +103,7 @@ These endpoints are for creating users and getting auth tokens.
     * ``password``: Desired password. Must be between 6 and 1024 characters long.
     * ``email``: The email the user wants to use to recover the account.
 
-* ``GET /users/<user_id>``: View details for the given user. Access is restricted by auth_token, and users only have
+* ``GET /users/<user_id>``: View details for the given user. Access is restricted logged in users, and users only have
     access to their own data.
 
 * ``POST /login``: Get a new auth_token for user. Required fields:
