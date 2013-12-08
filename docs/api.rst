@@ -27,10 +27,6 @@ endpoints:
 
         * `createStreams`: Where you should POST new streams. See under streams for the required attributes.
 
-* ``POST /movies``: Create a new movie. Required attributes:
-
-    * :attr:`title <marvin.models.Movie.title>`
-
 * ``GET /movies/<id>``: Get details for a single movie. Properties are subject to change, but you can expect *at least*
    the following:
     * `href`: URI of the movie.
