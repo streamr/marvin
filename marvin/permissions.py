@@ -32,6 +32,7 @@ def login_required(func):
 
     @wraps(func)
     def decorated_view(*args, **kwargs):
+        """ View that only grants access to authenticated users. """
         if g.user.is_authenticated():
             return func(*args, **kwargs)
         else:

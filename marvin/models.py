@@ -240,6 +240,7 @@ class User(db.Model):
 
     def is_authenticated(self):
         """ Used to tell the difference between authenticated users and anonymous users. """
+        # pylint: disable=no-self-use
         return True
 
 
@@ -289,6 +290,8 @@ class AnonymousUser(object):
     """ Represents an anonymous user. """
 
     def is_authenticated(self):
+        """ Used to tell anonymous users apart from authenticated users. Always returns False. """
+        # pylint: disable=no-self-use
         return False
 
 
