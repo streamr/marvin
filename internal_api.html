@@ -124,6 +124,12 @@ probably point to the config file you want to use.</p>
 <p>Here we define the models we use in marvin. If this module grows too large,
 make it a package and split it up into smaller pieces.</p>
 <dl class="class">
+<dt id="marvin.models.AnonymousUser">
+<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">AnonymousUser</tt><a class="headerlink" href="#marvin.models.AnonymousUser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents an anonymous user.</p>
+</dd></dl>
+
+<dl class="class">
 <dt id="marvin.models.Entry">
 <em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">Entry</tt><big>(</big><em>stream=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.Entry" title="Permalink to this definition">¶</a></dt>
 <dd><p>User-created content that appears at a given time in the movie.</p>
@@ -318,6 +324,12 @@ be constant.</p>
 <dd><p>Unique identifier for this user</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="marvin.models.User.is_authenticated">
+<tt class="descname">is_authenticated</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.models.User.is_authenticated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to tell the difference between authenticated users and anonymous users.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="marvin.models.User.password_hash">
 <tt class="descname">password_hash</tt><a class="headerlink" href="#marvin.models.User.password_hash" title="Permalink to this definition">¶</a></dt>
@@ -369,7 +381,7 @@ and has not expired yet.</p>
 
 <dl class="class">
 <dt id="marvin.models.UserLoginForm">
-<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">UserLoginForm</tt><big>(</big><em>formdata=&lt;class flask_wtf.form._Auto at 0x4a92668&gt;</em>, <em>obj=None</em>, <em>prefix=''</em>, <em>csrf_context=None</em>, <em>secret_key=None</em>, <em>csrf_enabled=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.UserLoginForm" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">UserLoginForm</tt><big>(</big><em>formdata=&lt;class flask_wtf.form._Auto at 0x439d6d0&gt;</em>, <em>obj=None</em>, <em>prefix=''</em>, <em>csrf_context=None</em>, <em>secret_key=None</em>, <em>csrf_enabled=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.UserLoginForm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Form used to validate user logins.</p>
 </dd></dl>
 
@@ -472,10 +484,10 @@ so that we can look up the necessary parameters ourselves. This will be implemen
 <dl class="class">
 <dt id="marvin.views.streams.CreateStreamView">
 <em class="property">class </em><tt class="descclassname">marvin.views.streams.</tt><tt class="descname">CreateStreamView</tt><a class="headerlink" href="#marvin.views.streams.CreateStreamView" title="Permalink to this definition">¶</a></dt>
-<dd><p>C interface for streams.</p>
+<dd><p>Create interface for streams.</p>
 <dl class="method">
 <dt id="marvin.views.streams.CreateStreamView.post">
-<tt class="descname">post</tt><big>(</big><em>movie_id</em><big>)</big><a class="headerlink" href="#marvin.views.streams.CreateStreamView.post" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">post</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.views.streams.CreateStreamView.post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new stream.</p>
 </dd></dl>
 
