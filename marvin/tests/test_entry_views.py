@@ -1,4 +1,4 @@
-from marvin.models import Movie, Stream, Entry
+from marvin.models import Movie, Stream, Entry, User
 from marvin.tests import TestCaseWithTempDB, AuthenticatedUserMixin
 
 class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
@@ -14,7 +14,8 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             content="<p>Do you really need a wall-sized TV when you're sitting three inches from it?</p>")
         cardboard_coffin = Entry(entry_point_in_ms=5*60*1000, stream=stream, title='<h1>Title</h1>',
             content="<p>Why are the coffins of the future made out of cardboard?</p>")
-        self.stream_id, self.tv_id, self.cardboard_id, _ = self.addItems(stream, too_big_tv, cardboard_coffin, movie)
+        self.stream_id, self.tv_id, self.cardboard_id, self.movie_id = self.addItems(
+            stream, too_big_tv, cardboard_coffin, movie)
 
 
     def test_entry_detail_view(self):
@@ -76,7 +77,7 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             'title': '<h1>Title</h1>',
             'content': '<p>Yes, a planet full of trees has no oxygen.</p>',
         }
-        response = self.client.post('/streams/%s/createEntry' % self.stream_id, data=entry)
+        response = self.client.post('/streams/%s/createEntry' % self.stream_id, data=entry, headers=self.auth_header)
         self.assertValidCreate(response, object_name='entry')
 
 
@@ -86,15 +87,7 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             'content': '<p>Ripleys gotten old</p>',
             # does not include title
         }
-        response = self.client.post('/streams/%s/createEntry' % self.stream_id, data=entry)
-        self.assertValidClientError(response, expected_errors=2)
-
-
-    def test_create_empty_entry(self):
-        entry = {
-            # does not include title or entry_point_in_ms (content is optional)
-        }
-        response = self.client.post('/streams/%d/createEntry' % self.stream_id, data=entry)
+        response = self.client.post('/streams/%s/createEntry' % self.stream_id, data=entry, headers=self.auth_header)
         self.assertValidClientError(response, expected_errors=2)
 
 
@@ -104,7 +97,7 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             'title': '<h1>Title</h1>',
             'content': 'This is bad.',
         }
-        response = self.client.post('/streams/876543/createEntry', data=entry)
+        response = self.client.post('/streams/876543/createEntry', data=entry, headers=self.auth_header)
         self.assert404(response)
 
 
@@ -115,9 +108,33 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             'title': '<h1>Title</h1>',
             'content': '<p>Valid content here.</p>',
         }
-        response = self.client.post('/streams/%s/createEntry' % self.stream_id, data=entry)
+        response = self.client.post('/streams/%s/createEntry' % self.stream_id, data=entry, headers=self.auth_header)
         # should ignore non-accepted fields
         self.assertValidCreate(response, object_name='entry')
         with self.app.test_request_context():
             saved_entry = Entry.query.filter_by(entry_point_in_ms=9*60*1000).first()
             self.assertNotEqual(saved_entry.id, entry['id'])
+
+
+    def test_create_entry_restricted(self):
+        entry = {
+            'entry_point_in_ms': 10*60*1000,
+            'title': '<h1>Title</h1>',
+            'content': '<p>Yes, a planet full of trees has no oxygen.</p>',
+        }
+        response = self.client.post('/streams/%d/createEntry' % self.stream_id, data=entry)
+        self.assert401(response)
+
+
+    def test_create_entry_to_others_stream(self):
+        with self.app.test_request_context():
+            alice = User(username='alice', email='alice@example.com', password='alicepw')
+            alices_stream = Stream(name='Alices stream', movie_id=self.movie_id, creator=alice)
+            _, alices_stream_id = self.addItems(alice, alices_stream) # pylint: disable=unbalanced-tuple-unpacking
+        entry = {
+            'entry_point_in_ms': 10*60*1000,
+            'title': '<h1>Title</h1>',
+            'content': '<p>Yes, a planet full of trees has no oxygen.</p>',
+        }
+        response = self.client.post('/streams/%d/createEntry' % alices_stream_id, data=entry, headers=self.auth_header)
+        self.assert403(response)
