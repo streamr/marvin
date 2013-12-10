@@ -30,7 +30,7 @@ def runserver():
 
 
 @manager.command
-def recount_streams():
+def recount_streams(wipe_movies=False):
     """ Reset stream counts and recount the numbers. """
     all_streams = Stream.query.all()
     for stream in all_streams:
@@ -38,10 +38,18 @@ def recount_streams():
     all_entries = Entry.query.all()
     for entry in all_entries:
         db.session.delete(entry)
-    movies_with_stream_count = Movie.query.filter(Movie.number_of_streams>0).all()
-    for movie in movies_with_stream_count:
-        movie.number_of_streams = 0
-        db.session.add(movie)
+
+    if wipe_movies:
+        all_movies = Movie.query.all()
+        for movie in all_movies:
+            db.session.delete(movie)
+
+    else:
+        # Just reset the stream counts
+        movies_with_stream_count = Movie.query.filter(Movie.number_of_streams>0).all()
+        for movie in movies_with_stream_count:
+            movie.number_of_streams = 0
+            db.session.add(movie)
     db.session.commit()
 
 
