@@ -7,6 +7,7 @@
 """
 # pylint: disable=invalid-name
 from . import create_app, db, init_db
+from .models import Stream, Entry, Movie
 
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
@@ -26,6 +27,22 @@ def runserver():
     dev_app = create_app(config_file=config_file)
     init_db(dev_app)
     dev_app.run()
+
+
+@manager.command
+def recount_streams():
+    """ Reset stream counts and recount the numbers. """
+    all_streams = Stream.query.all()
+    for stream in all_streams:
+        db.session.delete(stream)
+    all_entries = Entry.query.all()
+    for entry in all_entries:
+        db.session.delete(entry)
+    movies_with_stream_count = Movie.query.filter(Movie.number_of_streams>0).all()
+    for movie in movies_with_stream_count:
+        movie.number_of_streams = 0
+        db.session.add(movie)
+    db.session.commit()
 
 
 def main():
