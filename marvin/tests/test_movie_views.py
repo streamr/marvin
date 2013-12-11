@@ -63,6 +63,39 @@ class AllMovieViewTest(TestCaseWithTempDB):
         self.assertValidClientError(response)
 
 
+class LargeExistingDbTest(TestCaseWithTempDB, AuthenticatedUserMixin):
+
+
+    def setUp(self):
+        self.authenticate()
+        avatar = Movie(
+            title='Avatar',
+            external_id='imdb:tt0499549',
+            number_of_streams=4,
+        )
+        titanic = Movie(
+            title='Titanic',
+            external_id='imdb:tt0120338',
+            number_of_streams=2,
+        )
+        lotr = Movie(
+            title='Lord of the Rings',
+            external_id='imdb:tt0120737',
+            number_of_streams=1,
+        )
+
+        self.addItems(lotr, titanic, avatar)
+
+
+    def test_explore(self):
+        response = self.client.get('/movies')
+        json_response = self.assert200(response)
+        # Should be ordered by number of streams
+        self.assertEqual(json_response['movies'][0]['title'], 'Avatar')
+        self.assertEqual(json_response['movies'][1]['title'], 'Titanic')
+        self.assertEqual(json_response['movies'][2]['title'], 'Lord of the Rings')
+
+
 class MovieDetailView(TestCaseWithTempDB):
 
     def setUp(self):
