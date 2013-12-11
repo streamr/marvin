@@ -90,9 +90,11 @@ def create_app(config_file=None, **extra_config):
     from .views import entries
     from .views import stats
     from .views import users
+    from .views import promo
 
     # Register blueprints
     app.register_blueprint(stats.mod)
+    app.register_blueprint(promo.mod)
 
     # Register resources
     api.add_resource(movies.AllMoviesView, '/movies')
