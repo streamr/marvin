@@ -62,6 +62,9 @@ class MarvinBaseTestCase(unittest.TestCase):
         def _assert_status(response, **kwargs):
             self.assert_status(response, code)
             json_response = self.assertValidResponse(response, **kwargs)
+            # check that no 'valid' response contains errors
+            if 200 <= code < 300:
+                self.assertFalse('errors' in json_response)
             return json_response
 
         return _assert_status

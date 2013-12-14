@@ -60,11 +60,10 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         response = self.client.put('/entries/%d' % self.tv_id, data=entry)
         json_response = self.assert200(response)
         self.assertEqual(json_response['msg'], 'Entry updated.')
-        self.assertFalse('errors' in json_response)
+        self.assertEqual(json_response['entry']['entry_point_in_ms'], 2*60*1000)
         with self.app.test_request_context():
             new_entry = Entry.query.get(self.tv_id)
-            self.assertEqual(new_entry.content,
-                '{"text":"<p>Do you really need a wall-sized TV when you\'re sitting three inches from it?</p>"}')
+            self.assertEqual(new_entry.entry_point_in_ms, 2*60*1000)
 
 
     def test_update_invalid(self):
