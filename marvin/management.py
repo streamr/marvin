@@ -30,8 +30,12 @@ def runserver():
 
 
 @manager.command
-def recount_streams(wipe_movies=False):
-    """ Reset stream counts and recount the numbers. """
+def delete_streams_and_entries(wipe_movies=False):
+    """ Delete all streams and entries.
+
+    After deletion it will reset movie stream counts to 0. Can optionally also
+    delete all movies, if the --wipe_movies flag is used. """
+
     all_streams = Stream.query.all()
     for stream in all_streams:
         db.session.delete(stream)
