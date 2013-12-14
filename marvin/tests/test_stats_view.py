@@ -57,57 +57,66 @@ class StatsViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         avatar_fail_intro = Entry(
             entry_point_in_ms=5*60*1000,
             title='<h1>Title</h1>',
-            content='Massive TVs!',
+            content_type='text',
+            content='{"text": "Massive TVs!"}',
             stream=avatar_sins,
         )
         avatar_fail_middle = Entry(
             entry_point_in_ms=45*60*1000,
             title='<h1>Title</h1>',
-            content='Trees without oxygen?',
+            content_type='text',
+            content='{"text":"Trees without oxygen?"}',
             stream=avatar_sins,
         )
         avatar_fail_end = Entry(
             entry_point_in_ms=90*60*1000,
             title='<h1>Title</h1>',
-            content='Oral flower sex',
+            content_type='text',
+            content='{"text":"Oral flower sex"}',
             stream=avatar_sins,
         )
 
         avatar_actor_sam = Entry(
             entry_point_in_ms=1*60*1000,
             title='<h1>Title</h1>',
-            content='Sam Worthington, Clash of the Titans, Terminator Salvation',
+            content_type='text',
+            content='{"text":"Sam Worthington, Clash of the Titans, Terminator Salvation"}',
             stream=avatar_actors,
         )
         avatar_actor_sigourney = Entry(
             entry_point_in_ms=3*60*1000,
             title='<h1>Title</h1>',
-            content='Sigourney Weaver, Alien, Aliens, Ghostbusters',
+            content_type='text',
+            content='{"text":"Sigourney Weaver, Alien, Aliens, Ghostbusters"}',
             stream=avatar_actors,
         )
 
         battleship_sin_intro = Entry(
             entry_point_in_ms=20*1000,
             title='<h1>Title</h1>',
-            content='Hasbro films',
+            content_type='text',
+            content='{"text":"Hasbro films"}',
             stream=battleship_sins,
         )
         battleship_sin_early_intro = Entry(
             entry_point_in_ms=60*1000,
             title='<h1>Title</h1>',
-            content='Believes in wishes',
+            content_type='text',
+            content='{"text":"Believes in wishes"}',
             stream=battleship_sins,
         )
         battleship_sin_middle = Entry(
             entry_point_in_ms=5*60*1000,
             title='<h1>Title</h1>',
-            content='No skype lag',
+            content_type='text',
+            content='{"text":"No skype lag"}',
             stream=battleship_sins,
         )
         battleship_sin_outro = Entry(
             entry_point_in_ms=90*60*1000,
             title='<h1>Title</h1>',
-            content='No one says "You sunk my battleship"',
+            content_type='text',
+            content='{"text":"No one says \\"You sunk my battleship\\""}',
             stream=battleship_sins,
         )
 

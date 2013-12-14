@@ -10,10 +10,24 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             external_id='imdb:tt0499549',
         )
         stream = Stream(name='CinemaSins', movie=movie, creator=self.user)
-        too_big_tv = Entry(entry_point_in_ms=3*60*1000, stream=stream, title='<h1>Title</h1>',
-            content="<p>Do you really need a wall-sized TV when you're sitting three inches from it?</p>")
-        cardboard_coffin = Entry(entry_point_in_ms=5*60*1000, stream=stream, title='<h1>Title</h1>',
-            content="<p>Why are the coffins of the future made out of cardboard?</p>")
+        too_big_tv = Entry(
+            entry_point_in_ms=3*60*1000,
+            stream=stream,
+            title='<h1>Title</h1>',
+            content_type='text',
+            content='''{
+                "text": "<p>Do you really need a wall-sized TV when you're sitting three inches from it?</p>"
+            }''',
+        )
+        cardboard_coffin = Entry(
+            entry_point_in_ms=5*60*1000,
+            stream=stream,
+            title='<h1>Title</h1>',
+            content_type='text',
+            content='''{
+                "text": "<p>Why are the coffins of the future made out of cardboard?</p>"
+            }''',
+        )
         self.stream_id, self.tv_id, self.cardboard_id, self.movie_id = self.addItems(
             stream, too_big_tv, cardboard_coffin, movie)
 
@@ -22,7 +36,7 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         response = self.client.get('/entries/%d' % self.tv_id)
         json_response = self.assert200(response)
         self.assertEqual(json_response['entry']['entry_point_in_ms'], 180000)
-        self.assertTrue('wall-sized TV' in json_response['entry']['content'])
+        self.assertTrue('wall-sized TV' in json_response['entry']['content']['text'])
 
 
     def test_update_nonexistent_entry(self):
@@ -40,7 +54,8 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             'id': self.tv_id,
             'entry_point_in_ms': 2*60*1000, # We change the entry point
             'title': '<h1>Title</h1>',
-            'content': "<p>Do you really need a wall-sized TV when you're sitting three inches from it?</p>",
+            'content_type': 'text',
+            'content': '{"text":"<p>Do you really need a wall-sized TV when you\'re sitting three inches from it?</p>"}',
         }
         response = self.client.put('/entries/%d' % self.tv_id, data=entry)
         json_response = self.assert200(response)
@@ -49,7 +64,7 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         with self.app.test_request_context():
             new_entry = Entry.query.get(self.tv_id)
             self.assertEqual(new_entry.content,
-                "<p>Do you really need a wall-sized TV when you're sitting three inches from it?</p>")
+                '{"text":"<p>Do you really need a wall-sized TV when you\'re sitting three inches from it?</p>"}')
 
 
     def test_update_invalid(self):
@@ -75,20 +90,35 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         entry = {
             'entry_point_in_ms': 10*60*1000,
             'title': '<h1>Title</h1>',
-            'content': '<p>Yes, a planet full of trees has no oxygen.</p>',
+            'content_type': 'text',
+            'content': '{"text": "<p>Yes, a planet full of trees has no oxygen.</p>"}',
         }
         response = self.client.post('/streams/%s/createEntry' % self.stream_id, data=entry, headers=self.auth_header)
         self.assertValidCreate(response, object_name='entry')
 
 
+    def test_create_invalid_json_shoukd_fail(self):
+        entry = {
+            'entry_point_in_ms': 1000,
+            'content_type': 'text',
+            'content': '{"text":}', # invalid JSON
+            'title': 'Bad JSON',
+        }
+        response = self.client.post('/streams/%s/createEntry' % self.stream_id, data=entry, headers=self.auth_header)
+        json_response = self.assert400(response)
+        self.assertEqual(len(json_response['errors']), 1)
+        self.assertTrue(u'Not valid JSON.' in json_response['errors']['content'])
+
+
     def test_create_invalid_entry(self):
         entry = {
             'entry_point_in_ms': -1, # entry points must be positive
-            'content': '<p>Ripleys gotten old</p>',
+            'content': '{"text": "<p>Ripleys gotten old</p>"}',
             # does not include title
+            # does not include content_type
         }
         response = self.client.post('/streams/%s/createEntry' % self.stream_id, data=entry, headers=self.auth_header)
-        self.assertValidClientError(response, expected_errors=2)
+        self.assertValidClientError(response, expected_errors=3)
 
 
     def test_create_entry_to_invalid_stream(self):
@@ -106,7 +136,8 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             'id': 6543, #should not be able to assign ID manually,
             'entry_point_in_ms': 9*60*1000,
             'title': '<h1>Title</h1>',
-            'content': '<p>Valid content here.</p>',
+            'content_type': 'text',
+            'content': '{"text": "<p>Valid content here.</p>"}',
         }
         response = self.client.post('/streams/%s/createEntry' % self.stream_id, data=entry, headers=self.auth_header)
         # should ignore non-accepted fields

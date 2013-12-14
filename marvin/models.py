@@ -18,6 +18,7 @@ from wtforms_alchemy import model_form_factory
 from wtforms.fields import TextField
 from wtforms.validators import Length
 
+import ujson as json
 
 ModelForm = model_form_factory(Form)
 
@@ -153,6 +154,16 @@ class StreamForm(ModelForm):
         )
 
 
+class JSONValidator(object):
+
+    def __call__(self, form, field):
+        try:
+            json.loads(field.data)
+        except ValueError:
+            from wtforms import ValidationError
+            raise ValidationError("Not valid JSON.")
+
+
 class Entry(db.Model):
     """ User-created content that appears at a given time in the movie. """
     __lazy_options__ = {}
@@ -163,8 +174,14 @@ class Entry(db.Model):
     entry_point_in_ms = Column(db.Integer, min=0, nullable=False)
     #: The title of the entry
     title = Column(db.String(30), nullable=False)
-    #: The content of the entry
-    content = Column(db.Text, default='')
+    #: The type of content, e.g. 'text', 'wiki', 'imdb:actor', etc.
+    content_type = Column(db.String(20), nullable=False)
+    #: The content of the entry, as a JSON data structure
+    content = Column(db.Text,
+        info={
+            'validators': JSONValidator(),
+        },
+    )
     #: Foreign key to a stream
     stream_id = Column(db.Integer,
         db.ForeignKey('stream.id'),
@@ -189,7 +206,8 @@ class Entry(db.Model):
         return {
             'href': url_for('entrydetailview', entry_id=self.id, _external=True),
             'entry_point_in_ms': self.entry_point_in_ms,
-            'content': self.content,
+            'content_type': self.content_type,
+            'content': json.loads(self.content),
             'stream': {
                 'href': url_for('streamdetailview', stream_id=self.stream_id, _external=True),
                 'name': self.stream.name,
@@ -205,6 +223,7 @@ class EntryForm(ModelForm):
         # explicitly declare which fields to consider in the form
         only = (
             'entry_point_in_ms',
+            'content_type',
             'content',
             'title',
         )
