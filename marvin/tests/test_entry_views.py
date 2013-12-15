@@ -96,17 +96,20 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         self.assertValidCreate(response, object_name='entry')
 
 
-    def test_create_invalid_json_shoukd_fail(self):
-        entry = {
+    def test_create_invalid_json_should_fail(self):
+        entry_data = {
             'entry_point_in_ms': 1000,
             'content_type': 'text',
-            'content': '{"text":}', # invalid JSON
             'title': 'Bad JSON',
         }
-        response = self.client.post('/streams/%s/createEntry' % self.stream_id, data=entry, headers=self.auth_header)
-        json_response = self.assert400(response)
-        self.assertEqual(len(json_response['errors']), 1)
-        self.assertTrue(u'Not valid JSON.' in json_response['errors']['content'])
+        bad_json_tests = ['{"text":}', 'lol', 1, 3.14, '{heyho}']
+        for bad_json in bad_json_tests:
+            entry = entry_data
+            entry['content'] = bad_json
+            response = self.client.post('/streams/%s/createEntry' % self.stream_id, data=entry, headers=self.auth_header)
+            json_response = self.assert400(response)
+            self.assertEqual(len(json_response['errors']), 1)
+            self.assertTrue(u'Not valid JSON.' in json_response['errors']['content'])
 
 
     def test_create_invalid_entry(self):

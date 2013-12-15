@@ -16,6 +16,7 @@ from sqlalchemy_utils import EmailType
 from time import time
 from wtforms_alchemy import model_form_factory
 from wtforms.fields import TextField
+from wtforms import ValidationError
 from wtforms.validators import Length
 
 import ujson as json
@@ -158,10 +159,11 @@ class JSONValidator(object):
 
     def __call__(self, form, field):
         try:
-            json.loads(field.data)
+            data = json.loads(field.data)
+            if not isinstance(data, dict):
+                raise ValidationError('Not valid JSON.')
         except ValueError:
-            from wtforms import ValidationError
-            raise ValidationError("Not valid JSON.")
+            raise ValidationError('Not valid JSON.')
 
 
 class Entry(db.Model):
