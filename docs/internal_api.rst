@@ -23,3 +23,6 @@ This is the documentation for all classes, modules and functions/methods you fin
 
 .. automodule:: marvin.views.streams
    :members:
+
+.. automodule:: marvin.validators
+   :members:

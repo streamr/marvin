@@ -7,6 +7,7 @@
 
 """
 from . import db, utils
+from .validators import JSONValidator
 
 from flask import url_for, current_app
 from flask.ext.wtf import Form
@@ -16,7 +17,6 @@ from sqlalchemy_utils import EmailType
 from time import time
 from wtforms_alchemy import model_form_factory
 from wtforms.fields import TextField
-from wtforms import ValidationError
 from wtforms.validators import Length
 
 import ujson as json
@@ -153,17 +153,6 @@ class StreamForm(ModelForm):
         only = (
             'name',
         )
-
-
-class JSONValidator(object):
-
-    def __call__(self, form, field):
-        try:
-            data = json.loads(field.data)
-            if not isinstance(data, dict):
-                raise ValidationError('Not valid JSON.')
-        except ValueError:
-            raise ValidationError('Not valid JSON.')
 
 
 class Entry(db.Model):
