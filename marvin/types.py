@@ -5,13 +5,15 @@
     Our own custom database types.
 
 """
-
+# pylint: disable=abstract-method
 from sqlalchemy.dialects.postgresql.base import ischema_names
 import sqlalchemy as sa
 
 class PostgresJSONType(sa.types.UserDefinedType):
-    """ Text search vector type for postgresql. """
-    def get_col_spec(self):
+    """ JSON type for postgresql. """
+
+    def get_col_spec(self): # pylint: disable=no-self-use
+        """ Get data type for json columns. """
         return 'json'
 
 

@@ -15,9 +15,7 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             stream=stream,
             title='<h1>Title</h1>',
             content_type='text',
-            content='''{
-                "text": "<p>Do you really need a wall-sized TV when you're sitting three inches from it?</p>"
-            }''',
+            content='{"text": "<p>Do you really need a wall-sized TV when you\'re sitting 3 inches from it?</p>"}',
         )
         cardboard_coffin = Entry(
             entry_point_in_ms=5*60*1000,
@@ -55,7 +53,7 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             'entry_point_in_ms': 2*60*1000, # We change the entry point
             'title': '<h1>Title</h1>',
             'content_type': 'text',
-            'content': '{"text":"<p>Do you really need a wall-sized TV when you\'re sitting three inches from it?</p>"}',
+            'content': '{"text":"<p>Do you really need a wall-sized TV when you\'re sitting 3 inches from it?</p>"}',
         }
         response = self.client.put('/entries/%d' % self.tv_id, data=entry)
         json_response = self.assert200(response)
@@ -106,7 +104,8 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         for bad_json in bad_json_tests:
             entry = entry_data
             entry['content'] = bad_json
-            response = self.client.post('/streams/%s/createEntry' % self.stream_id, data=entry, headers=self.auth_header)
+            response = self.client.post('/streams/%s/createEntry' % self.stream_id,
+                data=entry, headers=self.auth_header)
             json_response = self.assert400(response)
             self.assertEqual(len(json_response['errors']), 1)
             self.assertTrue(u'Not valid JSON.' in json_response['errors']['content'])

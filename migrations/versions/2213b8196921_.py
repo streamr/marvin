@@ -13,7 +13,6 @@ down_revision = '2b7f5e38dd73'
 from marvin.types import JSONType
 
 from alembic import op
-import sqlalchemy as sa
 
 
 def upgrade():
