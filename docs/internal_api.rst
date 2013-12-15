@@ -6,7 +6,13 @@ This is the documentation for all classes, modules and functions/methods you fin
 .. automodule:: marvin
    :members:
 
+.. automodule:: marvin.management
+   :members:
+
 .. automodule:: marvin.models
+   :members:
+
+.. automodule:: marvin.utils
    :members:
 
 .. automodule:: marvin.views
