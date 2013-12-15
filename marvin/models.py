@@ -7,6 +7,7 @@
 
 """
 from . import db, utils
+from .types import JSONType
 from .validators import JSONValidator
 
 from flask import url_for, current_app
@@ -168,8 +169,9 @@ class Entry(db.Model):
     #: The type of content, e.g. 'text', 'wiki', 'imdb:actor', etc.
     content_type = Column(db.String(20), nullable=False)
     #: The content of the entry, as a JSON data structure
-    content = Column(db.Text,
+    content = Column(JSONType,
         info={
+            'form_field_class': TextField,
             'validators': JSONValidator(),
         },
     )
