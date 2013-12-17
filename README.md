@@ -29,3 +29,16 @@ You can now start the devserver and get hacking:
 [virtualenv]: https://pypi.python.org/pypi/virtualenv
 [node]: http://nodejs.org/
 [code coverage report]: http://streamr.github.io/marvin/coverage
+
+
+To look at our webpage 
+Make marvin knows which config file to run and that you have the python libraries:
+    
+    $ set MARVIN_CONFIG_FILE=..\dev_config.py
+    $ venv\Scripts\activate.bat
+
+Now you run the manage.py
+    
+    $ python manage.py runserver
+
+Then open your browser and navigate to localhost:5000/promo
