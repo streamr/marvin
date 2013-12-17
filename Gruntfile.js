@@ -81,6 +81,15 @@ module.exports = function (grunt) {
         },
         command: 'sphinx-build -a -E -W -b html docs ghdist'
       },
+      archive_static: {
+        options: {
+          stdout: true,
+        },
+        command: [
+          'cd marvin/static',
+          'tar czf ../../ghdist/static.tar.gz *',
+        ].join(' && '),
+      },
     },
 
     clean: {
@@ -136,5 +145,6 @@ module.exports = function (grunt) {
   ]);
   grunt.registerTask('build', [
     'shell:sphinx',
+    'shell:archive_static',
   ]);
 };
