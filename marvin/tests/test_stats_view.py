@@ -36,3 +36,4 @@ class StatsViewTest(TestCaseWithTempDB):
         self.assertEqual(stats['Number of movies'], 2)
         self.assertEqual(stats['Number of streams'], 3)
         self.assertEqual(stats['Number of entries'], 9)
+        self.assertEqual(stats['Number of users'], 2)

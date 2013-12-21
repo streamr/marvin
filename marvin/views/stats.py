@@ -5,7 +5,7 @@
     Show some key numbers about the current marvin database.
 
 """
-from ..models import Movie, Stream, Entry
+from ..models import Movie, Stream, Entry, User
 
 from flask import Blueprint, render_template
 
@@ -18,5 +18,6 @@ def stats_main():
         'Number of movies': Movie.query.count(),
         'Number of streams': Stream.query.count(),
         'Number of entries': Entry.query.count(),
+        'Number of users': User.query.count(),
     }
     return render_template('stats.html', stats=stats)
