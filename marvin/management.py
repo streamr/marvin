@@ -21,7 +21,7 @@ manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
 @manager.command
-def runserver():
+def runserver(): # pragma: no cover
     """ Start a devserver on port 5000 """
     config_file = path.abspath(path.join(path.dirname(__file__), '..', 'dev_config.py'))
     dev_app = create_app(config_file=config_file)
@@ -64,7 +64,7 @@ def init_db():
         db.create_all()
 
 
-def main():
+def main(): # pragma: no cover
     """ Runs the manager.
 
     Target for setup.py entry point.
@@ -72,5 +72,5 @@ def main():
     manager.run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__': # pragma: no cover
     main()
