@@ -164,13 +164,6 @@ def generic_error_handler(exception):
     _logger.exception(log_msg)
 
 
-
-def init_db(app):
-    """ Create the database with all tables for the given app. """
-    with app.test_request_context():
-        db.create_all()
-
-
 def init_logging(log_conf_path):
     """ Initialize log config. """
     with open(log_conf_path) as log_conf_file:

@@ -6,7 +6,7 @@
 
 """
 # pylint: disable=invalid-name
-from . import create_app, db, init_db
+from . import create_app, db
 from .models import Stream, Entry, Movie
 
 from flask.ext.script import Manager
@@ -25,7 +25,7 @@ def runserver():
     """ Start a devserver on port 5000 """
     config_file = path.abspath(path.join(path.dirname(__file__), '..', 'dev_config.py'))
     dev_app = create_app(config_file=config_file)
-    init_db(dev_app)
+    init_db()
     dev_app.run()
 
 
@@ -55,6 +55,13 @@ def delete_streams_and_entries(wipe_movies=False):
             movie.number_of_streams = 0
             db.session.add(movie)
     db.session.commit()
+
+
+@manager.command
+def init_db():
+    """ Create the database. Will not migrate if one already exists. """
+    with app.test_request_context():
+        db.create_all()
 
 
 def main():
