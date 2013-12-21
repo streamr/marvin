@@ -98,12 +98,6 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="marvin.init_db">
-<tt class="descclassname">marvin.</tt><tt class="descname">init_db</tt><big>(</big><em>app</em><big>)</big><a class="headerlink" href="#marvin.init_db" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create the database with all tables for the given app.</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="marvin.init_logging">
 <tt class="descclassname">marvin.</tt><tt class="descname">init_logging</tt><big>(</big><em>log_conf_path</em><big>)</big><a class="headerlink" href="#marvin.init_logging" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize log config.</p>
@@ -127,6 +121,12 @@ probably point to the config file you want to use.</p>
 <dd><p>Delete all streams and entries.</p>
 <p>After deletion it will reset movie stream counts to 0. Can optionally also
 delete all movies, if the &#8211;wipe_movies flag is used.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marvin.management.init_db">
+<tt class="descclassname">marvin.management.</tt><tt class="descname">init_db</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.management.init_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the database. Will not migrate if one already exists.</p>
 </dd></dl>
 
 <dl class="function">
@@ -429,7 +429,7 @@ and has not expired yet.</p>
 
 <dl class="class">
 <dt id="marvin.models.UserLoginForm">
-<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">UserLoginForm</tt><big>(</big><em>formdata=&lt;class flask_wtf.form._Auto at 0x3d8bd50&gt;</em>, <em>obj=None</em>, <em>prefix=''</em>, <em>csrf_context=None</em>, <em>secret_key=None</em>, <em>csrf_enabled=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.UserLoginForm" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">UserLoginForm</tt><big>(</big><em>formdata=&lt;class flask_wtf.form._Auto at 0x3273d50&gt;</em>, <em>obj=None</em>, <em>prefix=''</em>, <em>csrf_context=None</em>, <em>secret_key=None</em>, <em>csrf_enabled=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.UserLoginForm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Form used to validate user logins.</p>
 </dd></dl>
 

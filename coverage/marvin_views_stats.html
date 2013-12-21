@@ -84,7 +84,8 @@
 <p id='n19' class='pln'><a href='#n19'>19</a></p>
 <p id='n20' class='pln'><a href='#n20'>20</a></p>
 <p id='n21' class='pln'><a href='#n21'>21</a></p>
-<p id='n22' class='stm run hide_run'><a href='#n22'>22</a></p>
+<p id='n22' class='pln'><a href='#n22'>22</a></p>
+<p id='n23' class='stm run hide_run'><a href='#n23'>23</a></p>
                 
             </td>
             <td class='text' valign='top'>
@@ -95,7 +96,7 @@
 <p id='t5' class='pln'><span class='str'>&nbsp; &nbsp; Show some key numbers about the current marvin database.</span><span class='strut'>&nbsp;</span></p>
 <p id='t6' class='pln'><span class='strut'>&nbsp;</span></p>
 <p id='t7' class='pln'><span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
-<p id='t8' class='stm run hide_run'><span class='key'>from</span> <span class='op'>.</span><span class='op'>.</span><span class='nam'>models</span> <span class='key'>import</span> <span class='nam'>Movie</span><span class='op'>,</span> <span class='nam'>Stream</span><span class='op'>,</span> <span class='nam'>Entry</span><span class='strut'>&nbsp;</span></p>
+<p id='t8' class='stm run hide_run'><span class='key'>from</span> <span class='op'>.</span><span class='op'>.</span><span class='nam'>models</span> <span class='key'>import</span> <span class='nam'>Movie</span><span class='op'>,</span> <span class='nam'>Stream</span><span class='op'>,</span> <span class='nam'>Entry</span><span class='op'>,</span> <span class='nam'>User</span><span class='strut'>&nbsp;</span></p>
 <p id='t9' class='pln'><span class='strut'>&nbsp;</span></p>
 <p id='t10' class='stm run hide_run'><span class='key'>from</span> <span class='nam'>flask</span> <span class='key'>import</span> <span class='nam'>Blueprint</span><span class='op'>,</span> <span class='nam'>render_template</span><span class='strut'>&nbsp;</span></p>
 <p id='t11' class='pln'><span class='strut'>&nbsp;</span></p>
@@ -108,8 +109,9 @@
 <p id='t18' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&#39;Number of movies&#39;</span><span class='op'>:</span> <span class='nam'>Movie</span><span class='op'>.</span><span class='nam'>query</span><span class='op'>.</span><span class='nam'>count</span><span class='op'>(</span><span class='op'>)</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
 <p id='t19' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&#39;Number of streams&#39;</span><span class='op'>:</span> <span class='nam'>Stream</span><span class='op'>.</span><span class='nam'>query</span><span class='op'>.</span><span class='nam'>count</span><span class='op'>(</span><span class='op'>)</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
 <p id='t20' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&#39;Number of entries&#39;</span><span class='op'>:</span> <span class='nam'>Entry</span><span class='op'>.</span><span class='nam'>query</span><span class='op'>.</span><span class='nam'>count</span><span class='op'>(</span><span class='op'>)</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
-<p id='t21' class='pln'>&nbsp; &nbsp; <span class='op'>}</span><span class='strut'>&nbsp;</span></p>
-<p id='t22' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>return</span> <span class='nam'>render_template</span><span class='op'>(</span><span class='str'>&#39;stats.html&#39;</span><span class='op'>,</span> <span class='nam'>stats</span><span class='op'>=</span><span class='nam'>stats</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t21' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&#39;Number of users&#39;</span><span class='op'>:</span> <span class='nam'>User</span><span class='op'>.</span><span class='nam'>query</span><span class='op'>.</span><span class='nam'>count</span><span class='op'>(</span><span class='op'>)</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t22' class='pln'>&nbsp; &nbsp; <span class='op'>}</span><span class='strut'>&nbsp;</span></p>
+<p id='t23' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>return</span> <span class='nam'>render_template</span><span class='op'>(</span><span class='str'>&#39;stats.html&#39;</span><span class='op'>,</span> <span class='nam'>stats</span><span class='op'>=</span><span class='nam'>stats</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
                 
             </td>
         </tr>
