@@ -1,8 +1,8 @@
 """
-	marvin.views.promo
-	~~~~~~~~~~~~~~~~~~
+    marvin.views.promo
+    ~~~~~~~~~~~~~~~~~~
 
-	Promo page for Streamr.
+    Promo page for Streamr.
 
 """
 
@@ -12,5 +12,6 @@ mod = Blueprint(__name__, 'marvin.promo')
 
 @mod.route('/promo')
 def promo():
-	return render_template('promo.html')
+    """ Render the promo page. """
+    return render_template('promo.html')
 
