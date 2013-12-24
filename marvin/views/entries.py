@@ -31,7 +31,6 @@ class EntryDetailView(Resource):
         form = EntryForm(obj=entry)
         if form.validate_on_submit():
             form.populate_obj(entry)
-            db.session.add(entry)
             return {
                 'msg': 'Entry updated.',
                 'entry': entry.to_json(),

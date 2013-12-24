@@ -33,9 +33,8 @@ class StreamDetailView(Resource):
         edit_permission = Permission(UserNeed(stream.creator_id))
         if edit_permission.can():
             form = StreamForm(obj=stream)
-            form.populate_obj(stream)
             if form.validate_on_submit():
-                db.session.add(stream)
+                form.populate_obj(stream)
                 return {
                     'msg': 'Stream updated.',
                     'stream': stream.to_json(),

@@ -50,8 +50,7 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         }
         response = self.client.put('/streams/%d' % self.stream_id, data=stream, headers=self.auth_header)
         json_response = self.assert200(response)
-        self.assertEqual(json_response['msg'], 'Stream updated.')
-        self.assertTrue(json_response['stream']['href'].endswith(str(self.stream_id)))
+        self.assertEqual(json_response['stream']['name'], 'Curiosa')
         with self.app.test_request_context():
             new_stream = Stream.query.get(self.stream_id)
             self.assertEqual(new_stream.name, 'Curiosa')
