@@ -15,6 +15,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from logging import getLogger
 from sqlalchemy_defaults import make_lazy_configured
 from os import path, environ
+from werkzeug.exceptions import HTTPException
 
 import logging.config
 import sqlalchemy
@@ -29,6 +30,9 @@ class ApiBase(Api):
 
     def handle_error(self, exception):
         """ Override handle_error to make sure the exception is handled by the correct logger. """
+        # Don't do any special logging of client side errors
+        if isinstance(exception, HTTPException) and (400 <= exception.code < 500):
+            return super(ApiBase, self).handle_error(exception)
         generic_error_handler(exception)
         return super(ApiBase, self).handle_error(exception)
 
