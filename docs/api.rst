@@ -69,9 +69,9 @@ An :class:`Entry <marvin.models.Entry>` is an event that occurs at some time dur
 
 * ``GET /entries/<id>``: Get the details of a single entry.
 
-* ``PUT /entries/<id>``: Edit the given entry.
+* ``PUT /entries/<id>``: Edit the given entry. Access restricted to the user that created the stream.
 
-* ``DELETE /entries/<id>``: Delete the given entry.
+* ``DELETE /entries/<id>``: Delete the given entry. Only available to stream owner.
 
 * ``POST /streams/<stream_id>/createEntry``: Create a new entry. Required attributes:
 

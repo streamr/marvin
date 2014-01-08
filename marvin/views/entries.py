@@ -25,27 +25,41 @@ class EntryDetailView(Resource):
         }
 
 
+    @login_required
     def put(self, entry_id):
         """ Update the entry with the given ID. """
         entry = Entry.query.get_or_404(entry_id)
-        form = EntryForm(obj=entry)
-        if form.validate_on_submit():
-            form.populate_obj(entry)
+        put_permission = Permission(UserNeed(entry.stream.creator_id))
+        if put_permission.can():
+            form = EntryForm(obj=entry)
+            if form.validate_on_submit():
+                form.populate_obj(entry)
+                return {
+                    'msg': 'Entry updated.',
+                    'entry': entry.to_json(),
+                }
             return {
-                'msg': 'Entry updated.',
-                'entry': entry.to_json(),
-            }
-        return {
-            'msg': 'Some attributes did not pass validation.',
-            'errors': form.errors,
-        }, 400
+                'msg': 'Some attributes did not pass validation.',
+                'errors': form.errors,
+            }, 400
+        else:
+            return {
+                'msg': "Only the stream creator can edit it's entries.",
+            }, 403
 
 
+    @login_required
     def delete(self, entry_id):
         """ Delete the entry with the given ID. """
         entry = Entry.query.get(entry_id)
-        db.session.delete(entry)
-        return {'msg': 'Entry deleted.'}
+        delete_permission = Permission(UserNeed(entry.stream.creator_id))
+        if delete_permission.can():
+            db.session.delete(entry)
+            return {'msg': 'Entry deleted.'}
+        else:
+            return {
+                'msg': 'Only the stream creator can delete entries.',
+            }, 403
 
 
 class CreateEntryView(Resource):
