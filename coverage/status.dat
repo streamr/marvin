@@ -34,10 +34,10 @@ p18
 I1
 sS'n_branches'
 p19
-I6
+I10
 sS'n_statements'
 p20
-I35
+I41
 sS'n_excluded'
 p21
 I0
@@ -52,7 +52,7 @@ p24
 I0
 sbssS'hash'
 p25
-S'\xb7=Q$\xfbk\xd82\x7fM&\xc8\x96\xf8\x9c\xcb'
+S'os\xb5\xe1w\xad\xd0s,\x86\xfe\xb0\x97\xdc;\xd3'
 p26
 ssS'marvin_views_users'
 p27
@@ -107,9 +107,9 @@ NtRp39
 g18
 I1
 sg19
-I8
+I10
 sg20
-I94
+I97
 sg21
 I0
 sg22
@@ -119,7 +119,7 @@ I0
 sg24
 I0
 sbssg25
-S'\nU`\xb7\xdbW={S\xb1c\xe8\xc8}\x89\xe4'
+S'J\xc9~\xcf\xbe\xc3\r\xddg\xe0\xc7\x8b\xbdd%\xe8'
 p41
 ssS'marvin_views_stats'
 p42

@@ -151,9 +151,9 @@ created the stream.</p>
 <ul>
 <li><p class="first"><tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/entries/&lt;id&gt;</span></tt>: Get the details of a single entry.</p>
 </li>
-<li><p class="first"><tt class="docutils literal"><span class="pre">PUT</span> <span class="pre">/entries/&lt;id&gt;</span></tt>: Edit the given entry.</p>
+<li><p class="first"><tt class="docutils literal"><span class="pre">PUT</span> <span class="pre">/entries/&lt;id&gt;</span></tt>: Edit the given entry. Access restricted to the user that created the stream.</p>
 </li>
-<li><p class="first"><tt class="docutils literal"><span class="pre">DELETE</span> <span class="pre">/entries/&lt;id&gt;</span></tt>: Delete the given entry.</p>
+<li><p class="first"><tt class="docutils literal"><span class="pre">DELETE</span> <span class="pre">/entries/&lt;id&gt;</span></tt>: Delete the given entry. Only available to stream owner.</p>
 </li>
 <li><p class="first"><tt class="docutils literal"><span class="pre">POST</span> <span class="pre">/streams/&lt;stream_id&gt;/createEntry</span></tt>: Create a new entry. Required attributes:</p>
 <blockquote>
