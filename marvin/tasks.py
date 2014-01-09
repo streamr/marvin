@@ -44,30 +44,9 @@ def find_cover_art(external_ids=None):
 @celery.task(name='find-image-for-movie', base=celery.Task)
 def find_cover_art_for_movie(external_id):
     """ Find cover art for one movie. """
-    _logger.info("Searching for cover art for %s...", external_id)
-    provider, movie_id = external_id.split(':', 1)
-    if provider == 'imdb':
-        query_params = {
-            'i': movie_id,
-        }
-        response = requests.get('http://omdbapi.com', params=query_params)
-        if response.status_code != 200:
-            _logger.error(textwrap.dedent("""OMDb query for movie details returned non-200 status code.
-                URL:         %s
-                Status code: %d
-                Response:    %s
-            """), response.url, response.status_code, response.text)
-            return
-        json_results = response.json()
-        cover_art = json_results.get('Poster')
-        if cover_art and cover_art != 'N/A':
-            movie = Movie.query.filter_by(external_id=external_id).one()
-            _logger.info("Cover art for %s (%s) found", external_id, movie.title)
-            movie.cover_img = cover_art
-            db.session.add(movie)
-            db.session.commit()
-    else:
-        _logger.warning("I don't know how to find cover images for provider '%s'", provider)
+    cover_art = get_omdb_property(external_id, 'Poster')
+    if cover_art:
+        save_new_property_on_movie(external_id, 'cover_img', cover_art)
 
 
 @celery.task(name='find-durations', base=celery.Task)
@@ -84,31 +63,56 @@ def find_durations(external_ids=None):
 @celery.task(name='find-duration-for-movie', base=celery.Task)
 def find_duration_for_movie(external_id):
     """ Find the duration (in s) for one movie. """
-    _logger.info("Searching for duration for %s...", external_id)
+    runtime = get_omdb_property(external_id, 'Runtime')
+    if runtime:
+        duration_in_s = int(runtime.rstrip(' min')) * 60
+        save_new_property_on_movie(external_id, 'duration_in_s', duration_in_s)
+
+
+def get_omdb_property(external_id, property_name):
+    """ Get the given property of an object from OMDb. Returns None if property is not found, or is N/A. """
     provider, movie_id = external_id.split(':', 1)
-    if provider == 'imdb':
-        query_params = {
-            'i': movie_id,
-        }
-        response = requests.get('http://omdbapi.com', params=query_params)
-        if response.status_code != 200:
-            _logger.error(textwrap.dedent("""OMDb query for movie details returned non-200 status code.
-                URL:         %s
-                Status code: %d
-                Response:    %s
-            """), response.url, response.status_code, response.text)
-            return
-        json_results = response.json()
-        runtime = json_results.get('Runtime')
-        if runtime and runtime != 'N/A':
-            movie = Movie.query.filter_by(external_id=external_id).one()
-            _logger.info("Cover art for %s (%s) found", external_id, movie.title)
-            duration_in_s = int(runtime.rstrip(' min')) * 60
-            movie.duration_in_s = duration_in_s
-            db.session.add(movie)
-            db.session.commit()
-    else:
-        _logger.warning("I don't know how to find cover images for provider '%s'", provider)
+    if provider != 'imdb':
+        _logger.info("Can't poll OMDb for non-imdb sources")
+        return
+    obj = get_omdb_object(movie_id)
+    if obj:
+        prop = obj.get(property_name)
+        if prop and prop != 'N/A':
+            _logger.info("Successfully OMDb query for '%s', found '%s'=%s", movie_id, property_name, prop)
+            return prop
+    _logger.info("OMDb query for property '%s' on '%s' resulted in no hits.", property_name, movie_id)
+    return None
+
+
+def save_new_property_on_movie(external_id, property_name, property):
+    print("Saving property %s=%s to movie %s", property_name, property, external_id)
+    movie = Movie.query.filter_by(external_id=external_id).one()
+    setattr(movie, property_name, property)
+    db.session.commit()
+
+
+def get_omdb_object(imdb_id):
+    """ Fetch the object with the given IMDb ID from OMDb. Returns None on failures. """
+    _logger.info("Querying OMDb for movie with id '%s'..", imdb_id)
+    query_params = {
+        'i': imdb_id,
+    }
+    return omdb_request(query_params)
+
+
+def omdb_request(payload):
+    """ A proxy around OMDb with error handling. """
+    response = requests.get('http://omdbapi.com', params=payload)
+    if response.status_code != 200:
+        _logger.error(textwrap.dedent("""OMDb query for movie details returned non-200 status code.
+            URL:         %s
+            Status code: %d
+            Response:    %s
+        """), response.url, response.status_code, response.text)
+        return None
+    json_results = response.json()
+    return json_results
 
 
 class OMDBFetcher(object):
@@ -126,32 +130,16 @@ class OMDBFetcher(object):
         """
         # OMDb refuses queries shorter than 2 chars
         if len(query) > 1:
-            results = self._query_omdb(query)
+            results = self._search_omdb(query)
             new_movies = self._parse_omdb_results(results)
             find_cover_art.delay(new_movies)
             find_durations.delay(new_movies)
 
 
-    def _query_omdb(self, query):
-        _logger.info("Querying OMDB for '%s'", query)
+    def _search_omdb(self, query):
+        _logger.info("Searching OMDB for '%s'", query)
         payload = {'s': query}
-        results = requests.get(self.OMDB_URL, params=payload)
-        if results.status_code != 200:
-            _logger.error(textwrap.dedent("""OMDb request returned non-200 status code.
-                Status code: %d
-                Query:       %s
-                Response:    %s
-            """), results.status_code, results.url, results.text)
-        try:
-            json_results = results.json()
-            return json_results
-        except requests.exceptions.RequestException as ex: # pragma: no cover
-            _logger.warning(textwrap.dedent("""JSON decoding of OMDB response failed. Details:
-                Status code: %d
-                URL:         %s
-                Payload:     %s
-                Exception:   %s
-            """), results.status_code, results.url, results.text, ex)
+        return omdb_request(payload)
 
 
     def _parse_omdb_results(self, results):
