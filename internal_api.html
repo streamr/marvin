@@ -112,6 +112,16 @@ probably point to the config file you want to use.</p>
 </dd></dl>
 
 </div>
+<span class="target" id="module-marvin.fields"></span><div class="section" id="marvin-fields">
+<h2>marvin.fields<a class="headerlink" href="#marvin-fields" title="Permalink to this headline">¶</a></h2>
+<p>Some custom form field types used by marvin.</p>
+<dl class="class">
+<dt id="marvin.fields.JSONField">
+<em class="property">class </em><tt class="descclassname">marvin.fields.</tt><tt class="descname">JSONField</tt><big>(</big><em>label=None</em>, <em>validators=None</em>, <em>filters=()</em>, <em>description=u''</em>, <em>id=None</em>, <em>default=None</em>, <em>widget=None</em>, <em>_form=None</em>, <em>_name=None</em>, <em>_prefix=u''</em>, <em>_translations=None</em><big>)</big><a class="headerlink" href="#marvin.fields.JSONField" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field that validates and processes JSON input.</p>
+</dd></dl>
+
+</div>
 <span class="target" id="module-marvin.management"></span><div class="section" id="marvin-management">
 <h2>marvin.management<a class="headerlink" href="#marvin-management" title="Permalink to this headline">¶</a></h2>
 <p>Configures the manager, and acts as an entry point for the manage command.</p>
@@ -429,8 +439,33 @@ and has not expired yet.</p>
 
 <dl class="class">
 <dt id="marvin.models.UserLoginForm">
-<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">UserLoginForm</tt><big>(</big><em>formdata=&lt;class flask_wtf.form._Auto at 0x3645ce8&gt;</em>, <em>obj=None</em>, <em>prefix=''</em>, <em>csrf_context=None</em>, <em>secret_key=None</em>, <em>csrf_enabled=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.UserLoginForm" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">UserLoginForm</tt><big>(</big><em>formdata=&lt;class flask_wtf.form._Auto at 0x4448c80&gt;</em>, <em>obj=None</em>, <em>prefix=''</em>, <em>csrf_context=None</em>, <em>secret_key=None</em>, <em>csrf_enabled=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.UserLoginForm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Form used to validate user logins.</p>
+</dd></dl>
+
+</div>
+<span class="target" id="module-marvin.permissions"></span><div class="section" id="marvin-permissions">
+<h2>marvin.permissions<a class="headerlink" href="#marvin-permissions" title="Permalink to this headline">¶</a></h2>
+<p>Permissions used around marvin.</p>
+<dl class="function">
+<dt id="marvin.permissions.login_required">
+<tt class="descclassname">marvin.permissions.</tt><tt class="descname">login_required</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#marvin.permissions.login_required" title="Permalink to this definition">¶</a></dt>
+<dd><p>If you decorate a view with this, it will ensure that the current user is
+logged in and authenticated before calling the actual view.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>func</strong> (<em>function</em>) &#8211; The view function to decorate.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="marvin.permissions.on_identity_loaded">
+<tt class="descclassname">marvin.permissions.</tt><tt class="descname">on_identity_loaded</tt><big>(</big><em>sender</em>, <em>identity</em><big>)</big><a class="headerlink" href="#marvin.permissions.on_identity_loaded" title="Permalink to this definition">¶</a></dt>
+<dd><p>When an identify is loaded, initialize it with it&#8217;s permissions.</p>
 </dd></dl>
 
 </div>
@@ -656,16 +691,6 @@ so that we can look up the necessary parameters ourselves. This will be implemen
 </dd></dl>
 
 </div>
-<span class="target" id="module-marvin.validators"></span><div class="section" id="marvin-validators">
-<h2>marvin.validators<a class="headerlink" href="#marvin-validators" title="Permalink to this headline">¶</a></h2>
-<p>Some validators that can be used to validate incoming form data.</p>
-<dl class="class">
-<dt id="marvin.validators.JSONValidator">
-<em class="property">class </em><tt class="descclassname">marvin.validators.</tt><tt class="descname">JSONValidator</tt><a class="headerlink" href="#marvin.validators.JSONValidator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validates that the data is valid JSON, and that it represents a JS object (python dict).</p>
-</dd></dl>
-
-</div>
 </div>
 
 
@@ -678,15 +703,16 @@ so that we can look up the necessary parameters ourselves. This will be implemen
   <ul>
 <li><a class="reference internal" href="#">API documentation</a><ul>
 <li><a class="reference internal" href="#marvin">marvin</a></li>
+<li><a class="reference internal" href="#marvin-fields">marvin.fields</a></li>
 <li><a class="reference internal" href="#marvin-management">marvin.management</a></li>
 <li><a class="reference internal" href="#marvin-models">marvin.models</a></li>
+<li><a class="reference internal" href="#marvin-permissions">marvin.permissions</a></li>
 <li><a class="reference internal" href="#marvin-utils">marvin.utils</a></li>
 <li><a class="reference internal" href="#marvin-views">marvin.views</a></li>
 <li><a class="reference internal" href="#marvin-views-entries">marvin.views.entries</a></li>
 <li><a class="reference internal" href="#marvin-views-movies">marvin.views.movies</a></li>
 <li><a class="reference internal" href="#marvin-views-stats">marvin.views.stats</a></li>
 <li><a class="reference internal" href="#marvin-views-streams">marvin.views.streams</a></li>
-<li><a class="reference internal" href="#marvin-validators">marvin.validators</a></li>
 </ul>
 </li>
 </ul>
