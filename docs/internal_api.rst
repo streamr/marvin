@@ -6,10 +6,16 @@ This is the documentation for all classes, modules and functions/methods you fin
 .. automodule:: marvin
    :members:
 
+.. automodule:: marvin.fields
+   :members:
+
 .. automodule:: marvin.management
    :members:
 
 .. automodule:: marvin.models
+   :members:
+
+.. automodule:: marvin.permissions
    :members:
 
 .. automodule:: marvin.utils
@@ -28,7 +34,4 @@ This is the documentation for all classes, modules and functions/methods you fin
    :members:
 
 .. automodule:: marvin.views.streams
-   :members:
-
-.. automodule:: marvin.validators
    :members:
