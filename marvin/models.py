@@ -53,6 +53,8 @@ class Movie(db.Model):
     cover_img = Column(db.String(100), nullable=True)
     #: An aggregate of number of streams available
     number_of_streams = Column(db.Integer, default=0, nullable=False, min=0)
+    # Movie duration, in seconds
+    duration_in_s = Column(db.Integer, min=0)
 
 
     def __init__(self, **kwargs):
@@ -74,6 +76,7 @@ class Movie(db.Model):
             'year': self.year,
             'cover_img': self.cover_img,
             'number_of_streams': self.number_of_streams,
+            'duration_in_s': self.duration_in_s,
             '_links': {
                 'createStream': url_for('createstreamview', movie_id=self.id, _external=True),
             },
