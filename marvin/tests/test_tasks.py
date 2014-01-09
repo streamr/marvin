@@ -181,7 +181,7 @@ class OMDBFetchTest(TestCaseWithTempDB):
             self.assertIsNone(movie.cover_img)
 
 
-    def test_image_fetching(self):
+    def test_duration_fetching(self):
         movie = Movie(
             title='The Hobbit: The Desolation of Smaug',
             external_id='imdb:tt1170358'
