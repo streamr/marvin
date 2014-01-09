@@ -13,15 +13,37 @@ from flask import url_for, current_app
 from flask.ext.wtf import Form
 from itsdangerous import constant_time_compare, URLSafeSerializer
 from sqlalchemy_defaults import Column
-from sqlalchemy_utils import EmailType
+from sqlalchemy_utils import EmailType, JSONType
 from time import time
 from wtforms_alchemy import model_form_factory
-from wtforms.fields import TextField
+from wtforms import widgets
+from wtforms.compat import text_type
+from wtforms.fields import TextField, Field
 from wtforms.validators import Length
 
 import ujson as json
 
 ModelForm = model_form_factory(Form)
+
+class JSONField(Field):
+    """
+    This field is the base for most of the more complicated fields, and
+    represents an ``<input type="text">``.
+    """
+    widget = widgets.TextInput()
+
+    def process_formdata(self, valuelist):
+        if valuelist:
+            try:
+                self.data = json.loads(valuelist[0])
+                # don't accept anything else than javascript objects (like lists, strings, etc)
+                if not isinstance(self.data, dict):
+                    raise ValueError
+            except ValueError:
+                self.data = None
+                raise ValueError('Not valid JSON.')
+        else:
+            self.data = {}
 
 
 class Movie(db.Model):
@@ -168,9 +190,10 @@ class Entry(db.Model):
     #: The type of content, e.g. 'text', 'wiki', 'imdb:actor', etc.
     content_type = Column(db.String(20), nullable=False)
     #: The content of the entry, as a JSON data structure
-    content = Column(db.Text,
+    content = Column(JSONType,
         info={
-            'validators': JSONValidator(),
+            'form_field_class': JSONField,
+            #'validators': JSONValidator(),
         },
     )
     #: Foreign key to a stream
@@ -198,7 +221,7 @@ class Entry(db.Model):
             'href': url_for('entrydetailview', entry_id=self.id, _external=True),
             'entry_point_in_ms': self.entry_point_in_ms,
             'content_type': self.content_type,
-            'content': json.loads(self.content),
+            'content': self.content,
             'stream': {
                 'href': url_for('streamdetailview', stream_id=self.stream_id, _external=True),
                 'name': self.stream.name,

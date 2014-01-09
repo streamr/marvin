@@ -15,16 +15,16 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             stream=stream,
             title='<h1>Title</h1>',
             content_type='text',
-            content='{"text": "<p>Do you really need a wall-sized TV when you\'re sitting 3 inches from it?</p>"}',
+            content={"text": "<p>Do you really need a wall-sized TV when you're sitting 3 inches from it?</p>"},
         )
         cardboard_coffin = Entry(
             entry_point_in_ms=5*60*1000,
             stream=stream,
             title='<h1>Title</h1>',
             content_type='text',
-            content='''{
+            content={
                 "text": "<p>Why are the coffins of the future made out of cardboard?</p>"
-            }''',
+            },
         )
         self.stream_id, self.tv_id, self.cardboard_id, self.movie_id = self.addItems(
             stream, too_big_tv, cardboard_coffin, movie)
