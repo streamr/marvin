@@ -70,6 +70,47 @@ def find_cover_art_for_movie(external_id):
         _logger.warning("I don't know how to find cover images for provider '%s'", provider)
 
 
+@celery.task(name='find-durations', base=celery.Task)
+def find_durations(external_ids=None):
+    """ Look up duration for movies where the data is missing, or for the given `external_ids`. """
+    if external_ids is None:
+        movies = Movie.query.filter(Movie.duration_in_s == None).all()
+    else:
+        movies = Movie.query.filter(Movie.external_id.in_(external_ids)).all()
+    for movie in movies:
+        find_duration_for_movie.delay(movie.external_id)
+
+
+@celery.task(name='find-duration-for-movie', base=celery.Task)
+def find_duration_for_movie(external_id):
+    """ Find the duration (in s) for one movie. """
+    _logger.info("Searching for duration for %s...", external_id)
+    provider, movie_id = external_id.split(':', 1)
+    if provider == 'imdb':
+        query_params = {
+            'i': movie_id,
+        }
+        response = requests.get('http://omdbapi.com', params=query_params)
+        if response.status_code != 200:
+            _logger.error(textwrap.dedent("""OMDb query for movie details returned non-200 status code.
+                URL:         %s
+                Status code: %d
+                Response:    %s
+            """), response.url, response.status_code, response.text)
+            return
+        json_results = response.json()
+        runtime = json_results.get('Runtime')
+        if runtime and runtime != 'N/A':
+            movie = Movie.query.filter_by(external_id=external_id).one()
+            _logger.info("Cover art for %s (%s) found", external_id, movie.title)
+            duration_in_s = int(runtime.rstrip(' min')) * 60
+            movie.duration_in_s = duration_in_s
+            db.session.add(movie)
+            db.session.commit()
+    else:
+        _logger.warning("I don't know how to find cover images for provider '%s'", provider)
+
+
 class OMDBFetcher(object):
     """
         Query OMDb for movies, store to our db. OMDb provides an imdb ID for all
@@ -88,6 +129,7 @@ class OMDBFetcher(object):
             results = self._query_omdb(query)
             new_movies = self._parse_omdb_results(results)
             find_cover_art.delay(new_movies)
+            find_durations.delay(new_movies)
 
 
     def _query_omdb(self, query):

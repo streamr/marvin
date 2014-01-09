@@ -8,10 +8,11 @@ class OMDBFetchTest(TestCaseWithTempDB):
     def setUp(self):
         # We can't import the tasks module until create_app has been called,
         # which is why we do it down here
-        from marvin.tasks import external_search, find_cover_art, find_cover_art_for_movie
+        from marvin.tasks import external_search, find_cover_art, find_cover_art_for_movie, find_duration_for_movie
         self.external_search = external_search
         self.find_cover_art = find_cover_art
         self.find_cover_art_for_movie = find_cover_art_for_movie
+        self.find_duration_for_movie = find_duration_for_movie
 
 
     def test_query_omdb(self):
@@ -110,7 +111,8 @@ class OMDBFetchTest(TestCaseWithTempDB):
                 "Plot": "The Dwarves, Bilbo and Gandalf have successfully escaped the Misty Mountains, and Bilbo " +
                     "has gained the One Ring. They all continue their journey to get their gold back from the " +
                     "Dragon, Smaug.",
-                "Poster": "http://ia.media-imdb.com/images/M/MV5BMjAxMjMzMzAxOV5BMl5BanBnXkFtZTcwNTU3NzU2OQ@@._V1_SX300.jpg", # pylint: disable=line-too-long
+                "Poster": "http://ia.media-imdb.com/images/M/MV5BMjAxMjMzMzAxOV5BMl5BanBnXkFtZTcwNTU3NzU2OQ@@._V1_" +
+                    "SX300.jpg",
                 "Rated": "N/A",
                 "Released": "13 Dec 2013",
                 "Response": "True",
@@ -175,3 +177,43 @@ class OMDBFetchTest(TestCaseWithTempDB):
         with self.app.test_request_context():
             movie = Movie.query.get(movie_id)
             self.assertIsNone(movie.cover_img)
+
+
+    def test_image_fetching(self):
+        movie = Movie(
+            title='The Hobbit: The Desolation of Smaug',
+            external_id='imdb:tt1170358'
+        )
+        movie_id = self.addItems(movie)
+        attrs = {
+            'json.return_value': {
+                "Actors": "Martin Freeman, Ian McKellen, Richard Armitage, Benedict Cumberbatch",
+                "Director": "Peter Jackson",
+                "Genre": "Adventure, Drama, Fantasy",
+                "Plot": "The Dwarves, Bilbo and Gandalf have successfully escaped the Misty Mountains, and Bilbo " +
+                    "has gained the One Ring. They all continue their journey to get their gold back from the " +
+                    "Dragon, Smaug.",
+                "Poster": "http://ia.media-imdb.com/images/M/MV5BMjAxMjMzMzAxOV5BMl5BanBnXkFtZTcwNTU3NzU2OQ@@._V1_" +
+                    "SX300.jpg",
+                "Rated": "N/A",
+                "Released": "13 Dec 2013",
+                "Response": "True",
+                "Runtime": "161 min",
+                "Title": "The Hobbit: The Desolation of Smaug",
+                "Type": "N/A",
+                "Writer": "Fran Walsh, Philippa Boyens",
+                "Year": "2013",
+                "imdbID": "tt1170358",
+                "imdbRating": "N/A",
+                "imdbVotes": "N/A"
+            },
+            'status_code': 200,
+        }
+        response = Mock(**attrs)
+        requests = Mock(**{'get.return_value': response})
+        durationfinder = Mock()
+        with patch('marvin.tasks.requests', requests):
+            self.find_duration_for_movie('imdb:tt1170358')
+        with self.app.test_request_context():
+            movie = Movie.query.get(movie_id)
+            self.assertEqual(movie.duration_in_s, 161*60)
