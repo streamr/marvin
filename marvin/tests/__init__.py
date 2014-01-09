@@ -6,7 +6,6 @@ from marvin.models import User
 from os import path
 
 import os
-import tempfile
 import ujson as json
 import unittest
 
@@ -134,33 +133,22 @@ class MarvinBaseTestCase(unittest.TestCase):
 
 
 class TestCaseWithTempDB(MarvinBaseTestCase):
-    """ Inherit from this TestCase if you're doing anything that requires a test
-    database. Remember to call super() if you override setUp and/or tearDown.
-    """
+    """ Inherit from this TestCase if you're doing anything that requires a test database. """
 
     def _pre_setup(self):
         super(TestCaseWithTempDB, self)._pre_setup()
-        self.tmp_config = tempfile.NamedTemporaryFile(delete=False)
-        self.tmp_config.write('\n'.join([
-            "SQLALCHEMY_DATABASE_URI = 'sqlite:///../tmptestdb.sqlite'",
-            "CELERY_BROKER_URL = 'amqp://'",
-            "TESTING = True",
-            "SECRET_KEY = 'supersecret'",
-            "LOG_CONF_PATH = r'%s'" % path.abspath(path.join(path.dirname(__file__), 'test_log_conf.yaml')),
-            ]).encode('utf-8')
-        )
-        self.tmp_config.close()
-        os.environ['MARVIN_CONFIG_FILE'] = self.tmp_config.name
+        test_config = os.environ.get('MARVIN_TEST_CONFIG', path.abspath(path.join(path.dirname(__file__), 'test_config.py')))
+        os.environ['MARVIN_CONFIG_FILE'] = test_config
         self.app = create_app()
         self.client = self.app.test_client()
-        with self.app.test_request_context():
+        with self.app.app_context():
             db.create_all()
 
 
     def _post_teardown(self):
-        os.remove(self.tmp_config.name)
-        db.session.remove()
-        os.remove('../tmptestdb.sqlite')
+        with self.app.app_context():
+            db.drop_all()
+#        db.session.remove()
         super(TestCaseWithTempDB, self)._post_teardown()
 
 
