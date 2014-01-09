@@ -7,7 +7,7 @@
 
 """
 from . import db, utils
-from .validators import JSONValidator
+from .fields import JSONField
 
 from flask import url_for, current_app
 from flask.ext.wtf import Form
@@ -16,34 +16,11 @@ from sqlalchemy_defaults import Column
 from sqlalchemy_utils import EmailType, JSONType
 from time import time
 from wtforms_alchemy import model_form_factory
-from wtforms import widgets
-from wtforms.compat import text_type
-from wtforms.fields import TextField, Field
+from wtforms.fields import TextField
 from wtforms.validators import Length
 
-import ujson as json
 
 ModelForm = model_form_factory(Form)
-
-class JSONField(Field):
-    """
-    This field is the base for most of the more complicated fields, and
-    represents an ``<input type="text">``.
-    """
-    widget = widgets.TextInput()
-
-    def process_formdata(self, valuelist):
-        if valuelist:
-            try:
-                self.data = json.loads(valuelist[0])
-                # don't accept anything else than javascript objects (like lists, strings, etc)
-                if not isinstance(self.data, dict):
-                    raise ValueError
-            except ValueError:
-                self.data = None
-                raise ValueError('Not valid JSON.')
-        else:
-            self.data = {}
 
 
 class Movie(db.Model):
