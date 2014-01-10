@@ -1,14 +1,14 @@
 """Use native postgres JSON type for Entry.content
 
 Revision ID: 588336e02ca
-Revises: 2b7f5e38dd73
+Revises: 349d38252295
 Create Date: 2014-01-09 22:40:07.690000
 
 """
 
 # revision identifiers, used by Alembic.
 revision = '588336e02ca'
-down_revision = '2b7f5e38dd73'
+down_revision = '349d38252295'
 
 from alembic import op
 import sqlalchemy as sa
