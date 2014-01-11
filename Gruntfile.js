@@ -10,7 +10,11 @@ module.exports = function (grunt) {
   grunt.initConfig({
 
 
-    pkg: grunt.file.readJSON('package.json'),
+    env: {
+      dev: {
+        MARVIN_CONFIG_FILE: '../dev_config.py',
+      }
+    },
 
     jshint: {
       options: {
@@ -131,6 +135,7 @@ module.exports = function (grunt) {
 
   // Default task
   grunt.registerTask('default', [
+    'env:dev',
     'server',
   ]);
   grunt.registerTask('lint', [
@@ -144,6 +149,7 @@ module.exports = function (grunt) {
     'concurrent:server',
   ]);
   grunt.registerTask('build', [
+    'env:dev',
     'shell:sphinx',
     'shell:archive_static',
   ]);
