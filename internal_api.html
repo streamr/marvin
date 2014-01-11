@@ -61,18 +61,6 @@
 <span class="target" id="module-marvin"></span><div class="section" id="marvin">
 <h2>marvin<a class="headerlink" href="#marvin" title="Permalink to this headline">¶</a></h2>
 <p>This is the main entry point to marvin, the API endpoints for streamr.</p>
-<dl class="class">
-<dt id="marvin.ApiBase">
-<em class="property">class </em><tt class="descclassname">marvin.</tt><tt class="descname">ApiBase</tt><big>(</big><em>app=None</em>, <em>prefix=''</em>, <em>default_mediatype='application/json'</em>, <em>decorators=None</em>, <em>catch_all_404s=False</em>, <em>url_part_order='bae'</em><big>)</big><a class="headerlink" href="#marvin.ApiBase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base API class used to add some extra functionality to Flask-RESTful.</p>
-<dl class="method">
-<dt id="marvin.ApiBase.handle_error">
-<tt class="descname">handle_error</tt><big>(</big><em>exception</em><big>)</big><a class="headerlink" href="#marvin.ApiBase.handle_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>Override handle_error to make sure the exception is handled by the correct logger.</p>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="function">
 <dt id="marvin.create_app">
 <tt class="descclassname">marvin.</tt><tt class="descname">create_app</tt><big>(</big><em>config_file=None</em>, <em>**extra_config</em><big>)</big><a class="headerlink" href="#marvin.create_app" title="Permalink to this definition">¶</a></dt>
@@ -89,18 +77,6 @@
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="function">
-<dt id="marvin.generic_error_handler">
-<tt class="descclassname">marvin.</tt><tt class="descname">generic_error_handler</tt><big>(</big><em>exception</em><big>)</big><a class="headerlink" href="#marvin.generic_error_handler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Log exception to the standard marvin logger.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="marvin.init_logging">
-<tt class="descclassname">marvin.</tt><tt class="descname">init_logging</tt><big>(</big><em>log_conf_path</em><big>)</big><a class="headerlink" href="#marvin.init_logging" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize log config.</p>
 </dd></dl>
 
 <dl class="function">
@@ -439,7 +415,7 @@ and has not expired yet.</p>
 
 <dl class="class">
 <dt id="marvin.models.UserLoginForm">
-<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">UserLoginForm</tt><big>(</big><em>formdata=&lt;class flask_wtf.form._Auto at 0x3e14c80&gt;</em>, <em>obj=None</em>, <em>prefix=''</em>, <em>csrf_context=None</em>, <em>secret_key=None</em>, <em>csrf_enabled=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.UserLoginForm" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">UserLoginForm</tt><big>(</big><em>formdata=&lt;class flask_wtf.form._Auto at 0x419dc18&gt;</em>, <em>obj=None</em>, <em>prefix=''</em>, <em>csrf_context=None</em>, <em>secret_key=None</em>, <em>csrf_enabled=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.UserLoginForm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Form used to validate user logins.</p>
 </dd></dl>
 
@@ -469,40 +445,40 @@ logged in and authenticated before calling the actual view.</p>
 </dd></dl>
 
 </div>
-<span class="target" id="module-marvin.utils"></span><div class="section" id="marvin-utils">
-<h2>marvin.utils<a class="headerlink" href="#marvin-utils" title="Permalink to this headline">¶</a></h2>
-<p>A collection of utilities that might be handy in several places in the marvin code.</p>
+<span class="target" id="module-marvin.security"></span><div class="section" id="marvin-security">
+<h2>marvin.security<a class="headerlink" href="#marvin-security" title="Permalink to this headline">¶</a></h2>
+<p>Security-related utilities and tools.</p>
 <dl class="function">
-<dt id="marvin.utils.before_request_authentication">
-<tt class="descclassname">marvin.utils.</tt><tt class="descname">before_request_authentication</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.utils.before_request_authentication" title="Permalink to this definition">¶</a></dt>
+<dt id="marvin.security.before_request_authentication">
+<tt class="descclassname">marvin.security.</tt><tt class="descname">before_request_authentication</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.security.before_request_authentication" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect with &#64;app.before_request to authenticate users using the
 <cite>auth_token</cite> request param.</p>
 <p>Assigns a user to <cite>g.user</cite>, AnonymousUser if no auth_token was sent in the request.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="marvin.utils.decode_token_or_400">
-<tt class="descclassname">marvin.utils.</tt><tt class="descname">decode_token_or_400</tt><big>(</big><em>auth_token</em><big>)</big><a class="headerlink" href="#marvin.utils.decode_token_or_400" title="Permalink to this definition">¶</a></dt>
+<dt id="marvin.security.decode_token_or_400">
+<tt class="descclassname">marvin.security.</tt><tt class="descname">decode_token_or_400</tt><big>(</big><em>auth_token</em><big>)</big><a class="headerlink" href="#marvin.security.decode_token_or_400" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decode the given auth_token and return the data dict therein, or fail with a HTTP 400 error.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="marvin.utils.force_bytes">
-<tt class="descclassname">marvin.utils.</tt><tt class="descname">force_bytes</tt><big>(</big><em>string</em><big>)</big><a class="headerlink" href="#marvin.utils.force_bytes" title="Permalink to this definition">¶</a></dt>
+<dt id="marvin.security.force_bytes">
+<tt class="descclassname">marvin.security.</tt><tt class="descname">force_bytes</tt><big>(</big><em>string</em><big>)</big><a class="headerlink" href="#marvin.security.force_bytes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make sure the given argument is an instance of bytes. On python3, this is probably the case,
 but on python2 we have to encode it with an encoding, in this case we&#8217;ll use utf-8.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="marvin.utils.generate_pw_hash">
-<tt class="descclassname">marvin.utils.</tt><tt class="descname">generate_pw_hash</tt><big>(</big><em>password</em><big>)</big><a class="headerlink" href="#marvin.utils.generate_pw_hash" title="Permalink to this definition">¶</a></dt>
+<dt id="marvin.security.generate_pw_hash">
+<tt class="descclassname">marvin.security.</tt><tt class="descname">generate_pw_hash</tt><big>(</big><em>password</em><big>)</big><a class="headerlink" href="#marvin.security.generate_pw_hash" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hash the given password.</p>
 <p>Return a string in the format <tt class="docutils literal"><span class="pre">method$salt$hash</span></tt>.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="marvin.utils.get_auth_token_from_header">
-<tt class="descclassname">marvin.utils.</tt><tt class="descname">get_auth_token_from_header</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.utils.get_auth_token_from_header" title="Permalink to this definition">¶</a></dt>
+<dt id="marvin.security.get_auth_token_from_header">
+<tt class="descclassname">marvin.security.</tt><tt class="descname">get_auth_token_from_header</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.security.get_auth_token_from_header" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract the token from a HTTP Authorization header.</p>
 <p>The header is supposed to look be in the format <cite>Authorization: Token &lt;access token&gt;</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -516,21 +492,21 @@ but on python2 we have to encode it with an encoding, in this case we&#8217;ll u
 </dd></dl>
 
 <dl class="function">
-<dt id="marvin.utils.get_system_scrypt_params">
-<tt class="descclassname">marvin.utils.</tt><tt class="descname">get_system_scrypt_params</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.utils.get_system_scrypt_params" title="Permalink to this definition">¶</a></dt>
+<dt id="marvin.security.get_system_scrypt_params">
+<tt class="descclassname">marvin.security.</tt><tt class="descname">get_system_scrypt_params</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.security.get_system_scrypt_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get optimal N, p and r values for this sytem.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="marvin.utils.get_user_from_auth_data">
-<tt class="descclassname">marvin.utils.</tt><tt class="descname">get_user_from_auth_data</tt><big>(</big><em>auth_data</em><big>)</big><a class="headerlink" href="#marvin.utils.get_user_from_auth_data" title="Permalink to this definition">¶</a></dt>
+<dt id="marvin.security.get_user_from_auth_data">
+<tt class="descclassname">marvin.security.</tt><tt class="descname">get_user_from_auth_data</tt><big>(</big><em>auth_data</em><big>)</big><a class="headerlink" href="#marvin.security.get_user_from_auth_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the user object from the given auth_data. Raises HTTP 401 if token is no longer valid or user doesn&#8217;t exist
 anymore.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="marvin.utils.is_correct_pw">
-<tt class="descclassname">marvin.utils.</tt><tt class="descname">is_correct_pw</tt><big>(</big><em>password</em>, <em>password_hash</em><big>)</big><a class="headerlink" href="#marvin.utils.is_correct_pw" title="Permalink to this definition">¶</a></dt>
+<dt id="marvin.security.is_correct_pw">
+<tt class="descclassname">marvin.security.</tt><tt class="descname">is_correct_pw</tt><big>(</big><em>password</em>, <em>password_hash</em><big>)</big><a class="headerlink" href="#marvin.security.is_correct_pw" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that the given password hashes to the given password_hash.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -545,6 +521,34 @@ original hashing from.</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+</div>
+<span class="target" id="module-marvin.utils"></span><div class="section" id="marvin-utils">
+<h2>marvin.utils<a class="headerlink" href="#marvin-utils" title="Permalink to this headline">¶</a></h2>
+<p>A collection of utilities that might be handy in several places in the marvin code.</p>
+<dl class="class">
+<dt id="marvin.utils.ApiBase">
+<em class="property">class </em><tt class="descclassname">marvin.utils.</tt><tt class="descname">ApiBase</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.utils.ApiBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base API class used to add some extra functionality to Flask-RESTful.</p>
+<dl class="method">
+<dt id="marvin.utils.ApiBase.handle_error">
+<tt class="descname">handle_error</tt><big>(</big><em>exception</em><big>)</big><a class="headerlink" href="#marvin.utils.ApiBase.handle_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override handle_error to make sure the exception is handled by the correct logger.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="marvin.utils.error_handler">
+<tt class="descclassname">marvin.utils.</tt><tt class="descname">error_handler</tt><big>(</big><em>error</em><big>)</big><a class="headerlink" href="#marvin.utils.error_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles errors outside the API, ie in blueprints.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="marvin.utils.generic_error_handler">
+<tt class="descclassname">marvin.utils.</tt><tt class="descname">generic_error_handler</tt><big>(</big><em>exception</em><big>)</big><a class="headerlink" href="#marvin.utils.generic_error_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log exception to the standard marvin logger.</p>
 </dd></dl>
 
 </div>
@@ -707,6 +711,7 @@ so that we can look up the necessary parameters ourselves. This will be implemen
 <li><a class="reference internal" href="#marvin-management">marvin.management</a></li>
 <li><a class="reference internal" href="#marvin-models">marvin.models</a></li>
 <li><a class="reference internal" href="#marvin-permissions">marvin.permissions</a></li>
+<li><a class="reference internal" href="#marvin-security">marvin.security</a></li>
 <li><a class="reference internal" href="#marvin-utils">marvin.utils</a></li>
 <li><a class="reference internal" href="#marvin-views">marvin.views</a></li>
 <li><a class="reference internal" href="#marvin-views-entries">marvin.views.entries</a></li>

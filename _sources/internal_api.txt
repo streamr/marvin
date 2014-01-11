@@ -18,6 +18,9 @@ This is the documentation for all classes, modules and functions/methods you fin
 .. automodule:: marvin.permissions
    :members:
 
+.. automodule:: marvin.security
+   :members:
+
 .. automodule:: marvin.utils
    :members:
 
