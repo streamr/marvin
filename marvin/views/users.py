@@ -10,7 +10,7 @@
 from .. import db
 from ..models import User, UserForm, UserLoginForm
 from ..permissions import login_required
-from ..utils import is_correct_pw
+from ..security import is_correct_pw
 
 from flask.ext.restful import Resource
 from flask.ext.principal import UserNeed, Permission

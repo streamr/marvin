@@ -8,6 +8,7 @@
 """
 from . import db, utils
 from .fields import JSONField
+from .security import generate_pw_hash
 
 from flask import url_for, current_app
 from flask.ext.wtf import Form
@@ -247,7 +248,7 @@ class User(db.Model):
         """
         if 'password' in kwargs:
             password = kwargs.pop('password')
-            self.password_hash = utils.generate_pw_hash(password)
+            self.password_hash = generate_pw_hash(password)
         self.__dict__.update(kwargs)
 
 

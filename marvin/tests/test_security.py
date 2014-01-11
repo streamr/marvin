@@ -1,5 +1,5 @@
 from marvin.tests import TestCaseWithTempDB, AuthenticatedUserMixin
-from marvin.utils import get_auth_token_from_header, before_request_authentication
+from marvin.security import get_auth_token_from_header, before_request_authentication
 
 from flask import g
 from werkzeug.exceptions import BadRequest

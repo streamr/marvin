@@ -2,6 +2,7 @@ from marvin import create_app
 from marvin.tests import MarvinBaseTestCase
 
 from mock import MagicMock, patch
+from nose.tools import raises
 
 import os
 import tempfile
@@ -49,10 +50,6 @@ class AppCreationTest(MarvinBaseTestCase):
         os.remove(log_conf.name)
 
 
-    def test_app_missing_log_config_in_debug(self):
-        app = create_app(DEBUG=True)
-        self.assertTrue(app is not None)
-
     def test_error_handler_500(self):
         log_conf = tempfile.NamedTemporaryFile(delete=False)
         log_conf.write('version: 1'.encode('utf-8'))
@@ -64,7 +61,7 @@ class AppCreationTest(MarvinBaseTestCase):
             logger = MagicMock()
 
             # pylint: disable=multiple-statements
-            with patch('marvin._logger', logger), patch(patchpoint, lambda s: 1/0):
+            with patch('marvin.utils._logger', logger), patch(patchpoint, lambda s: 1/0):
                 app = create_app(
                     TESTING=False,
                     LOG_CONF_PATH=log_conf.name,
@@ -77,6 +74,6 @@ class AppCreationTest(MarvinBaseTestCase):
 
 class AppCreationWithoutTestMode(MarvinBaseTestCase):
 
+    @raises(ValueError)
     def test_app_with_missing_log_config(self):
         app = create_app()
-        self.assertIsNone(app)

@@ -6,48 +6,27 @@
 """
 
 # pylint: disable=invalid-name
+from . import utils
+from .security import before_request_authentication
 
 from celery import Celery
-from flask import Flask, make_response, request
+from flask import Flask
 from flask.ext.principal import Principal
-from flask.ext.restful import Api
 from flask.ext.sqlalchemy import SQLAlchemy
 from logging import getLogger
 from sqlalchemy_defaults import make_lazy_configured
 from os import path, environ
-from werkzeug.exceptions import HTTPException
 
 import logging.config
 import sqlalchemy
-import textwrap
-import ujson
 import yaml
 
 
-class ApiBase(Api):
-    """ Base API class used to add some extra functionality to Flask-RESTful. """
-    # pylint: disable=super-on-old-class
-
-    def handle_error(self, exception):
-        """ Override handle_error to make sure the exception is handled by the correct logger. """
-        # Don't do any special logging of client side errors
-        if isinstance(exception, HTTPException) and (400 <= exception.code < 500):
-            return super(ApiBase, self).handle_error(exception)
-        generic_error_handler(exception)
-        return super(ApiBase, self).handle_error(exception)
-
-api = ApiBase()
+api = utils.ApiBase()
 db = SQLAlchemy()
 principal = Principal()
 
 _logger = getLogger('marvin')
-
-@api.representation('application/json')
-def _fastjson(data, code, headers=None):
-    """ Replace the default json serializer with one based on ujson. """
-    response = make_response(ujson.dumps(data), code)
-    response.headers.extend(headers or {})
-    return response
 
 
 def create_app(config_file=None, **extra_config):
@@ -56,51 +35,77 @@ def create_app(config_file=None, **extra_config):
     :param config_file: Load config from this file.
     :param extra_config: Extra configuration values to pass to the WSGI object.
     """
-    core_settings = path.abspath(path.join(path.dirname(__file__), 'settings.py'))
-
-    # Setup app configuration
     app = Flask(__name__)
-    app.config.from_pyfile(core_settings)
-    if config_file is not None:
-        app.config.from_pyfile(config_file)
-    if 'MARVIN_CONFIG_FILE' in environ:
-        print("Loading config from %s..." % environ['MARVIN_CONFIG_FILE'])
-        app.config.from_envvar('MARVIN_CONFIG_FILE')
-    app.config.update(extra_config)
 
-    # Init logging
-    # We allow logging to be left unconfigured as long as DEBUG=True
-    log_conf_path = app.config.get('LOG_CONF_PATH')
-    if log_conf_path:
-        print("Loading log config from %s" % log_conf_path)
-        init_logging(log_conf_path)
-    else:
-        ignore_absent_logging = app.config.get('DEBUG') or app.config.get('TESTING')
-        if not ignore_absent_logging:
-            print('ERROR: LOG_CONF_PATH not found in config, terminating.')
-            return
-
-    # Connect extensions
-    db.init_app(app)
-    api.init_app(app)
-    principal.init_app(app)
+    _configure_app(app, config_file, **extra_config)
+    _configure_logging(app)
+    _connect_extensions(app)
 
     # Configure lazy models
     make_lazy_configured(sqlalchemy.orm.mapper)
 
+    _connect_blueprints(app)
+    _connect_api_endpoints(app)
+    _connect_utilities(app)
+
+    # Import modules that connect to signals
+    from . import permissions as _
+
+    return app
+
+
+def _configure_app(app, config_file=None, **extra_config):
+    # Load the core settings
+    core_settings = path.abspath(path.join(path.dirname(__file__), 'settings.py'))
+    app.config.from_pyfile(core_settings)
+
+    # Load from specified config file
+    if config_file is not None:
+        app.config.from_pyfile(config_file)
+
+    # Load from environment specified config
+    if 'MARVIN_CONFIG_FILE' in environ:
+        print("Loading config from %s..." % environ['MARVIN_CONFIG_FILE'])
+        app.config.from_envvar('MARVIN_CONFIG_FILE')
+
+    # Override with any kwargs given
+    app.config.update(extra_config)
+
+
+def _configure_logging(app):
+    """ Configures log handlers for the app, if necessary. Log config can be ignored if TESTING=True or DEBUG=True. """
+    log_conf_path = app.config.get('LOG_CONF_PATH')
+    if log_conf_path:
+        print("Loading log config from %s" % log_conf_path)
+        _init_logging(log_conf_path)
+    else:
+        ignore_absent_logging = app.config.get('DEBUG') or app.config.get('TESTING')
+        if not ignore_absent_logging:
+            raise ValueError('ERROR: LOG_CONF_PATH not found in config, terminating.')
+
+
+def _connect_extensions(app):
+    db.init_app(app)
+    api.init_app(app)
+    principal.init_app(app)
+
+
+def _connect_blueprints(app):
+    # Import views (must be done down here to avoid circular imports)
+    from .views import stats
+    from .views import promo
+
+    app.register_blueprint(stats.mod)
+    app.register_blueprint(promo.mod)
+
+
+def _connect_api_endpoints(app):
     # Import views (must be done down here to avoid circular imports)
     from .views import movies
     from .views import streams
     from .views import entries
-    from .views import stats
     from .views import users
-    from .views import promo
 
-    # Register blueprints
-    app.register_blueprint(stats.mod)
-    app.register_blueprint(promo.mod)
-
-    # Register resources
     api.add_resource(movies.AllMoviesView, '/movies')
     api.add_resource(movies.MovieDetailView, '/movies/<int:movie_id>')
     api.add_resource(streams.CreateStreamView, '/movies/<int:movie_id>/createStream')
@@ -112,64 +117,17 @@ def create_app(config_file=None, **extra_config):
     api.add_resource(users.UserDetailView, '/users/<int:user_id>')
     api.add_resource(users.LoginView, '/login')
 
-    # Error handlers
-    @app.errorhandler(500)
-    def _server_error(error):
-        """ Handles errors outside the API, ie in blueprints. """
-        generic_error_handler(error)
-        response_data = {
-            'msg': "Oops, server fault! We'll try to fix it ASAP, hang tight!",
-        }
-        response = _fastjson(response_data, 500, {'Content-Type': 'application/json'})
-        return response
 
-
-    from . import utils
+def _connect_utilities(app):
+    # Error handler
+    app.register_error_handler(500, utils.error_handler)
 
     # Connect before and after request handlers
-    app.before_request(utils.before_request_authentication)
-
-    # Import modules that connect to signals
-    from . import permissions as _
-
-    return app
+    app.before_request(before_request_authentication)
 
 
-def generic_error_handler(exception):
-    """ Log exception to the standard marvin logger. """
-    log_msg = textwrap.dedent("""Error occured!
-        Path:                 %s
-        Params:               %s
-        HTTP Method:          %s
-        Client IP Address:    %s
-        User Agent:           %s
-        User Platform:        %s
-        User Browser:         %s
-        User Browser Version: %s
-        HTTP Headers:         %s
-        Exception:            %s
-        """ % (
-            request.path,
-            request.values,
-            request.method,
-            request.remote_addr,
-            request.user_agent.string,
-            request.user_agent.platform,
-            request.user_agent.browser,
-            request.user_agent.version,
-            request.headers,
-            exception
-        )
-    )
-    # sysout seems a bit eradic for the loggers, so if any tests fail, you might want to uncomment these lines
-    # print(log_msg)
-    # import traceback
-    # traceback.print_exc()
-    _logger.exception(log_msg)
-
-
-def init_logging(log_conf_path):
-    """ Initialize log config. """
+def _init_logging(log_conf_path):
+    """ Configure logging with the config given. """
     with open(log_conf_path) as log_conf_file:
         log_conf = yaml.load(log_conf_file)
     logging.config.dictConfig(log_conf)

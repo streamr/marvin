@@ -120,7 +120,6 @@ module.exports = function (grunt) {
       options: {
         virtualenv: '<%= grunt.option("virtualenv") || "venv" %>',
         stop: grunt.option('dontstop') ? false : true,
-        verbose: true,
       },
       // Coverage slows down the test run by >100%, thus we want one fast edition as well
       'marvin-no-coverage': {

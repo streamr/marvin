@@ -4,6 +4,7 @@
 # test tools
 coverage
 mock
+nose
 
 # build tools
 sphinx
