@@ -117,10 +117,17 @@ module.exports = function (grunt) {
     },
 
     nose: {
+      options: {
+        virtualenv: '<%= grunt.option("virtualenv") || "venv" %>',
+        stop: grunt.option('dontstop') ? false : true,
+        verbose: true,
+      },
+      // Coverage slows down the test run by >100%, thus we want one fast edition as well
+      'marvin-no-coverage': {
+        src: 'marvin',
+      },
       marvin: {
         options: {
-          virtualenv: '<%= grunt.option("virtualenv") || "venv" %>',
-          stop: grunt.option('dontstop') ? false : true,
           with_coverage: true,
           cover_branches: true,
           cover_package: 'marvin',
@@ -143,7 +150,7 @@ module.exports = function (grunt) {
     'pylint',
   ]);
   grunt.registerTask('test', [
-    'nose',
+    'nose:marvin',
   ]);
   grunt.registerTask('server', [
     'concurrent:server',
