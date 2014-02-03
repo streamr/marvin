@@ -44,8 +44,8 @@ class LoginView(Resource):
         """ Create new auth_token. """
         form = UserLoginForm()
         if form.validate_on_submit():
-            user = (User.query.filter(User.username==form.identifier.data).first()
-                or User.query.filter(User.email==form.identifier.data).first())
+            user = (User.query.filter(User.username == form.identifier.data).first()
+                or User.query.filter(User.email == form.identifier.data).first())
             if user:
                 if is_correct_pw(form.password.data, user.password_hash):
                     return {

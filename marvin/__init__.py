@@ -5,7 +5,7 @@
     This is the main entry point to marvin, the API endpoints for streamr.
 """
 
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name,superfluous-parens
 from . import utils
 from .security import before_request_authentication
 
@@ -45,7 +45,7 @@ def create_app(config_file=None, **extra_config):
     make_lazy_configured(sqlalchemy.orm.mapper)
 
     _connect_blueprints(app)
-    _connect_api_endpoints(app)
+    _connect_api_endpoints()
     _connect_utilities(app)
 
     # Import modules that connect to signals
@@ -99,7 +99,7 @@ def _connect_blueprints(app):
     app.register_blueprint(promo.mod)
 
 
-def _connect_api_endpoints(app):
+def _connect_api_endpoints():
     # Import views (must be done down here to avoid circular imports)
     from .views import movies
     from .views import streams

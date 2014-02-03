@@ -50,7 +50,7 @@ def delete_streams_and_entries(wipe_movies=False):
 
     else:
         # Just reset the stream counts
-        movies_with_stream_count = Movie.query.filter(Movie.number_of_streams>0).all()
+        movies_with_stream_count = Movie.query.filter(Movie.number_of_streams > 0).all()
         for movie in movies_with_stream_count:
             movie.number_of_streams = 0
             db.session.add(movie)

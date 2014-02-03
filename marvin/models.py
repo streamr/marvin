@@ -6,7 +6,7 @@
     make it a package and split it up into smaller pieces.
 
 """
-from . import db, utils
+from . import db
 from .fields import JSONField
 from .security import generate_pw_hash
 
