@@ -10,7 +10,7 @@ flask-wtf
 pyyaml
 requests
 scrypt
-sqlalchemy-utils
+sqlalchemy-utils==0.22.1
 sqlalchemy-defaults
 ujson
 wtforms-alchemy==0.8.5
