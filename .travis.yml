@@ -11,7 +11,7 @@ before_install:
 install:
 
   # Python stuff
-  - pip install -r dev-requirements.txt --use-mirrors
+  - pip install -r dev-requirements.txt
 
   # Install grunt-cli and grunt
   - npm install -g grunt-cli
