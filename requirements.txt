@@ -4,14 +4,13 @@ flask
 flask-migrate
 flask-principal
 flask-script
-flask-restful
+flask-restful==0.2.10
 flask-sqlalchemy
 flask-wtf
 pyyaml
 requests
 scrypt
-# Install from tarjei's fork until https://github.com/kvesteri/sqlalchemy-utils/pull/58 has been pushed to PyPI
-git+git://github.com/thusoy/sqlalchemy-utils.git
+sqlalchemy-utils
 sqlalchemy-defaults
 ujson
 wtforms-alchemy==0.8.5
