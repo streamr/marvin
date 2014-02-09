@@ -10,7 +10,9 @@ flask-wtf==0.9.4
 pyyaml==3.10
 requests==2.2.1
 scrypt==0.6.1
-sqlalchemy-utils==0.22.1
+# Install a sqlalchemy-utils with the fixes from Tarjei's branch, but without the NumberRange fixes
+# in the later releases which break wtforms-components
+git+https://github.com/thusoy/sqlalchemy-utils
 sqlalchemy-defaults==0.3.2
 ujson==1.33
 wtforms-alchemy==0.8.5
