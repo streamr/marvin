@@ -77,16 +77,19 @@ class LargeExistingDbTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             title='Avatar',
             external_id='imdb:tt0499549',
             number_of_streams=4,
+            relevancy=40,
         )
         titanic = Movie(
             title='Titanic',
             external_id='imdb:tt0120338',
             number_of_streams=2,
+            relevancy=30,
         )
         lotr = Movie(
             title='Lord of the Rings',
             external_id='imdb:tt0120737',
             number_of_streams=1,
+            relevancy=20,
         )
 
         self.addItems(lotr, titanic, avatar)

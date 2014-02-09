@@ -15,4 +15,6 @@ LOG_CONF_PATH = path.abspath(path.join(path.dirname(__file__), 'dev_log_conf.yam
 
 CELERY_BROKER_URL = 'amqp://'
 
+CELERY_RESULT_BACKEND = 'amqp://'
+
 DEBUG = True

@@ -12,16 +12,19 @@
 from . import db, make_celery
 from .models import Movie
 
+from celery import chord
 from logging import getLogger
-
+import functools
 import requests
 import textwrap
 
 _logger = getLogger('marvin.tasks')
 
 celery = make_celery() # pylint: disable=invalid-name
+task = functools.partial(celery.task, base=celery.Task)
 
-@celery.task(name='external-search', base=celery.Task)
+
+@task(name='external-search')
 def external_search(query):
     """ Query external resources like OMDb for a search term, and store the results
     locally.
@@ -30,9 +33,9 @@ def external_search(query):
     omdb.search_and_store(query)
 
 
-@celery.task(name='find-images', base=celery.Task)
+@task(name='find-details')
 def find_cover_art(external_ids=None):
-    """ Look up images for all movies where it's missing. """
+    """ Look up cover art for all movies where it's missing. """
     if external_ids is None:
         movies = Movie.query.filter(Movie.cover_img == None).all()
     else:
@@ -41,7 +44,7 @@ def find_cover_art(external_ids=None):
         find_cover_art_for_movie.delay(movie.external_id)
 
 
-@celery.task(name='find-image-for-movie', base=celery.Task)
+@task(name='find-image-for-movie')
 def find_cover_art_for_movie(external_id):
     """ Find cover art for one movie. """
     cover_art = get_omdb_property(external_id, 'Poster')
@@ -49,7 +52,7 @@ def find_cover_art_for_movie(external_id):
         save_new_property_on_movie(external_id, 'cover_img', cover_art)
 
 
-@celery.task(name='find-durations', base=celery.Task)
+@task(name='find-durations')
 def find_durations(external_ids=None):
     """ Look up duration for movies where the data is missing, or for the given `external_ids`. """
     if external_ids is None:
@@ -60,13 +63,90 @@ def find_durations(external_ids=None):
         find_duration_for_movie.delay(movie.external_id)
 
 
-@celery.task(name='find-duration-for-movie', base=celery.Task)
+@task(name='find-duration-for-movie')
 def find_duration_for_movie(external_id):
     """ Find the duration (in s) for one movie. """
     runtime = get_omdb_property(external_id, 'Runtime')
     if runtime:
         duration_in_s = int(runtime.rstrip(' min')) * 60
         save_new_property_on_movie(external_id, 'duration_in_s', duration_in_s)
+
+
+@task(name='find-rating-parameters')
+def find_rating_parameters(external_ids=None):
+    """ Get metascore, imdb_rating and number_of_imdb_votes for movies. """
+    update_relevancy_task = update_relevancy.s(ids=external_ids)
+    get_meta = [
+        find_imdb_ratings.s(external_ids),
+        find_metacritic_ratings.s(external_ids),
+    ]
+    chord(get_meta)(update_relevancy_task)
+
+
+@task(name='update-relevancy')
+def update_relevancy(*args, **kwargs):
+    if not kwargs.get('ids'):
+        movies = Movie.query.all()
+    else:
+        movies = Movie.query.filter(Movie.external_id.in_(kwargs.get('ids'))).all()
+    for movie in movies:
+        update_relevancy_for_movie.delay(movie.external_id)
+
+
+@task(name='update-relevancy-for-movie')
+def update_relevancy_for_movie(external_id):
+    movie = Movie.query.filter(Movie.external_id == external_id).one()
+    _logger.info('Calculating new relevance for movie %s', movie.title)
+    movie.update_relevancy()
+    db.session.commit()
+
+
+@task(name='find-imdb-ratings')
+def find_imdb_ratings(external_ids):
+    if external_ids is None:
+        movies = Movie.query.filter(Movie.imdb_rating == 0).all()
+    else:
+        movies = Movie.query.filter(Movie.external_id.in_(external_ids)).all()
+    for movie in movies:
+        find_imdb_ratings_for_movie.delay(movie.external_id)
+
+
+@task(name='find-imdb-ratings-for-movie')
+def find_imdb_ratings_for_movie(external_id):
+    provider, movie_id = external_id.split(':', 1)
+    if provider != 'imdb':
+        _logger.info("Can't poll OMDb for non-imdb sources")
+        return
+    obj = get_omdb_object(movie_id)
+    if obj:
+        rating_raw = obj.get('imdbRating', 'N/A')
+        if rating_raw and rating_raw != 'N/A':
+            rating = float(rating_raw)
+            save_new_property_on_movie(external_id, 'imdb_rating', rating)
+        number_of_votes_raw = obj.get('imdbVotes', 'N/A')
+        if number_of_votes_raw and number_of_votes_raw != 'N/A':
+            number_of_votes = int(number_of_votes_raw.replace(',', ''))
+            save_new_property_on_movie(external_id, 'number_of_imdb_votes', number_of_votes)
+
+
+@task(name='find-metacritic-ratings')
+def find_metacritic_ratings(external_ids=None):
+    """ Find the metascore for the given ids, or for movies without the field. """
+    if external_ids is None:
+        movies = Movie.query.filter(Movie.metascore == 0).all()
+    else:
+        movies = Movie.query.filter(Movie.external_id.in_(external_ids)).all()
+    for movie in movies:
+        find_metacritic_rating_for_movie.delay(movie.external_id)
+
+
+@task(name='find-metacritic-rating-for-movie')
+def find_metacritic_rating_for_movie(external_id):
+    """ Find metascore for a single movie. """
+    metascore_raw = get_omdb_property(external_id, 'Metascore')
+    if metascore_raw:
+        metascore = int(metascore_raw)
+        save_new_property_on_movie(external_id, 'metascore', metascore)
 
 
 def get_omdb_property(external_id, property_name):
@@ -86,7 +166,7 @@ def get_omdb_property(external_id, property_name):
 
 
 def save_new_property_on_movie(external_id, property_name, property):
-    print("Saving property %s=%s to movie %s", property_name, property, external_id)
+    _logger.info("Saving property %s=%s to movie %s", property_name, property, external_id)
     movie = Movie.query.filter_by(external_id=external_id).one()
     setattr(movie, property_name, property)
     db.session.commit()
@@ -134,6 +214,7 @@ class OMDBFetcher(object):
             new_movies = self._parse_omdb_results(results)
             find_cover_art.delay(new_movies)
             find_durations.delay(new_movies)
+            find_rating_parameters.delay(new_movies)
 
 
     def _search_omdb(self, query):

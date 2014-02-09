@@ -67,10 +67,10 @@ class AllMoviesView(Resource):
         if search_query:
             search_words = search_query.split()
             final_search_query = '%'.join(search_words)
-            movie_query = Movie.query \
-                .filter(Movie.title.ilike('%' + final_search_query + '%')) \
-                .order_by(Movie.number_of_streams.desc()) \
-                .limit(limit)
+            movie_query = (Movie.query
+                .filter(Movie.title.ilike('%' + final_search_query + '%'))
+                .order_by(Movie.relevancy.desc())
+                .limit(limit))
             _logger.info("Got search query for '%s'", search_query)
             movies = movie_query.all()
             if movies:
@@ -85,10 +85,11 @@ class AllMoviesView(Resource):
                 movies = movie_query.all()
                 _logger.info("Synchronous search for '%s' resulted in %d new movies", search_query, len(movies))
         else:
-            movies = Movie.query \
-                .order_by(Movie.number_of_streams.desc()) \
-                .limit(limit) \
-                .all()
+            movies = (Movie.query
+                .filter(Movie.number_of_streams >= 1)
+                .order_by(Movie.relevancy.desc())
+                .limit(limit)
+                .all())
 
         return {
             'movies': [movie.to_json(include_streams=False) for movie in movies],

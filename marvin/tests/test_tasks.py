@@ -8,11 +8,13 @@ class OMDBFetchTest(TestCaseWithTempDB):
     def setUp(self):
         # We can't import the tasks module until create_app has been called,
         # which is why we do it down here
-        from marvin.tasks import external_search, find_cover_art, find_cover_art_for_movie, find_duration_for_movie
-        self.external_search = external_search
-        self.find_cover_art = find_cover_art
-        self.find_cover_art_for_movie = find_cover_art_for_movie
-        self.find_duration_for_movie = find_duration_for_movie
+        from marvin import tasks
+        self.external_search = tasks.external_search
+        self.find_cover_art = tasks.find_cover_art
+        self.find_cover_art_for_movie = tasks.find_cover_art_for_movie
+        self.find_duration_for_movie = tasks.find_duration_for_movie
+        self.find_imdb_ratings_for_movie = tasks.find_imdb_ratings_for_movie
+        self.find_metacritic_rating_for_movie = tasks.find_metacritic_rating_for_movie
 
 
     def test_query_omdb(self):
@@ -181,7 +183,8 @@ class OMDBFetchTest(TestCaseWithTempDB):
             self.assertIsNone(movie.cover_img)
 
 
-    def test_duration_fetching(self):
+    def test_metadata_fetching(self):
+        # Tests find_duration, find_metascore and find_imdb_ratings
         movie = Movie(
             title='The Hobbit: The Desolation of Smaug',
             external_id='imdb:tt1170358'
@@ -199,6 +202,7 @@ class OMDBFetchTest(TestCaseWithTempDB):
                     "SX300.jpg",
                 "Rated": "N/A",
                 "Released": "13 Dec 2013",
+                "Metascore": "66",
                 "Response": "True",
                 "Runtime": "161 min",
                 "Title": "The Hobbit: The Desolation of Smaug",
@@ -206,8 +210,8 @@ class OMDBFetchTest(TestCaseWithTempDB):
                 "Writer": "Fran Walsh, Philippa Boyens",
                 "Year": "2013",
                 "imdbID": "tt1170358",
-                "imdbRating": "N/A",
-                "imdbVotes": "N/A"
+                "imdbRating": "8.2",
+                "imdbVotes": "206,398"
             },
             'status_code': 200,
         }
@@ -216,6 +220,11 @@ class OMDBFetchTest(TestCaseWithTempDB):
         durationfinder = Mock()
         with patch('marvin.tasks.requests', requests):
             self.find_duration_for_movie('imdb:tt1170358')
+            self.find_imdb_ratings_for_movie('imdb:tt1170358')
+            self.find_metacritic_rating_for_movie('imdb:tt1170358')
         with self.app.test_request_context():
             movie = Movie.query.get(movie_id)
             self.assertEqual(movie.duration_in_s, 161*60)
+            self.assertEqual(movie.imdb_rating, 8.2)
+            self.assertEqual(movie.number_of_imdb_votes, 206398)
+            self.assertEqual(movie.metascore, 66)
