@@ -65,8 +65,10 @@ class AllMoviesView(Resource):
 
         # Return results from our own db
         if search_query:
+            search_words = search_query.split()
+            final_search_query = '%'.join(search_words)
             movie_query = Movie.query \
-                .filter(Movie.title.ilike('%' + search_query + '%')) \
+                .filter(Movie.title.ilike('%' + final_search_query + '%')) \
                 .order_by(Movie.number_of_streams.desc()) \
                 .limit(limit)
             _logger.info("Got search query for '%s'", search_query)
