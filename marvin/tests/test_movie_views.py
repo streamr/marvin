@@ -8,24 +8,29 @@ import unittest
 class AllMovieViewTest(TestCaseWithTempDB):
 
     def setUp(self):
-        avatar = Movie(
-            title='Avatar',
+        mission_impossible = Movie(
+            title='Mission: Impossible',
             external_id='imdb:tt0499549',
         )
-        titanic = Movie(
-            title='Titanic',
+        harry_potter_azkaban = Movie(
+            title='Harry Potter and the Prisoner of Azkaban',
             external_id='imdb:tt0120338',
         )
-        self.addItems(avatar, titanic)
+        self.addItems(mission_impossible, harry_potter_azkaban)
 
 
     def test_search(self):
         with patch('marvin.tasks.external_search', Mock()):
-            response = self.client.get('/movies?q=ava')
+            response = self.client.get('/movies?q=mission+impossible')
         json_response = self.assert200(response)
         self.assertEqual(len(json_response['movies']), 1)
-        self.assertEqual(json_response['movies'][0]['title'], 'Avatar')
+        self.assertEqual(json_response['movies'][0]['title'], 'Mission: Impossible')
 
+        with patch('marvin.tasks.external_search', Mock()):
+            response = self.client.get('/movies?q=harry+azkaban')
+        json_response = self.assert200(response)
+        self.assertEqual(len(json_response['movies']), 1)
+        self.assertEqual(json_response['movies'][0]['title'], 'Harry Potter and the Prisoner of Azkaban')
 
     def test_search_results_empty_fetches_external(self):
         # Search results for stuff we don't have should fetch more synchronously
