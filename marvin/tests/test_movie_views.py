@@ -26,6 +26,12 @@ class AllMovieViewTest(TestCaseWithTempDB):
         self.assertEqual(len(json_response['movies']), 1)
         self.assertEqual(json_response['movies'][0]['title'], 'Mission: Impossible')
 
+        with patch('marvin.tasks.external_search', Mock()):
+            response = self.client.get('/movies?q=harry+azkaban')
+        json_response = self.assert200(response)
+        self.assertEqual(len(json_response['movies']), 1)
+        self.assertEqual(json_response['movies'][0]['title'], 'Harry Potter and the Prisoner of Azkaban')
+
     def test_search_results_empty_fetches_external(self):
         # Search results for stuff we don't have should fetch more synchronously
 
