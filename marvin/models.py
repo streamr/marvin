@@ -203,6 +203,7 @@ class Entry(db.Model):
             'entry_point_in_ms': self.entry_point_in_ms,
             'content_type': self.content_type,
             'content': self.content,
+            'title': self.title,
             'stream': {
                 'href': url_for('streamdetailview', stream_id=self.stream_id, _external=True),
                 'name': self.stream.name,
