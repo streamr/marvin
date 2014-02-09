@@ -10,6 +10,7 @@ from . import db
 from .fields import JSONField
 from .security import generate_pw_hash
 
+from datetime import datetime
 from flask import url_for, current_app
 from flask.ext.wtf import Form
 from itsdangerous import constant_time_compare, URLSafeSerializer
@@ -55,6 +56,14 @@ class Movie(db.Model):
     number_of_streams = Column(db.Integer, default=0, nullable=False, min=0)
     # Movie duration, in seconds
     duration_in_s = Column(db.Integer, min=0)
+    # IMDb rating
+    imdb_rating = Column(db.Float, default=0.0, max=10.0, min=0.0, nullable=False)
+    # Number of votes on IMDb
+    number_of_imdb_votes = Column(db.Integer, default=0, min=0, nullable=False)
+    # Score from metacritic
+    metascore = Column(db.Integer, default=0, min=0, max=100, nullable=False)
+    # A measurement of how relevant this movie is, used for search ranking purposes
+    relevancy = Column(db.Float, min=0.0, default=0, nullable=False)
 
 
     def __init__(self, **kwargs):
@@ -76,6 +85,9 @@ class Movie(db.Model):
             'year': self.year,
             'cover_img': self.cover_img,
             'number_of_streams': self.number_of_streams,
+            'imdb_rating': self.imdb_rating,
+            'imdb_votes': self.number_of_imdb_votes,
+            'metascore': self.metascore,
             'duration_in_s': self.duration_in_s,
             '_links': {
                 'createStream': url_for('createstreamview', movie_id=self.id, _external=True),
@@ -84,6 +96,22 @@ class Movie(db.Model):
         if include_streams:
             movie['streams'] = [stream.to_json(include_movie=False) for stream in self.streams]
         return movie
+
+
+    def update_relevancy(self):
+        """ Calculate a new relevancy rating for the movie.
+
+        The IMDb rating is weighted the most, contributing a potential 200 points out of a 325 max,
+        while the metascore ranking can contribute another 100 points, 25 points for number of
+        votes, and then the score is discounted by a factor of .99 for each year since it's relase.
+        """
+        imdb_ranking = 20*self.imdb_rating
+        metascore_ranking = self.metascore
+        imdb_votes_ranking = min(self.number_of_imdb_votes, 25000) / 1000
+        current_year = datetime.now().year
+        years_since_release = current_year - self.year
+        age_discount = 0.99**(years_since_release)
+        self.relevancy = (imdb_ranking + imdb_votes_ranking + metascore_ranking)*age_discount
 
 
 class MovieForm(ModelForm):
