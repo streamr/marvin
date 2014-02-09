@@ -228,7 +228,7 @@
 <p id='t5' class='pln'><span class='str'>&nbsp; &nbsp; This is the main entry point to marvin, the API endpoints for streamr.</span><span class='strut'>&nbsp;</span></p>
 <p id='t6' class='pln'><span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
 <p id='t7' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t8' class='pln'><span class='com'># pylint: disable=invalid-name</span><span class='strut'>&nbsp;</span></p>
+<p id='t8' class='pln'><span class='com'># pylint: disable=invalid-name,superfluous-parens</span><span class='strut'>&nbsp;</span></p>
 <p id='t9' class='stm run hide_run'><span class='key'>from</span> <span class='op'>.</span> <span class='key'>import</span> <span class='nam'>utils</span><span class='strut'>&nbsp;</span></p>
 <p id='t10' class='stm run hide_run'><span class='key'>from</span> <span class='op'>.</span><span class='nam'>security</span> <span class='key'>import</span> <span class='nam'>before_request_authentication</span><span class='strut'>&nbsp;</span></p>
 <p id='t11' class='pln'><span class='strut'>&nbsp;</span></p>
@@ -268,7 +268,7 @@
 <p id='t45' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>make_lazy_configured</span><span class='op'>(</span><span class='nam'>sqlalchemy</span><span class='op'>.</span><span class='nam'>orm</span><span class='op'>.</span><span class='nam'>mapper</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t46' class='pln'><span class='strut'>&nbsp;</span></p>
 <p id='t47' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>_connect_blueprints</span><span class='op'>(</span><span class='nam'>app</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t48' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>_connect_api_endpoints</span><span class='op'>(</span><span class='nam'>app</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t48' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>_connect_api_endpoints</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t49' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>_connect_utilities</span><span class='op'>(</span><span class='nam'>app</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t50' class='pln'><span class='strut'>&nbsp;</span></p>
 <p id='t51' class='pln'>&nbsp; &nbsp; <span class='com'># Import modules that connect to signals</span><span class='strut'>&nbsp;</span></p>
@@ -322,7 +322,7 @@
 <p id='t99' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>app</span><span class='op'>.</span><span class='nam'>register_blueprint</span><span class='op'>(</span><span class='nam'>promo</span><span class='op'>.</span><span class='nam'>mod</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t100' class='pln'><span class='strut'>&nbsp;</span></p>
 <p id='t101' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t102' class='stm run hide_run'><span class='key'>def</span> <span class='nam'>_connect_api_endpoints</span><span class='op'>(</span><span class='nam'>app</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t102' class='stm run hide_run'><span class='key'>def</span> <span class='nam'>_connect_api_endpoints</span><span class='op'>(</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t103' class='pln'>&nbsp; &nbsp; <span class='com'># Import views (must be done down here to avoid circular imports)</span><span class='strut'>&nbsp;</span></p>
 <p id='t104' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>from</span> <span class='op'>.</span><span class='nam'>views</span> <span class='key'>import</span> <span class='nam'>movies</span><span class='strut'>&nbsp;</span></p>
 <p id='t105' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>from</span> <span class='op'>.</span><span class='nam'>views</span> <span class='key'>import</span> <span class='nam'>streams</span><span class='strut'>&nbsp;</span></p>
