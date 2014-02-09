@@ -15,6 +15,7 @@ class OMDBFetchTest(TestCaseWithTempDB):
         self.find_duration_for_movie = tasks.find_duration_for_movie
         self.find_imdb_ratings_for_movie = tasks.find_imdb_ratings_for_movie
         self.find_metacritic_rating_for_movie = tasks.find_metacritic_rating_for_movie
+        self.parse_runtime_to_seconds = tasks.parse_runtime_to_seconds
 
 
     def test_query_omdb(self):
@@ -228,3 +229,14 @@ class OMDBFetchTest(TestCaseWithTempDB):
             self.assertEqual(movie.imdb_rating, 8.2)
             self.assertEqual(movie.number_of_imdb_votes, 206398)
             self.assertEqual(movie.metascore, 66)
+
+
+    def test_parse_runtime(self):
+        tests = [
+            ('120 min', 7200),
+            ('1 h 30', 5400),
+            ('yeah, right', 0),
+        ]
+        for runtime, expected in tests:
+            parsed = self.parse_runtime_to_seconds(runtime)
+            self.assertEqual(parsed, expected)
