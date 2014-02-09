@@ -264,6 +264,15 @@ movie. Always use IDs if you need to do that.</p>
 <dd><p>A dict representation of the movie that can be used for serialization.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="marvin.models.Movie.update_relevancy">
+<tt class="descname">update_relevancy</tt><big>(</big><big>)</big><a class="headerlink" href="#marvin.models.Movie.update_relevancy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate a new relevancy rating for the movie.</p>
+<p>The IMDb rating is weighted the most, contributing a potential 200 points out of a 325 max,
+while the metascore ranking can contribute another 100 points, 25 points for number of
+votes, and then the score is discounted by a factor of .99 for each year since it&#8217;s relase.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="marvin.models.Movie.year">
 <tt class="descname">year</tt><a class="headerlink" href="#marvin.models.Movie.year" title="Permalink to this definition">¶</a></dt>
@@ -415,7 +424,7 @@ and has not expired yet.</p>
 
 <dl class="class">
 <dt id="marvin.models.UserLoginForm">
-<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">UserLoginForm</tt><big>(</big><em>formdata=&lt;class flask_wtf.form._Auto at 0x4439188&gt;</em>, <em>obj=None</em>, <em>prefix=''</em>, <em>csrf_context=None</em>, <em>secret_key=None</em>, <em>csrf_enabled=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.UserLoginForm" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">UserLoginForm</tt><big>(</big><em>formdata=&lt;class flask_wtf.form._Auto at 0x33db1f0&gt;</em>, <em>obj=None</em>, <em>prefix=''</em>, <em>csrf_context=None</em>, <em>secret_key=None</em>, <em>csrf_enabled=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.UserLoginForm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Form used to validate user logins.</p>
 </dd></dl>
 
