@@ -68,8 +68,24 @@ def find_duration_for_movie(external_id):
     """ Find the duration (in s) for one movie. """
     runtime = get_omdb_property(external_id, 'Runtime')
     if runtime:
-        duration_in_s = int(runtime.rstrip(' min')) * 60
+        duration_in_s = parse_runtime_to_seconds(runtime)
         save_new_property_on_movie(external_id, 'duration_in_s', duration_in_s)
+
+
+def parse_runtime_to_seconds(runtime):
+    """ Parses number of seconds from a runtime string. """
+    if 'min' in runtime:
+        # Format is '123 min', f. ex.
+        duration_in_s = int(runtime.rstrip(' min')) * 60
+    elif ' h ' in runtime:
+        # Format is '1 h 43' something
+        hours, minutes = runtime.split(' h ', 1)
+        minutes = int(hours)*60 + int(minutes)
+        duration_in_s = minutes * 60
+    else:
+        _logger.error("Unknown runtime format found: '%s'", runtime)
+        return 0
+    return duration_in_s
 
 
 @task(name='find-rating-parameters')
