@@ -74,9 +74,9 @@ NtRp32
 g18
 I1
 sg19
-I12
+I10
 sg20
-I33
+I32
 sg21
 I0
 sg22
@@ -86,7 +86,7 @@ I3
 sg24
 I4
 sbssg25
-S'#\xbaL\x13\x07\xdc\xdc|\x02oC\xaf\xc9\x98%_'
+S'v\x19=\xb7[\x9f\x1a\x04ln\xbb\xe1D\x19\xca\xc3'
 p34
 ssS'marvin'
 p35
@@ -221,7 +221,7 @@ I0
 sg24
 I0
 sbssg25
-S'\xdb\x10\xc6\xb9D\xdaC=\x0b%&\xda\xb3\xd8\xba\x1c'
+S"\x8e\x1e\xed0#\xf0\xf2P\xad\x06'\xb1u\xe5\xa4\xa7"
 p65
 ssS'marvin_views'
 p66
