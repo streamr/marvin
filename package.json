@@ -11,7 +11,7 @@
     "grunt-pylint": "~0.3.0",
     "grunt-shell": "~0.6.4",
     "grunt-concurrent": "~0.4.3",
-    "grunt-nose": "~0.2.0",
+    "grunt-nose": "~0.3.1",
     "grunt-env": "~0.4.1"
   }
 }
