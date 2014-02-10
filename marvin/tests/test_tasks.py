@@ -11,6 +11,52 @@ class OMDBFetchTest(TestCaseWithTempDB):
         from marvin import tasks
         self.parse_runtime_to_seconds = tasks.parse_runtime_to_seconds
         self.update_meta = tasks.update_meta_for_movie
+        self.external_search = tasks.external_search
+
+
+    def test_query_omdb(self):
+        # Supply a mock of requests
+        attrs = {
+            'json.return_value': {
+                u'Search': [
+                    {
+                        u'imdbID': u'tt0109179',
+                        u'Year': u'1998',
+                        u'Type': u'movie',
+                        u'Title': u"Ava's Magical Adventure"
+                    },
+                    {
+                        u'imdbID': u'tt0798009',
+                        u'Year': u'2004',
+                        u'Type': u'episode',
+                        u'Title': u'Ava Gardner: Another Touch of Venus'
+                    },
+                    {
+                        u'imdbID': u'tt1548011',
+                        u'Year': u'2008',
+                        u'Type': u'movie',
+                        u'Title': u'Stalking Ava Gardner'
+                    },
+                    {
+                        u'imdbID': u'tt0363371',
+                        u'Year': u'1975',
+                        u'Type': u'series',
+                        u'Title': u'Signora Ava'
+                    }
+                ]
+            },
+            'status_code': 200,
+        }
+        response = Mock(**attrs)
+        requests = Mock(**{'get.return_value': response})
+
+        # pylint: disable=multiple-statements
+        patch_requests = patch('marvin.tasks.requests', requests)
+        with patch_requests, self.app.test_request_context():
+            self.external_search('ava')
+        with self.app.test_request_context():
+            # we expect the 'series'-type to be ignored
+            self.assertEqual(len(Movie.query.all()), 3)
 
 
     def test_metadata_fetching(self):
