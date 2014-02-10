@@ -1,4 +1,4 @@
-from marvin.models import User
+from marvin.models import User, Stream, Movie
 from marvin.tests import TestCaseWithTempDB
 
 class UserCreationTest(TestCaseWithTempDB):
@@ -22,19 +22,42 @@ class UserAccessRestrictionTest(TestCaseWithTempDB):
         with self.app.app_context():
             bob = User(username='bob', email='bob@company.com', password='sesamsesam')
             alice = User(username='alice', email='alice@gmail.com', password='123456')
-        self.bob_id, self.alice_id = self.addItems(bob, alice)
+        goldeneye = Movie(
+            title='GoldenEye',
+            external_id='imdb:tt0113189',
+        )
+        stream = Stream(
+            name='Bond cars',
+            creator=alice,
+            movie=goldeneye,
+        )
+        self.bob_id, self.alice_id = self.addItems(bob, alice, stream, goldeneye)[:2]
         with self.app.test_request_context():
             self.bob_auth_header = {'authorization': 'Token %s' % User.query.get(self.bob_id).get_auth_token()}
 
 
     def test_restricted_profile(self):
         response = self.client.get('/users/%d' % self.alice_id, headers=self.bob_auth_header)
-        self.assert403(response)
+        json_response = self.assert200(response)
+
+        # Should not have access to sensitive data
+        self.assertFalse('email' in json_response['user'])
+        self.assertFalse('signup_date' in json_response['user'])
+
+        # username is public tho
+        self.assertTrue('username' in json_response['user'])
+        self.assertTrue(json_response['user']['username'], 'alice')
+
+        # and streams
+        self.assertEqual(json_response['user']['streams'][0]['name'], 'Bond cars')
 
 
     def test_access_to_own_profile(self):
         response = self.client.get('/users/%d' % self.bob_id, headers=self.bob_auth_header)
-        self.assert200(response)
+        json_response = self.assert200(response)
+
+        # owner should be able to see email
+        self.assertTrue('email' in json_response['user'])
 
 
     def test_login_view(self):

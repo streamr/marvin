@@ -295,6 +295,10 @@ class User(db.Model):
         data = {
             'username': self.username,
             'href': url_for('userdetailview', user_id=self.id),
+            'streams': [{
+                'href': url_for('streamdetailview', stream_id=s.id, _external=True),
+                'name': s.name,
+                } for s in self.created_streams],
         }
 
         if include_personal_data:

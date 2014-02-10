@@ -61,18 +61,14 @@ class LoginView(Resource):
 
 
 class UserDetailView(Resource):
-    """ Read/Update endpoint for users. """
+    """ Read endpoint for users. """
 
     @login_required
     def get(self, user_id):
         """ Get details for a given user. """
-        view_permission = Permission(UserNeed(user_id))
-        if view_permission.can():
-            user = User.query.get_or_404(user_id)
-            return {
-                'user': user.to_json(include_personal_data=True),
-            }
-        else:
-            return {
-                'msg': 'You do not have the sufficient privileges to view the details of this user',
-            }, 403
+        personal_details_view = Permission(UserNeed(user_id))
+        is_self = personal_details_view.can()
+        user = User.query.get_or_404(user_id)
+        return {
+            'user': user.to_json(include_personal_data=is_self),
+        }
