@@ -109,7 +109,7 @@ class Movie(db.Model):
         metascore_ranking = self.metascore
         imdb_votes_ranking = min(self.number_of_imdb_votes, 25000) / 1000
         current_year = datetime.now().year
-        years_since_release = current_year - self.year
+        years_since_release = current_year - (self.year or 1900)
         age_discount = 0.99**(years_since_release)
         self.relevancy = (imdb_ranking + imdb_votes_ranking + metascore_ranking)*age_discount
 
