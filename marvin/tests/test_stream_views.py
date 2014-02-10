@@ -19,6 +19,7 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         json_response = self.assert200(response)
         self.assertEqual(json_response['stream']['name'], 'CinemaSins')
         self.assertEqual(json_response['stream']['movie']['title'], 'Titanic')
+        self.assertEqual(json_response['stream']['author']['username'], 'bob')
 
 
     def test_delete(self):

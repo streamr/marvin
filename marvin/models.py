@@ -162,6 +162,10 @@ class Stream(db.Model):
         stream = {
             'href': url_for('streamdetailview', stream_id=self.id, _external=True),
             'name': self.name,
+            'author': {
+                'username': self.creator.username,
+                'href': url_for('userdetailview', user_id=self.creator.id, _external=True),
+            },
             '_links': {
                 'createEntry': url_for('createentryview', stream_id=self.id, _external=True),
                 'entries': url_for('streamentrysearch', stream_id=self.id, _external=True),
