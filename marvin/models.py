@@ -135,6 +135,8 @@ class Stream(db.Model):
     #: A user chosen name for the stream. Users can change this at their own discretion, do not assume to
     #: be constant.
     name = Column(db.String(30), nullable=False)
+    #: Short description of the stream
+    description = Column(db.String(140), nullable=False, default='')
     #: Foreign key to a movie
     movie_id = Column(db.Integer, db.ForeignKey('movie.id'), nullable=False)
     #: The movie this stream is associated to.
@@ -166,6 +168,7 @@ class Stream(db.Model):
             'href': url_for('streamdetailview', stream_id=self.id, _external=True),
             'name': self.name,
             'published': self.public,
+            'description': self.description,
             'author': {
                 'username': self.creator.username,
                 'href': url_for('userdetailview', user_id=self.creator.id, _external=True),
@@ -193,6 +196,7 @@ class StreamForm(ModelForm):
         # explicitly define which fields should be considered
         only = (
             'name',
+            'description',
         )
 
 
