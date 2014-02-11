@@ -13,6 +13,7 @@ from .security import generate_pw_hash
 from datetime import datetime
 from flask import url_for, current_app
 from flask.ext.wtf import Form
+from flask.ext.principal import Permission, UserNeed
 from itsdangerous import constant_time_compare, URLSafeSerializer
 from sqlalchemy_defaults import Column
 from sqlalchemy_utils import EmailType, JSONType
@@ -94,7 +95,8 @@ class Movie(db.Model):
             },
         }
         if include_streams:
-            movie['streams'] = [stream.to_json(include_movie=False) for stream in self.streams]
+            streams = [s for s in self.streams if (s.public or Permission(UserNeed(s.creator_id)))]
+            movie['streams'] = [stream.to_json(include_movie=False) for stream in streams]
         return movie
 
 

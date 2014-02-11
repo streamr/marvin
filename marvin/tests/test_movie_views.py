@@ -123,8 +123,8 @@ class MovieDetailWithStreams(TestCaseWithTempDB, AuthenticatedUserMixin):
             title='Red',
             external_id='imdb:tt1245526'
         )
-        sins_stream = Stream(name='CinemaSins', movie=movie, creator=self.user)
-        actors_stream = Stream(name="Who's that actor?", movie=movie, creator=self.user)
+        sins_stream = Stream(name='CinemaSins', movie=movie, creator=self.user, public=True)
+        actors_stream = Stream(name="Who's that actor?", movie=movie, creator=self.user, public=True)
         self.movie_id, self.sins_stream_id, self.actors_stream_id = self.addItems(movie, sins_stream, actors_stream)
 
 
