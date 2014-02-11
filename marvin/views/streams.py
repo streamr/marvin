@@ -92,7 +92,7 @@ class CreateStreamView(Resource):
         }, 400
 
 
-class StreamEntrySearch(Resource):
+class StreamEntryView(Resource):
     """ Read endpoint for entries in a stream. """
 
     def get(self, stream_id):

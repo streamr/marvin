@@ -168,7 +168,7 @@ class Stream(db.Model):
             },
             '_links': {
                 'createEntry': url_for('createentryview', stream_id=self.id, _external=True),
-                'entries': url_for('streamentrysearch', stream_id=self.id, _external=True),
+                'entries': url_for('streamentryview', stream_id=self.id, _external=True),
             }
         }
         if include_movie:
