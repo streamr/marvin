@@ -21,9 +21,17 @@ class StreamDetailView(Resource):
     def get(self, stream_id):
         """ Get the stream with the given ID. """
         stream = Stream.query.get_or_404(stream_id)
-        return {
-            'stream': stream.to_json(),
-        }
+        is_owner = Permission(UserNeed(stream.creator_id))
+        if stream.public or is_owner:
+            return {
+                'stream': stream.to_json(),
+            }
+        else:
+            print("Access to private stream was attemped.")
+            print('g.user: %s' % g.user)
+            return {
+                'msg': 'This stream is not public yet.',
+            }, 403 if g.user else 401
 
 
     @login_required
@@ -75,7 +83,6 @@ class CreateStreamView(Resource):
         form = StreamForm()
         if form.validate_on_submit():
             movie = Movie.query.get_or_404(movie_id)
-            movie.number_of_streams += 1
             stream = Stream(creator=g.user)
             form.populate_obj(stream)
             stream.movie = movie
@@ -103,12 +110,44 @@ class StreamEntryView(Resource):
         * ``limit``: Restrict number of entries returned to this amount.
         * ``starttime_gt``: Only return entries that enter after this time, in ms.
         """
-        max_number_of_entries = request.args.get('limit', 100)
-        starttime_gt = request.args.get('starttime_gt', -1)
-        entries = Stream.query.get_or_404(stream_id).entries.\
-            filter(Entry.entry_point_in_ms > starttime_gt).\
-            order_by(Entry.entry_point_in_ms.asc()).\
-            limit(max_number_of_entries)
-        return {
-            'entries': [entry.to_json() for entry in entries],
-        }
+        stream = Stream.query.get_or_404(stream_id)
+        is_owner = Permission(UserNeed(stream.creator_id))
+        if stream.public or is_owner:
+            max_number_of_entries = request.args.get('limit', 100)
+            starttime_gt = request.args.get('starttime_gt', -1)
+            entries = (stream.entries
+                .filter(Entry.entry_point_in_ms > starttime_gt)
+                .order_by(Entry.entry_point_in_ms.asc())
+                .limit(max_number_of_entries))
+            return {
+                'entries': [entry.to_json() for entry in entries],
+            }
+        else:
+            return {
+                'msg': 'This stream is not public yet.',
+            }, 403 if g.user else 401
+
+
+class PublishStreamView(Resource):
+    """ Publish the given stream. """
+
+    @login_required
+    def post(self, stream_id):
+        """ Publish the stream, increase movie's stream count. """
+        stream = Stream.query.get_or_404(stream_id)
+        if stream.public:
+            return {
+                'msg': 'This stream has already been published!',
+            }, 400
+        is_owner = Permission(UserNeed(stream.creator_id))
+        if is_owner:
+            stream.public = True
+            stream.movie.number_of_streams += 1
+            db.session.commit()
+            return {
+                'msg': 'Congratulations! The stream "%s" was published successfully.' % stream.name,
+            }
+        else:
+            return {
+                'msg': 'You can only publish your own streams.'
+            }, 403

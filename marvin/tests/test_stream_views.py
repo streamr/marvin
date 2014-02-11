@@ -10,8 +10,10 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             external_id='imdb:tt1245526',
             number_of_streams=1,
         )
-        stream = Stream(name='CinemaSins', movie=movie, creator=self.user)
-        self.stream_id, self.movie_id = self.addItems(stream, movie)
+
+        stream = Stream(name='CinemaSins', movie=movie, creator=self.user, public=True)
+        private_stream = Stream(name='Uncompleted', movie=movie, creator=self.user)
+        self.stream_id, self.movie_id, self.p_str_id = self.addItems(stream, movie, private_stream)
 
 
     def test_detail_view(self):
@@ -27,7 +29,7 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         json_response = self.assert200(response)
         self.assertEqual(json_response['msg'], 'Stream deleted.')
         with self.app.test_request_context():
-            self.assertEqual(len(Stream.query.all()), 0)
+            self.assertEqual(len(Stream.query.all()), 1)
             movie = Movie.query.get(self.movie_id)
             self.assertEqual(movie.number_of_streams, 0)
 
@@ -87,6 +89,16 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         self.assert404(response)
 
 
+    def test_get_private_restricted(self):
+        response = self.client.get('/streams/%d' % self.p_str_id)
+        self.assert401(response)
+
+
+    def test_get_private_stream_entries_restricted(self):
+        response = self.client.get('/streams/%d/entries' % self.p_str_id)
+        self.assert401(response)
+
+
     def test_delete_nonexistent(self):
         response = self.client.delete('/streams/654', headers=self.auth_header)
         self.assert404(response)
@@ -117,9 +129,33 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         self.assertValidCreate(response, object_name='stream')
         with self.app.test_request_context():
             streams = Stream.query.all()
-            self.assertEqual(len(streams), 2)
+            self.assertEqual(len(streams), 3)
+
+
+    def test_publish_public_stream(self):
+        response = self.client.post('/streams/%d/publish' % self.stream_id, headers=self.auth_header)
+        self.assert400(response)
+
+
+    def test_publish_stream(self):
+        response = self.client.post('/streams/%d/publish' % self.p_str_id, headers=self.auth_header)
+        self.assert200(response)
+        with self.app.test_request_context():
             movie = Movie.query.get(self.movie_id)
             self.assertEqual(movie.number_of_streams, 2)
+
+
+    def test_publish_restricted(self):
+        response = self.client.post('/streams/%d/publish' % self.p_str_id)
+        self.assert401(response)
+
+        # create other user
+        with self.app.test_request_context():
+            alice = User(username='alice', email='alice@example.com', password='alicepw')
+            alice_id, = self.addItems(alice)
+            alice_auth_header = {'Authorization': 'Token %s' % User.query.get(alice_id).get_auth_token()}
+        response = self.client.post('/streams/%d/publish' % self.p_str_id, headers=alice_auth_header)
+        self.assert403(response)
 
 
     def test_create_invalid(self):
@@ -149,7 +185,7 @@ class StreamEntryFetchTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             title='Avatar',
             external_id='imdb:tt0499549',
         )
-        stream = Stream(name='DurationNotifier', movie=movie, creator=self.user)
+        stream = Stream(name='DurationNotifier', movie=movie, creator=self.user, public=True)
         self.stream_id, _ = self.addItems(stream, movie)
         for i in range(20):
             entry = Entry(
