@@ -67,6 +67,9 @@ movie. Streams are available at the following endpoints:
 * ``POST /streams/<id>/publish``: Marks the given stream as searchable and ready for public consumption. Authorized
   user required, and must be owner of the stream.
 
+* ``POST /streams/<id>/unpublish``: Unpublishes the given stream and removes it from public search and movie listings.
+  Authorized user required, and must be owner of the stream.
+
 
 Entries
 -------
