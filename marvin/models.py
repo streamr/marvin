@@ -165,6 +165,7 @@ class Stream(db.Model):
         stream = {
             'href': url_for('streamdetailview', stream_id=self.id, _external=True),
             'name': self.name,
+            'published': self.public,
             'author': {
                 'username': self.creator.username,
                 'href': url_for('userdetailview', user_id=self.creator.id, _external=True),
