@@ -11,7 +11,13 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             number_of_streams=1,
         )
 
-        stream = Stream(name='CinemaSins', movie=movie, creator=self.user, public=True)
+        stream = Stream(
+            name='CinemaSins',
+            movie=movie,
+            creator=self.user,
+            public=True,
+            description='No movie is without sin.',
+        )
         private_stream = Stream(name='Uncompleted', movie=movie, creator=self.user)
         self.stream_id, self.movie_id, self.p_str_id = self.addItems(stream, movie, private_stream)
 
@@ -22,6 +28,7 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         self.assertEqual(json_response['stream']['name'], 'CinemaSins')
         self.assertEqual(json_response['stream']['movie']['title'], 'Titanic')
         self.assertEqual(json_response['stream']['author']['username'], 'bob')
+        self.assertEqual(json_response['stream']['description'], 'No movie is without sin.')
 
 
     def test_delete(self):
@@ -124,12 +131,23 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
     def test_create_stream(self):
         data = {
             'name': 'FactChecker',
+            'description': 'Keeps them honest.'
         }
         response = self.client.post('/movies/%d/createStream' % self.movie_id, data=data, headers=self.auth_header)
-        self.assertValidCreate(response, object_name='stream')
+        json_response = self.assertValidCreate(response, object_name='stream')
         with self.app.test_request_context():
             streams = Stream.query.all()
             self.assertEqual(len(streams), 3)
+            self.assertEqual(json_response['stream']['description'], 'Keeps them honest.')
+
+
+    def test_too_long_description(self):
+        data = {
+            'name': 'Long description follows',
+            'description': 'lol' * 150,
+        }
+        response = self.client.post('/movies/%d/createStream' % self.movie_id, data=data, headers=self.auth_header)
+        self.assert400(response)
 
 
     def test_publish_public_stream(self):
