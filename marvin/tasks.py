@@ -87,6 +87,13 @@ def parse_runtime_to_seconds(runtime):
         duration_in_s = minutes * 60
         return duration_in_s
 
+    third_match = re.match('^(\d) h$', runtime)
+    if third_match:
+        # Format is '1 h'
+        hours = int(runtime.split(' h', 1)[0])
+        duration_in_s = hours * 3600
+        return duration_in_s
+
     _logger.error("Unknown runtime format found: '%s'", runtime)
     return 0
 

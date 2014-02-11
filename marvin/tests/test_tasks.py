@@ -109,6 +109,7 @@ class OMDBFetchTest(TestCaseWithTempDB):
         tests = [
             ('120 min', 7200),
             ('1 h 30 min', 5400),
+            ('1 h', 3600),
             ('yeah, right', 0),
         ]
         for runtime, expected in tests:
