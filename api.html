@@ -141,7 +141,12 @@ created the stream.</p>
 <div><ul class="simple">
 <li><a class="reference internal" href="internal_api.html#marvin.models.Stream.name" title="marvin.models.Stream.name"><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt></a></li>
 </ul>
+<p>Note that the stream will be private only and will not show up in search results or be playable until explicitly
+published by the user.</p>
 </div></blockquote>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">POST</span> <span class="pre">/streams/&lt;id&gt;/publish</span></tt>: Marks the given stream as searchable and ready for public consumption. Authorized
+user required, and must be owner of the stream.</p>
 </li>
 </ul>
 </div>

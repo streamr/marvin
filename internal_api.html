@@ -331,6 +331,13 @@ in a movie.</p>
 be constant.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="marvin.models.Stream.public">
+<tt class="descname">public</tt><a class="headerlink" href="#marvin.models.Stream.public" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the stream is visible public. Must be set explicitly to True by the user when he/she
+considers the stream done.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="marvin.models.Stream.to_json">
 <tt class="descname">to_json</tt><big>(</big><em>include_movie=True</em><big>)</big><a class="headerlink" href="#marvin.models.Stream.to_json" title="Permalink to this definition">¶</a></dt>
@@ -424,7 +431,7 @@ and has not expired yet.</p>
 
 <dl class="class">
 <dt id="marvin.models.UserLoginForm">
-<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">UserLoginForm</tt><big>(</big><em>formdata=&lt;class flask_wtf.form._Auto at 0x4797188&gt;</em>, <em>obj=None</em>, <em>prefix=''</em>, <em>csrf_context=None</em>, <em>secret_key=None</em>, <em>csrf_enabled=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.UserLoginForm" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">marvin.models.</tt><tt class="descname">UserLoginForm</tt><big>(</big><em>formdata=&lt;class flask_wtf.form._Auto at 0x4f6b1f0&gt;</em>, <em>obj=None</em>, <em>prefix=''</em>, <em>csrf_context=None</em>, <em>secret_key=None</em>, <em>csrf_enabled=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.models.UserLoginForm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Form used to validate user logins.</p>
 </dd></dl>
 
@@ -658,6 +665,18 @@ so that we can look up the necessary parameters ourselves. This will be implemen
 <dt id="marvin.views.streams.CreateStreamView.post">
 <tt class="descname">post</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.views.streams.CreateStreamView.post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new stream.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="marvin.views.streams.PublishStreamView">
+<em class="property">class </em><tt class="descclassname">marvin.views.streams.</tt><tt class="descname">PublishStreamView</tt><a class="headerlink" href="#marvin.views.streams.PublishStreamView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Publish the given stream.</p>
+<dl class="method">
+<dt id="marvin.views.streams.PublishStreamView.post">
+<tt class="descname">post</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#marvin.views.streams.PublishStreamView.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Publish the stream, increase movie&#8217;s stream count.</p>
 </dd></dl>
 
 </dd></dl>
