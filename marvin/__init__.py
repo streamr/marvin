@@ -112,6 +112,7 @@ def _connect_api_endpoints():
     api.add_resource(streams.StreamDetailView, '/streams/<int:stream_id>')
     api.add_resource(streams.StreamEntryView, '/streams/<int:stream_id>/entries')
     api.add_resource(streams.PublishStreamView, '/streams/<int:stream_id>/publish')
+    api.add_resource(streams.UnpublishStreamView, '/streams/<int:stream_id>/unpublish')
     api.add_resource(entries.CreateEntryView, '/streams/<int:stream_id>/createEntry')
     api.add_resource(entries.EntryDetailView, '/entries/<int:entry_id>')
     api.add_resource(users.CreateUserView, '/users')

@@ -151,3 +151,28 @@ class PublishStreamView(Resource):
             return {
                 'msg': 'You can only publish your own streams.'
             }, 403
+
+
+class UnpublishStreamView(Resource):
+    """ Unpublish the given stream. """
+
+    @login_required
+    def post(self, stream_id):
+        """ Unpublish the stream, decrease movie's stream count. """
+        stream = Stream.query.get_or_404(stream_id)
+        if not stream.public:
+            return {
+                'msg': "This stream hasn't been published yet!",
+            }, 400
+        is_owner = Permission(UserNeed(stream.creator_id))
+        if is_owner:
+            stream.public = False
+            stream.movie.number_of_streams -= 1
+            db.session.commit()
+            return {
+                'msg': 'The stream "%s" was removed from public view successfully.' % stream.name,
+            }
+        else:
+            return {
+                'msg': 'You can only unpublish your own streams.'
+            }, 403

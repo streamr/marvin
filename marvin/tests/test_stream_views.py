@@ -143,6 +143,8 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         with self.app.test_request_context():
             movie = Movie.query.get(self.movie_id)
             self.assertEqual(movie.number_of_streams, 2)
+            stream = Stream.query.get(self.p_str_id)
+            self.assertTrue(stream.public)
 
 
     def test_publish_restricted(self):
@@ -155,6 +157,29 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             alice_id, = self.addItems(alice)
             alice_auth_header = {'Authorization': 'Token %s' % User.query.get(alice_id).get_auth_token()}
         response = self.client.post('/streams/%d/publish' % self.p_str_id, headers=alice_auth_header)
+        self.assert403(response)
+
+
+    def test_unpublish(self):
+        response = self.client.post('/streams/%d/unpublish' % self.stream_id, headers=self.auth_header)
+        self.assert200(response)
+        with self.app.test_request_context():
+            movie = Movie.query.get(self.movie_id)
+            self.assertEqual(movie.number_of_streams, 0)
+            stream = Stream.query.get(self.stream_id)
+            self.assertFalse(stream.public)
+
+
+    def test_unpublish_restricted(self):
+        response = self.client.post('/streams/%d/unpublish' % self.stream_id)
+        self.assert401(response)
+
+        # create other user
+        with self.app.test_request_context():
+            alice = User(username='alice', email='alice@example.com', password='alicepw')
+            alice_id, = self.addItems(alice)
+            alice_auth_header = {'Authorization': 'Token %s' % User.query.get(alice_id).get_auth_token()}
+        response = self.client.post('/streams/%d/unpublish' % self.stream_id, headers=alice_auth_header)
         self.assert403(response)
 
 
