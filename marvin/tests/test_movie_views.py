@@ -3,8 +3,6 @@ from marvin.tests import TestCaseWithTempDB, AuthenticatedUserMixin
 
 from mock import Mock, patch
 
-import unittest
-
 class AllMovieViewTest(TestCaseWithTempDB):
 
     def setUp(self):
@@ -47,25 +45,6 @@ class AllMovieViewTest(TestCaseWithTempDB):
             response = self.client.get('/movies?q=harry')
         json_response = self.assert200(response)
         self.assertEqual(len(json_response['movies']), 1)
-
-
-    @unittest.skip("Should be reactivated when we want to support POST creation of movies")
-    def test_post_movie(self):
-        movie = {
-            'title': 'Avatar',
-        }
-        response = self.client.post('/movies', data=movie)
-        self.assertEqual(response.headers['content-type'], 'application/json')
-        self.assertValidCreate(response, object_name='movie')
-
-
-    @unittest.skip("Should be reactivated when we want to support POST creation of movies")
-    def test_add_invalid_movie(self):
-        movie = {
-            'title': '', # title field should be required
-        }
-        response = self.client.post('/movies', data=movie)
-        self.assertValidClientError(response)
 
 
 class LargeExistingDbTest(TestCaseWithTempDB, AuthenticatedUserMixin):
