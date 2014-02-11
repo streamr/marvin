@@ -319,6 +319,7 @@ class User(db.Model):
             'streams': [{
                 'href': url_for('streamdetailview', stream_id=s.id, _external=True),
                 'name': s.name,
+                'published': s.public,
                 } for s in streams],
         }
 
