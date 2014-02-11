@@ -26,14 +26,12 @@ module.exports = function (grunt) {
     },
 
     watch: {
-      options: {
-        livereload: true
-      },
       python: {
         files: [
           'marvin/**/*.py',
           'manage.py',
-        ]
+        ],
+        tasks: ['nose:fast'],
       },
       docs: {
         files: [
