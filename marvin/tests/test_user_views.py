@@ -30,10 +30,18 @@ class UserAccessRestrictionTest(TestCaseWithTempDB):
             name='Bond cars',
             creator=alice,
             movie=goldeneye,
+            public=True,
         )
-        self.bob_id, self.alice_id = self.addItems(bob, alice, stream, goldeneye)[:2]
+        private_stream = Stream(
+            name='Uncompleted Bond guns',
+            creator=alice,
+            movie=goldeneye,
+            public=False,
+        )
+        self.bob_id, self.alice_id = self.addItems(bob, alice, stream, goldeneye, private_stream)[:2]
         with self.app.test_request_context():
             self.bob_auth_header = {'authorization': 'Token %s' % User.query.get(self.bob_id).get_auth_token()}
+            self.alice_auth_header = {'authorization': 'Token %s' % User.query.get(self.alice_id).get_auth_token()}
 
 
     def test_restricted_profile(self):
@@ -48,16 +56,20 @@ class UserAccessRestrictionTest(TestCaseWithTempDB):
         self.assertTrue('username' in json_response['user'])
         self.assertTrue(json_response['user']['username'], 'alice')
 
-        # and streams
+        # and public streams
+        self.assertEqual(len(json_response['user']['streams']), 1)
         self.assertEqual(json_response['user']['streams'][0]['name'], 'Bond cars')
 
 
     def test_access_to_own_profile(self):
-        response = self.client.get('/users/%d' % self.bob_id, headers=self.bob_auth_header)
+        response = self.client.get('/users/%d' % self.alice_id, headers=self.alice_auth_header)
         json_response = self.assert200(response)
 
         # owner should be able to see email
         self.assertTrue('email' in json_response['user'])
+
+        # and private streams
+        self.assertEqual(len(json_response['user']['streams']), 2)
 
 
     def test_login_view(self):

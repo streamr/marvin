@@ -61,6 +61,12 @@ movie. Streams are available at the following endpoints:
 
     * :attr:`name <marvin.models.Stream.name>`
 
+    Note that the stream will be private only and will not show up in search results or be playable until explicitly
+    published by the user.
+
+* ``POST /streams/<id>/publish``: Marks the given stream as searchable and ready for public consumption. Authorized
+  user required, and must be owner of the stream.
+
 
 Entries
 -------

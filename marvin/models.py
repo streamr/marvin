@@ -143,6 +143,9 @@ class Stream(db.Model):
     creator_id = Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     #: The user that created the stream
     creator = db.relationship('User', backref=db.backref('created_streams', lazy='dynamic'))
+    #: Whether the stream is visible public. Must be set explicitly to True by the user when he/she
+    #: considers the stream done.
+    public = Column(db.Boolean, default=False, nullable=False)
 
 
     def __init__(self, movie=None, creator=None, **kwargs):
@@ -285,6 +288,16 @@ class User(db.Model):
         self.__dict__.update(kwargs)
 
 
+    def __nonzero__(self):
+        """ Same as self.is_authenticated(). """
+        return self.is_authenticated()
+
+
+    def __bool__(self):
+        """ Same as self.is_authenticated(). """
+        return self.is_authenticated()
+
+
     def is_authenticated(self):
         """ Used to tell the difference between authenticated users and anonymous users. """
         # pylint: disable=no-self-use
@@ -296,13 +309,14 @@ class User(db.Model):
 
         :param include_personal_data: Whether to include sensitive data such as email.
         """
+        streams = [s for s in self.created_streams if (include_personal_data or s.public)]
         data = {
             'username': self.username,
             'href': url_for('userdetailview', user_id=self.id),
             'streams': [{
                 'href': url_for('streamdetailview', stream_id=s.id, _external=True),
                 'name': s.name,
-                } for s in self.created_streams],
+                } for s in streams],
         }
 
         if include_personal_data:
@@ -339,6 +353,16 @@ class User(db.Model):
 
 class AnonymousUser(object):
     """ Represents an anonymous user. """
+
+    def __nonzero__(self):
+        """ Same as self.is_authenticated(). """
+        return self.is_authenticated()
+
+
+    def __bool__(self): # python 3
+        """ Same as self.is_authenticated(). """
+        return self.is_authenticated()
+
 
     def is_authenticated(self):
         """ Used to tell anonymous users apart from authenticated users. Always returns False. """
