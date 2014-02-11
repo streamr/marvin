@@ -137,7 +137,8 @@ class TestCaseWithTempDB(MarvinBaseTestCase):
 
     def _pre_setup(self):
         super(TestCaseWithTempDB, self)._pre_setup()
-        test_config = os.environ.get('MARVIN_TEST_CONFIG', path.abspath(path.join(path.dirname(__file__), 'test_config.py')))
+        test_config = os.environ.get('MARVIN_TEST_CONFIG',
+            path.abspath(path.join(path.dirname(__file__), 'test_config.py')))
         os.environ['MARVIN_CONFIG_FILE'] = test_config
         self.app = create_app()
         self.client = self.app.test_client()

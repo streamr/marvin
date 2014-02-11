@@ -42,7 +42,7 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
     def test_delete_other_users_stream(self):
         with self.app.app_context():
             alice = User(username='alice', email='alice@example.com', password='alicepw')
-            alice_id, = self.addItems(alice)
+            alice_id = self.addItems(alice)[0]
         stream = Stream(name='Alices stream', creator_id=alice_id, movie_id=self.movie_id)
         (stream_id,) = self.addItems(stream) # pylint: disable=unbalanced-tuple-unpacking
         response = self.client.delete('/streams/%d' % stream_id, headers=self.auth_header)
@@ -74,7 +74,7 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
     def test_edit_other_users_stream(self):
         with self.app.app_context():
             alice = User(username='alice', email='alice@example.com', password='alicepw')
-            alice_id, = self.addItems(alice)
+            alice_id = self.addItems(alice)[0]
         stream = Stream(name='Alices stream', creator_id=alice_id, movie_id=self.movie_id)
         (stream_id,) = self.addItems(stream) # pylint: disable=unbalanced-tuple-unpacking
         data = {

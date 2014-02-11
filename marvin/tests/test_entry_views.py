@@ -180,5 +180,6 @@ class EntryDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             'title': '<h1>Title</h1>',
             'content': '<p>Yes, a planet full of trees has no oxygen.</p>',
         }
-        response = self.client.post('/streams/%d/createEntry' % self.stream_id, data=entry, headers=self.alices_auth_header)
+        response = self.client.post('/streams/%d/createEntry' % self.stream_id, data=entry,
+            headers=self.alices_auth_header)
         self.assert403(response)

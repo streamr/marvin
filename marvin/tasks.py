@@ -22,7 +22,7 @@ import textwrap
 _logger = getLogger('marvin.tasks')
 
 celery = make_celery() # pylint: disable=invalid-name
-task = functools.partial(celery.task, base=celery.Task, ignore_result=True)
+task = functools.partial(celery.task, base=celery.Task, ignore_result=True) # pylint: disable=invalid-name
 
 
 @task(name='external-search')
@@ -36,6 +36,7 @@ def external_search(query):
 
 @task(name='update-meta')
 def update_meta(external_ids=None):
+    """ Update the metadata from OMDb for the given IDs, or for all movies if not defined. """
     if external_ids is None:
         movies = Movie.query.all()
     else:
@@ -46,9 +47,13 @@ def update_meta(external_ids=None):
 
 @task(name='update-meta-for-movie')
 def update_meta_for_movie(external_id):
+    """ Update metadata for a given movie.
+
+    Fields updated include cover image, runtime, IMDb rating and number of votes and the metascore.
+    """
     omdb = get_omdb_object(external_id)
     movie = Movie.query.filter(Movie.external_id == external_id).one()
-    Mapper = namedtuple('Mapper', ['omdb_property', 'movie_property', 'parser'])
+    Mapper = namedtuple('Mapper', ['omdb_property', 'movie_property', 'parser']) # pylint: disable=invalid-name
     mappers = [
         Mapper('Poster', 'cover_img', str),
         Mapper('Runtime', 'duration_in_s', parse_runtime_to_seconds),
@@ -73,13 +78,13 @@ def save_omdb_property_to_movie(movie, omdb_results, mapper):
 
 def parse_runtime_to_seconds(runtime):
     """ Parses number of seconds from a runtime string. """
-    first_match = re.match('^[\d]{1,3} min$', runtime)
+    first_match = re.match(r'^[\d]{1,3} min$', runtime)
     if first_match:
         # Format is '123 min'
         duration_in_s = int(runtime.rstrip(' min')) * 60
         return duration_in_s
 
-    second_match = re.match('^(\d) h ([\d]{1,2}) min$', runtime)
+    second_match = re.match(r'^(\d) h ([\d]{1,2}) min$', runtime)
     if second_match:
         # Format is '1 h 43 min'
         hours, minutes = second_match.groups()
@@ -87,7 +92,7 @@ def parse_runtime_to_seconds(runtime):
         duration_in_s = minutes * 60
         return duration_in_s
 
-    third_match = re.match('^(\d) h$', runtime)
+    third_match = re.match(r'^(\d) h$', runtime)
     if third_match:
         # Format is '1 h'
         hours = int(runtime.split(' h', 1)[0])

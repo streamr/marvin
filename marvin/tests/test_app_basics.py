@@ -75,5 +75,5 @@ class AppCreationTest(MarvinBaseTestCase):
 class AppCreationWithoutTestMode(MarvinBaseTestCase):
 
     @raises(ValueError)
-    def test_app_with_missing_log_config(self):
-        app = create_app()
+    def test_app_with_missing_log_config(self): # pylint: disable=no-self-use
+        create_app()
