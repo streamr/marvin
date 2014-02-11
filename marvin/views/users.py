@@ -12,6 +12,7 @@ from ..models import User, UserForm, UserLoginForm
 from ..permissions import login_required
 from ..security import is_correct_pw
 
+from flask import url_for
 from flask.ext.restful import Resource
 from flask.ext.principal import UserNeed, Permission
 
@@ -50,6 +51,10 @@ class LoginView(Resource):
                 if is_correct_pw(form.password.data, user.password_hash):
                     return {
                         'auth_token': user.get_auth_token(),
+                        'user': {
+                            'href': url_for('userdetailview', user_id=user.id, _external=True),
+                            'username': user.username,
+                        }
                     }
             return {
                 'msg': 'Incorrect username or password',

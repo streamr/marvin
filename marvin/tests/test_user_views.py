@@ -77,3 +77,5 @@ class UserAccessRestrictionTest(TestCaseWithTempDB):
             response = self.client.post('/login', data={'identifier': identifier, 'password': 'sesamsesam'})
             json_response = self.assert200(response)
             self.assertTrue('auth_token' in json_response)
+            self.assertEqual(json_response['user']['username'], 'bob')
+            self.assertTrue('href' in json_response['user'])
