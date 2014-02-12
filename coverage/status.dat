@@ -211,17 +211,17 @@ I1
 sg19
 I8
 sg20
-I136
+I140
 sg21
 I0
 sg22
 I0
 sg23
-I2
+I4
 sg24
 I0
 sbssg25
-S'\xee\xb6\xfe|\x0c\xd4D\x83 v\xb8u\xdes\x94&'
+S'\xb4\xa9\xac\xe4%\x91\x9cY_`\xfd\x14\x956\xe6\xaf'
 p65
 ssS'marvin_views'
 p66
@@ -347,7 +347,7 @@ I1
 sg19
 I20
 sg20
-I82
+I83
 sg21
 I0
 sg22
@@ -357,7 +357,7 @@ I1
 sg24
 I1
 sbssg25
-S'\x8b\xc5\xaf\x9d\xbdp\x99Q\xe4\xb8\xd5k\xf5\x87\x08\x95'
+S'o\xdb\xb8>M\xba`\xde\xdeHWd\x83\xac\xd9\x13'
 p97
 ssS'marvin_security'
 p98
@@ -493,7 +493,7 @@ I3
 sg24
 I0
 sbssg25
-S']t\xc2\xf3R\xaf\x91\x18\xa1\xbc\xb7\xdd:\x02lX'
+S'\xe3\xa3L%F\xee\x06\xe6<\x83\x85\x19)v\xe2\x08'
 p129
 ssS'marvin_management'
 p130
@@ -527,7 +527,7 @@ I0
 sg24
 I0
 sbssg25
-S'\x14\xc1\x91P\x04\xd6\xcf(\\\x19\x93\x14r\x17h6'
+S'\xb2\xfa\x93\xfe\xe4>8\x0c\x90\xddS"lI\xdd\xe3'
 p137
 sssS'version'
 p138
