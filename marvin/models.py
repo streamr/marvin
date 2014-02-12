@@ -326,6 +326,10 @@ class User(db.Model):
                 'href': url_for('streamdetailview', stream_id=s.id, _external=True),
                 'name': s.name,
                 'published': s.public,
+                'movie': {
+                    'href': url_for('moviedetailview', movie_id=s.movie.id, _external=True),
+                    'title': s.movie.title,
+                },
                 } for s in streams],
         }
 
