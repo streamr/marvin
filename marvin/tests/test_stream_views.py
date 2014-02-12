@@ -18,8 +18,15 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             public=True,
             description='No movie is without sin.',
         )
+        entry = Entry(
+            title='{"text": "Trees without oxygen"}',
+            entry_point_in_ms=2500,
+            stream=stream,
+            content_type='text',
+        )
         private_stream = Stream(name='Uncompleted', movie=movie, creator=self.user)
-        self.stream_id, self.movie_id, self.p_str_id = self.addItems(stream, movie, private_stream)
+        self.stream_id, self.movie_id, self.p_str_id = self.addItems(stream, movie, private_stream,
+            entry)[:3]
 
 
     def test_detail_view(self):
@@ -39,6 +46,8 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
             self.assertEqual(len(Stream.query.all()), 1)
             movie = Movie.query.get(self.movie_id)
             self.assertEqual(movie.number_of_streams, 0)
+            # Entries in a stream should have been deleted too
+            self.assertEqual(len(Entry.query.all()), 0)
 
 
     def test_delete_restricted(self):

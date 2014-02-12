@@ -227,7 +227,7 @@ class Entry(db.Model):
         nullable=False,
     )
     #: The stream this entry belongs to
-    stream = db.relationship('Stream', backref=db.backref('entries', lazy='dynamic'))
+    stream = db.relationship('Stream', backref=db.backref('entries', lazy='dynamic', cascade='all, delete'))
 
 
     def __init__(self, stream=None, **kwargs):
