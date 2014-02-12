@@ -46,7 +46,7 @@ class AppCreationTest(MarvinBaseTestCase):
         log_conf.write('version: 1'.encode('utf-8'))
         log_conf.close()
         app = create_app(LOG_CONF_PATH=log_conf.name)
-        self.assertTrue(app is not None)
+        self.assertIsNotNone(app)
         os.remove(log_conf.name)
 
 

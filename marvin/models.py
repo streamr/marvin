@@ -95,7 +95,7 @@ class Movie(db.Model):
             },
         }
         if include_streams:
-            streams = [s for s in self.streams if (s.public or Permission(UserNeed(s.creator_id)))]
+            streams = [s for s in self.streams if s.public or Permission(UserNeed(s.creator_id))]
             movie['streams'] = [stream.to_json(include_movie=False) for stream in streams]
         return movie
 
@@ -307,6 +307,10 @@ class User(db.Model):
         return self.is_authenticated()
 
 
+    def __str__(self):
+        return self.username
+
+
     def is_authenticated(self):
         """ Used to tell the difference between authenticated users and anonymous users. """
         # pylint: disable=no-self-use
@@ -318,7 +322,7 @@ class User(db.Model):
 
         :param include_personal_data: Whether to include sensitive data such as email.
         """
-        streams = [s for s in self.created_streams if (include_personal_data or s.public)]
+        streams = [s for s in self.created_streams if include_personal_data or s.public]
         data = {
             'username': self.username,
             'href': url_for('userdetailview', user_id=self.id),
@@ -376,6 +380,10 @@ class AnonymousUser(object):
     def __bool__(self): # python 3
         """ Same as self.is_authenticated(). """
         return self.is_authenticated()
+
+
+    def __str__(self):
+        return 'Anonymous'
 
 
     def is_authenticated(self):

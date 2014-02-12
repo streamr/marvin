@@ -181,7 +181,7 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         # create other user
         with self.app.test_request_context():
             alice = User(username='alice', email='alice@example.com', password='alicepw')
-            alice_id, = self.addItems(alice)
+            alice_id = self.addItems(alice)[0]
             alice_auth_header = {'Authorization': 'Token %s' % User.query.get(alice_id).get_auth_token()}
         response = self.client.post('/streams/%d/publish' % self.p_str_id, headers=alice_auth_header)
         self.assert403(response)
@@ -204,7 +204,7 @@ class StreamDetailViewTest(TestCaseWithTempDB, AuthenticatedUserMixin):
         # create other user
         with self.app.test_request_context():
             alice = User(username='alice', email='alice@example.com', password='alicepw')
-            alice_id, = self.addItems(alice)
+            alice_id = self.addItems(alice)[0]
             alice_auth_header = {'Authorization': 'Token %s' % User.query.get(alice_id).get_auth_token()}
         response = self.client.post('/streams/%d/unpublish' % self.stream_id, headers=alice_auth_header)
         self.assert403(response)

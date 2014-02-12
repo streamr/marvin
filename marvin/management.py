@@ -55,6 +55,7 @@ def delete_streams_and_entries(wipe_movies=False):
 
 @manager.command
 def reset_movie_stream_counts():
+    """ Recount the movie number_of_streams where it's > 0. """
     movies_with_stream_count = Movie.query.filter(Movie.number_of_streams > 0).all()
     for movie in movies_with_stream_count:
         movie.number_of_streams = len([s for s in movie.streams if s.public])

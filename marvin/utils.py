@@ -91,7 +91,7 @@ def teardown_appcontext(error):
     if error is None:
         try:
             db.session.commit()
-        except Exception:
+        except Exception: # pylint: disable=broad-except
             # Whoops, a little too late too modify the response, but rollback the session
             # and make sure the exception is logged
             db.session.rollback()

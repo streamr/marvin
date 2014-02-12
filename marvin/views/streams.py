@@ -14,6 +14,10 @@ from ..permissions import login_required
 from flask import g, request
 from flask.ext.principal import UserNeed, Permission
 from flask.ext.restful import Resource
+from logging import getLogger
+
+_logger = getLogger('marvin.views.streams')
+
 
 class StreamDetailView(Resource):
     """ RUD interface to streams. """
@@ -27,8 +31,8 @@ class StreamDetailView(Resource):
                 'stream': stream.to_json(),
             }
         else:
-            print("Access to private stream was attemped.")
-            print('g.user: %s' % g.user)
+            _logger.warning("Access to private stream was attemped. Stream: %s, user: %s",
+                stream.name, g.user)
             return {
                 'msg': 'This stream is not public yet.',
             }, 403 if g.user else 401
