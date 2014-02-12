@@ -126,6 +126,7 @@ def _connect_utilities(app):
 
     # Connect before and after request handlers
     app.before_request(before_request_authentication)
+    app.teardown_appcontext(utils.teardown_appcontext)
 
 
 def _init_logging(log_conf_path):

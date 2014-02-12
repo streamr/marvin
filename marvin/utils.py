@@ -83,3 +83,21 @@ def generic_error_handler(exception):
     # import traceback
     # traceback.print_exc()
     _logger.exception(log_msg)
+
+
+def teardown_appcontext(error):
+    """ Commits the session if no error has occured, otherwise rollbacks. """
+    from . import db # Import down here to avoid circular import
+    if error is None:
+        try:
+            db.session.commit()
+        except Exception:
+            # Whoops, a little too late too modify the response, but rollback the session
+            # and make sure the exception is logged
+            db.session.rollback()
+            _logger.exception('Exception happened during teardown commit.')
+    else:
+        # We have an exception, but it has probably already been handled by the approriate handlers,
+        # so just rollback the session and ignore the error
+        db.session.rollback()
+    db.session.remove()
