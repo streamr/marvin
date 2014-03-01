@@ -3,15 +3,15 @@
   "private": true,
   "version": "0.1.0",
   "devDependencies": {
-    "load-grunt-tasks": "~0.3.0",
-    "grunt": "~0.4.2",
-    "grunt-contrib-watch": "~0.5.3",
+    "load-grunt-tasks": "~0.4.0",
+    "grunt": "~0.4.4",
+    "grunt-contrib-watch": "~0.6.1",
     "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-jshint": "~0.8.0",
-    "grunt-pylint": "~0.3.0",
-    "grunt-shell": "~0.6.4",
-    "grunt-concurrent": "~0.4.3",
-    "grunt-nose": "~0.3.1",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-pylint": "~0.4.0",
+    "grunt-shell": "~0.7.0",
+    "grunt-concurrent": "~0.5.0",
+    "grunt-nose": "~0.4.0",
     "grunt-env": "~0.4.1"
   }
 }
