@@ -4,6 +4,9 @@
 
 set -o errexit #abort if any command fails
 
+# Create checksums of the static file archive
+sha1sum ghdist/static.tar.gz | cut -f 1 -d " " > ghdist/static.tar.gz.sha1
+
 # Make sure there's a .nojekyll file in the dist dir, so that Jekyll won't try to process the result
 touch ghdist/.nojekyll
 
